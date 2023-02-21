@@ -1,13 +1,36 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+#PROJECT_NAME: E:\code\pyofdpaerser\ofdparser
+#CREATE_TIME: 2023-02-21 
+#E_MAIL: renoyuan@foxmail.com
+#AUTHOR: reno 
 # encoding: utf-8
+
 import zipfile
 import xmltodict
 import requests
 import os
 import shutil
-
+import logging
+from io import BytesIO,StringIO 
 import string
 from uuid import uuid1
 import random
+import traceback
+from reportlab import platypus
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.lib.units import mm,inch
+from reportlab.platypus import SimpleDocTemplate, Image
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+from reportlab.pdfbase.ttfonts import TTFont
+
+pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
+
+
+logger = logging.getLogger("root")
+
 
 def _genShortId(length=12):
         """
@@ -45,12 +68,57 @@ class OfdParser(object):
                 f.extract(file, path=unzip_path)
         return unzip_path
 
-    # 提取主要文本内容
+    # 提取主要文本内容 结构更改，加入 页码，每页大小，字体，字号，颜色
     def parse_ofd(self, path) ->list:
         """
         :param content: ofd文件字节内容
         :param path: ofd文件存取路径
         """
+        
+        # 以下解析部分
+        def parserContntXml(path:str)->list:
+            """
+            输入xml 文件地址
+            输出文件信息 cell_list
+            [{"pos":row['@Boundary'].split(" "),
+                        "text":row['ofd:TextCode'].get('#text'),
+                        "font":row['@Font'],
+                        "size":row['@Size'],}]
+            
+            
+            """
+            
+            cell_list = []
+            
+            with open(f"{path}" , "r", encoding="utf-8") as f:
+                _text = f.read()
+                tree = xmltodict.parse(_text)  # xml 对象
+                for row in tree['ofd:Page']['ofd:Content']['ofd:Layer']['ofd:TextObject']:
+                    # print(row)
+                    if not row['ofd:TextCode'].get('#text'):
+                        continue
+                    cell_d = {}
+                   
+                    cell_d ["pos"] = [float(pos_i) for pos_i in row['@Boundary'].split(" ")]
+                    cell_d ["text"] = str(row['ofd:TextCode'].get('#text'))
+                    cell_d ["font"] = row['@Font'] # 字体
+                    cell_d ["size"] = float(row['@Size']) # 字号
+                    color = row.get("ofd:FillColor",{}).get("@Value","0 0 0")
+                    # print(row)
+                    # print(color)
+                    cell_d ["color"] = tuple(color.split(" "))  # 颜色
+                    
+                    
+                         
+                         # # 方向
+              
+                    cell_list.append(cell_d)
+                   
+                    # print(type(cell_d),cell_d)
+                    
+            return cell_list
+        
+        
         # with open(path, "wb") as f:
             # f.write(content)
         # file_path = unzip_file("path")
@@ -65,51 +133,56 @@ class OfdParser(object):
             tree = xmltodict.parse(_text)
             rootPath = tree['ofd:OFD']['ofd:DocBody']['ofd:DocRoot']
             
-            print(rootPath)
-            
-        # read contentPath&tplsPath
-        with open(f"{file_path}/{rootPath}" , "r", encoding="utf-8") as f:
-            _text = f.read()
-            tree = xmltodict.parse(_text)
-            contentPath = f"{file_path}/{rootPath.split('/')[0]}/{tree['ofd:Document']['ofd:Pages']['ofd:Page']['@BaseLoc']}"
-            tplsPath = f"{file_path}/{rootPath.split('/')[0]}/{tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']['@BaseLoc']}"
-            print(contentPath)
-            print(tplsPath)
-    
-    
-        # 以下解析部分
+            # print(type(rootPath),rootPath)
         
-        def parserContntXml(path:str)->list:
-            cell_list = []
-            with open(f"{path}" , "r", encoding="utf-8") as f:
+        
+        if isinstance(rootPath,str):
+            rootPath = [rootPath]
+        
+        page_list = []
+        
+        for page,root_path in enumerate(rootPath) :
+            
+            # font 
+            fonts = {}
+            with open(f"{file_path}/{root_path.split('/')[0]}/PublicRes.xml" , "r", encoding="utf-8") as f:
                 _text = f.read()
                 tree = xmltodict.parse(_text)
-                for row in tree['ofd:Page']['ofd:Content']['ofd:Layer']['ofd:TextObject']:
-                    # print(row)
-                    cell = (row['@Boundary'].split(" "),row['ofd:TextCode'].get('#text'))
-                    # check cell null
-                    cell = None if (not cell[0] or not cell[1]) else cell
-                    if cell:
-                        cell_list.append(cell)
-                        # print(cell)
-            return cell_list
-        
-        
-        cell_list = [] # :cell [[pos,text]]
-        cell_list = parserContntXml(contentPath)
-        # print(cell_list)
-        cell2 = parserContntXml(tplsPath)
-    
-        cell_list.extend(cell2)
-        cell_list.sort(key=lambda pos_text:  (float(pos_text[0][1]),float(pos_text[0][0])))
+                fonts_obj = tree["ofd:Res"]["ofd:Fonts"]["ofd:Font"]
+                for i in fonts_obj:
+                    fonts[i.get("@ID")] = i.get("@FontName")
                 
+                
+            # read contentPath&tplsPath
+            with open(f"{file_path}/{root_path}" , "r", encoding="utf-8") as f:
+                _text = f.read()
+                tree = xmltodict.parse(_text)
+                contentPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Pages']['ofd:Page']['@BaseLoc']}"
+                tplsPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']['@BaseLoc']}"
+                # print(contentPath)
+                # print(tplsPath)
+                page_size = [float(pos_i) for pos_i in tree['ofd:Document']['ofd:CommonData']['ofd:PageArea']['ofd:PhysicalBox'].split(" ")] 
+                # print("page_size",page_size)
+
+            
+            cell_list = [] 
+            cell_list = parserContntXml(contentPath)
+            # print(cell_list)
+            tpls_cellS = parserContntXml(tplsPath)
         
-        # print(cell_list)
+            cell_list.extend(tpls_cellS)
+            cell_list.sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
+                    
+            page_list.append({
+                "page":page,
+                "page_size":page_size,
+                "fonts":fonts,
+                "page_info":cell_list        
+                              })
+            # print(cell_list)
         
-        # 删除文件
-        # shutil.rmtree(file_path)
-        # os.remove(path)
-        return cell_list
+        
+        return page_list
 
     # 转json格式
     def odf2json(self, ofd_date:list,dpi=None) ->dict:
@@ -122,71 +195,166 @@ class OfdParser(object):
         
         if dpi:
             Op = dpi/25.4
-        document_id = 'v1' + '_' + _genShortId()
-        pageList = []
-        pageInfo = {}
-        pageInfo["pageNo"] = 0
-        pageInfo["pageNo"] = 0
-        pageInfo["docID"] = document_id
-        pageInfo["imageQuality"] ={
-            "size": [
-                0,
-                0
-            ]
-        }
-        pageInfo["lineList"] = []
-        # 行信息构建
-        for lineNo,values in enumerate(ofd_date):
-            line = {}
-            pos = []
-            line["lineId"] = 'line_' + str(0) + '_' + str(lineNo) + '_' + _genShortId()
-            line["lineNo"] = lineNo
-            line["sortNo"] = lineNo
-            line["rowNo"] = lineNo
-            line["objType_postpreprocess"] = "text_postpreprocess"
-            
-         
-            
-            print(values)
-            line['objContent'] = values[1]
-            
-            offset = float(values[0][3])*Op
-            pos = [float(values[0][0])*Op,float(values[0][1])*Op,float(values[0][2])*Op,float(values[0][3])*Op]
-            offsetPost = [offset*(i+1) for i in range(len(values[1]))]
-            pos.append(offsetPost)
-            line['objPos'] = pos
-           
-            line['objType'] = 'text'
-            pageInfo["lineList"].append(line)
         
-        contIndex = {}
-        lineList = pageInfo.get("lineList")
-        if lineList:
-            for cell in lineList:
-                contIndex[cell.get("lineId")] = {
-                "lineNo": cell.get("lineNo"),
-                "lineId": cell.get("lineId"),
-                "objType":cell.get("objType"),
-                "objContent": cell.get("objContent"),
-                "objPos":  cell.get("objPos"),
-                "sortNo": cell.get("lineNo"),
-                "rowNo": cell.get("lineNo"),
-                "objType_postpreprocess": "table_postpreprocess"
+        # 行信息构建
+        for paga in ofd_date:
+            
+            document_id = 'v1' + '_' + _genShortId()
+            pageList = []
+            pageInfo = {}
+            pageInfo["pageNo"] = 0
+            pageInfo["pageNo"] = 0
+            pageInfo["docID"] = document_id
+            pageInfo["imageQuality"] ={
+                "size": [
+                    0,
+                    0
+                ]
+            }
+            pageInfo["lineList"] = []
+            
+            
+            for lineNo,values in enumerate(paga.get("page_info")):
+                line = {}
+                pos = []
+                line["lineId"] = 'line_' + str(0) + '_' + str(lineNo) + '_' + _genShortId()
+                line["lineNo"] = lineNo
+                line["sortNo"] = lineNo
+                line["rowNo"] = lineNo
+                line["objType_postpreprocess"] = "text_postpreprocess"
                 
-                }
-        pageInfo["contIndex"] = contIndex
-        pageList.append(pageInfo)
+            
+                
+                # print(values)
+                line['objContent'] = values.get("text")
+                pos = values.get("pos")
+                
+                offset = float(pos[3])*Op
+                pos = [float(pos[1])*Op, float(pos[0])*Op,float(pos[3])*Op,float(pos[2])*Op]
+                offsetPost = [offset*(i+1) for i in range(len(values.get("text")))]
+                pos.append(offsetPost)
+                line['objPos'] = pos
+            
+                line['objType'] = 'text'
+                pageInfo["lineList"].append(line)
+            
+            contIndex = {}
+            lineList = pageInfo.get("lineList")
+            if lineList:
+                for cell in lineList:
+                    contIndex[cell.get("lineId")] = {
+                    "lineNo": cell.get("lineNo"),
+                    "lineId": cell.get("lineId"),
+                    "objType":cell.get("objType"),
+                    "objContent": cell.get("objContent"),
+                    "objPos":  cell.get("objPos"),
+                    "sortNo": cell.get("lineNo"),
+                    "rowNo": cell.get("lineNo"),
+                    "objType_postpreprocess": "table_postpreprocess"
+                    
+                    }
+            pageInfo["contIndex"] = contIndex
+            pageList.append(pageInfo)
         return pageList
         
     # ofd2json流程
     def parserodf2json(self):
         unzip_path = self.unzip_file(self.zip_path)
         cell_list = self.parse_ofd(unzip_path)
-        dict = self.odf2json(cell_list)
+        dict = self.odf2json(cell_list,200)
+        
+        # 删除文件
         shutil.rmtree(unzip_path)
         if os.path.exists(self.zip_path):
             os.remove(self.zip_path)
         return dict
+
+    
+    def gen_pdf(self,json_list=None, gen_pdf_path=""):
+        '''
+        input：
+        
+            json_list-- 文本和坐标
+            gen_pdf2_path：图片和json文件生成的双层PDF所在文件夹路径
+        '''
+
+        # 读取json
+        # json_list = json.load(open(json_path, 'r', encoding='utf-8'))
+        
+        #v (210*mm,140*mm)
+    
+        Op = 72/25.4
+       
+        c = canvas.Canvas(gen_pdf_path)
+        # print("gen_pdf_path",gen_pdf_path)
+        pdfmetrics.registerFont(TTFont('宋体', 'simsun.ttc'))
+        pdfmetrics.registerFont(TTFont('KaiTi', 'simkai.ttf'))
+        pdfmetrics.registerFont(TTFont('楷体', 'simkai.ttf'))
+        pdfmetrics.registerFont(TTFont('Courier New', 'COUR.TTF'))
+        # pdfmetrics.registerFont(TTFont('hei', 'SIMHEI.TTF'))
+        for page in json_list :
+            
+            page_size= page.get("page_size")
+            fonts = page.get("fonts")
+            
+            
+            c = canvas.Canvas(gen_pdf_path,(page_size[2]*Op,page_size[3]*Op))
+            # c.setPageSize = ((page_size[2]*Op,page_size[3]*Op))
+
+            
+            # c.drawInlineImage(img_path, 0, 0, width, height)
+
+            # 循环写文本到图片
+            # print(json_list)
+            try:
+            
+                for line_dict in page.get("page_info"):
+                    # print("line_dict",line_dict)
+                     
+                    font = fonts.get(line_dict["font"],'STSong-Light')
+           
+                    # print("font",font)
+                    c.setFont(font, line_dict["size"]*Op)
+                    # 原点在页面的左下角 
+                    # 原点在页面的左下角
+                    color = line_dict.get("color",[0,0,0])
+                    # print(color)
+                    c.setFillColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
+                    c.setStrokeColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
+                    # c.setFillColorRGB(0,0, 0)
+                    # c.setStrokeColorRGB(0,0, 0)
+                    
+                    # c.translate(mm,page_size[3])
+                    c.drawString((line_dict.get("pos")[0])*Op , (page_size[3]-line_dict.get("pos")[1])*Op , line_dict.get("text"), mode=0) # mode=3 文字不可见 0可見
+                
+                c.showPage()
+            except Exception as e:
+                traceback.print_exc()
+                logger.info("genpdf2 error")
+        c.save()
+
+
+
+    # ofd2pdf流程
+    def ofd2pdf(self)->bytes:
+        
+        pdfname=BytesIO()
+        
+        unzip_path = self.unzip_file(self.zip_path)
+        page_list = self.parse_ofd(unzip_path)
+        self.gen_pdf(page_list,pdfname)
+        # 删除文件
+        pdfbyte  = None
+     
+        pdfbytes  = pdfname.getvalue()
+        shutil.rmtree(unzip_path)
+        if os.path.exists(self.zip_path):
+            os.remove(self.zip_path)
+        # with open("test.pdf","wb") as f:
+        #     f.write(pdfbyte)
+        return pdfbytes
+
+
 
 if __name__ == "__main__":
     import time
@@ -197,9 +365,16 @@ if __name__ == "__main__":
     f.close
     t = time.time()
     # 传入b64 字符串
+    
+    # 输出ocr 格式解析结果
     data_dict = OfdParser(ofdb64).parserodf2json()
     
+    # 转pdf输出
+    pdfbytes = OfdParser(ofdb64).ofd2pdf()
+    
     print(data_dict)
+    print(pdfbytes)
+    
     print(f"ofd解析耗时{(time.time()-t)*1000}/ms")	
-    json.dump(data_dict,open("data_dict.json","w",encoding="utf-8"),ensure_ascii=False,indent=4)
+    # json.dump(data_dict,open("data_dict.json","w",encoding="utf-8"),ensure_ascii=False,indent=4)
     

@@ -5,8 +5,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
  
 setuptools.setup(
-    name="ofdparser-pkg-renoyuan", # 用自己的名替换其中的YOUR_USERNAME_
-    version="0.0.1",    #包版本号，便于维护版本
+    name="ofdparser", # 项目名称
+    version="0.0.2",    #包版本号，便于维护版本
     author="renoyuan",    #作者，可以写自己的姓名
     author_email="renoyuan@foxmail.com",    #作者联系方式，可写自己的邮箱地址
     description="ofdparser",#包的简述
