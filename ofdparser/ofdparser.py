@@ -1,11 +1,5 @@
-#!/usr/bin/env python
-#-*- coding: utf-8 -*-
-#PROJECT_NAME: E:\code\pyofdpaerser\ofdparser
-#CREATE_TIME: 2023-02-21 
-#E_MAIL: renoyuan@foxmail.com
-#AUTHOR: reno 
 # encoding: utf-8
-
+# 方案一 
 import zipfile
 import xmltodict
 import requests
@@ -103,15 +97,23 @@ class OfdParser(object):
                     cell_d ["text"] = str(row['ofd:TextCode'].get('#text'))
                     cell_d ["font"] = row['@Font'] # 字体
                     cell_d ["size"] = float(row['@Size']) # 字号
+                   
                     color = row.get("ofd:FillColor",{}).get("@Value","0 0 0")
-                    # print(row)
-                    # print(color)
-                    cell_d ["color"] = tuple(color.split(" "))  # 颜色
                     
+                    
+                    cell_d ["color"] = tuple(color.split(" "))  # 颜色
+                    cell_d ["DeltaY"] = row.get("ofd:TextCode",{}).get("@DeltaY","") # y 轴偏移量 竖版文字表示方法之一
+                    cell_d ["DeltaX"] = row.get("ofd:TextCode",{}).get("@DeltaX","") # x 轴偏移量 竖版文字表示方法之一
+
+                    cell_d ["X"] = row.get("ofd:TextCode",{}).get("@X","") # X 文本之与文本框距离
+                    cell_d ["Y"] = row.get("ofd:TextCode",{}).get("@Y","") # Y 文本之与文本框距离
+                 
+                        
                     
                          
                          # # 方向
-              
+                    print(row)
+                    print(color)
                     cell_list.append(cell_d)
                    
                     # print(type(cell_d),cell_d)
@@ -270,6 +272,55 @@ class OfdParser(object):
         return dict
 
     
+    def cmp_offset(self,pos,offset,DeltaRule,text)->list:
+        """
+        pos 文本框x|y 坐标
+        offset 初始偏移量
+        DeltaRule 偏移量规则
+        
+        """
+        # print("DeltaRule",DeltaRule)
+        char_pos = float(pos if pos else 0 ) + float(offset if offset else 0 )
+        pos_list = []
+        pos_list.append(char_pos)
+        offsets = [i for i in DeltaRule.split(" ")]
+        # print(offsets)
+        if "g" in   DeltaRule:  
+            g_no = None
+            for _no, offset_i in enumerate(offsets) :
+                # print(f"_no: {_no}",f"offset_i: {offset_i} g_no: {g_no}")
+                
+                
+                if offset_i == "g":
+                    g_no = _no
+                    for j in range(int(offsets[(g_no+1)])):
+                        char_pos += float(offsets[(g_no+2)]) 
+                        pos_list.append(char_pos)
+                    
+                elif offset_i != "g" :
+                    # print("offset_i",offset_i)
+                    if g_no == None:
+                        char_pos += float(offset_i) 
+                        pos_list.append(char_pos)
+                    elif  (int(_no) > int(g_no+2)) and g_no!=None:
+                        # print("非g offset")
+                        
+                        char_pos += float(offset_i) 
+                        pos_list.append(char_pos)
+                    
+                # print("len(pos_list)",len(pos_list))
+        elif not DeltaRule:
+            pos_list = []
+            for i in range(len(text)):
+                pos_list.append(char_pos)
+        else:
+            for i in offsets:
+                # print(i,char_pos)
+                char_pos += float(i) 
+                pos_list.append(char_pos)
+                
+        return pos_list
+        
     def gen_pdf(self,json_list=None, gen_pdf_path=""):
         '''
         input：
@@ -292,6 +343,9 @@ class OfdParser(object):
         pdfmetrics.registerFont(TTFont('楷体', 'simkai.ttf'))
         pdfmetrics.registerFont(TTFont('Courier New', 'COUR.TTF'))
         # pdfmetrics.registerFont(TTFont('hei', 'SIMHEI.TTF'))
+        
+
+                    
         for page in json_list :
             
             page_size= page.get("page_size")
@@ -321,19 +375,41 @@ class OfdParser(object):
                     # print(color)
                     c.setFillColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
                     c.setStrokeColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
-                    # c.setFillColorRGB(0,0, 0)
-                    # c.setStrokeColorRGB(0,0, 0)
+                    # 按每个字写入精确到每个字的坐标
+                    text = line_dict.get("text")
+                    DeltaX = line_dict.get("DeltaX","")
+                    DeltaY = line_dict.get("DeltaY","")
+                    X = line_dict.get("X","")
+                    Y = line_dict.get("Y","")
+                    x_list = self.cmp_offset(line_dict.get("pos")[0],X,DeltaX,text)
+                    y_list = self.cmp_offset(line_dict.get("pos")[1],Y,DeltaY,text)
+                            
+                          
+                       
+                        
+                    # print ("text",text)
+                    # print ("x_list",x_list)
+                    # print ("y_list",y_list)
+                    # print ("x_list",len(x_list))
+                    # print ("y_list",len(y_list))
+                    # print ("text",len(text))
                     
-                    # c.translate(mm,page_size[3])
-                    c.drawString((line_dict.get("pos")[0])*Op , (page_size[3]-line_dict.get("pos")[1])*Op , line_dict.get("text"), mode=0) # mode=3 文字不可见 0可見
-                
+                    
+                    # 按字符写入
+                    for cahr_id, _cahr_ in enumerate(text) :
+                        _cahr_x= float(x_list[cahr_id])*Op
+                        _cahr_y= (float(page_size[3])-(float(y_list[cahr_id])))*Op
+                        c.drawString( _cahr_x,  _cahr_y, _cahr_, mode=0) # mode=3 文字不可见 0可見
+                    
+                    # 按行写入
+                    #c.drawString( float(line_dict.get("pos")[0])*Op,  (float(page_size[3])-(float(line_dict.get("pos")[1])))*Op, text, mode=0) # mode=3 文字不可见 0可見
+                   
+
                 c.showPage()
             except Exception as e:
                 traceback.print_exc()
                 logger.info("genpdf2 error")
         c.save()
-
-
 
     # ofd2pdf流程
     def ofd2pdf(self)->bytes:
@@ -344,14 +420,14 @@ class OfdParser(object):
         page_list = self.parse_ofd(unzip_path)
         self.gen_pdf(page_list,pdfname)
         # 删除文件
-        pdfbyte  = None
+        pdfbytes  = None
      
         pdfbytes  = pdfname.getvalue()
         shutil.rmtree(unzip_path)
         if os.path.exists(self.zip_path):
             os.remove(self.zip_path)
-        # with open("test.pdf","wb") as f:
-        #     f.write(pdfbyte)
+        with open("test.pdf","wb") as f:
+            f.write(pdfbytes)
         return pdfbytes
 
 
@@ -367,13 +443,13 @@ if __name__ == "__main__":
     # 传入b64 字符串
     
     # 输出ocr 格式解析结果
-    data_dict = OfdParser(ofdb64).parserodf2json()
+    # data_dict = OfdParser(ofdb64).parserodf2json()
     
     # 转pdf输出
     pdfbytes = OfdParser(ofdb64).ofd2pdf()
     
-    print(data_dict)
-    print(pdfbytes)
+    # print(data_dict)
+    # print(pdfbytes)
     
     print(f"ofd解析耗时{(time.time()-t)*1000}/ms")	
     # json.dump(data_dict,open("data_dict.json","w",encoding="utf-8"),ensure_ascii=False,indent=4)
