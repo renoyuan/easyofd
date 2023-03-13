@@ -1,8 +1,15 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+#PROJECT_NAME: /home/azx_fp/forecaest_new/app_ocr/utils
+#CREATE_TIME: 2023-02-23 
+#E_MAIL: renoyuan@foxmail.com
+#AUTHOR: reno 
+
 # encoding: utf-8
-# 方案一 
+import time
+import json
+import base64
 import zipfile
-import xmltodict
-import requests
 import os
 import shutil
 import logging
@@ -11,6 +18,10 @@ import string
 from uuid import uuid1
 import random
 import traceback
+import logging
+
+
+import xmltodict
 from reportlab import platypus
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib.units import mm,inch
@@ -20,7 +31,35 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfbase.ttfonts import TTFont
 
+
+
+
+
+try:
+    import cv2
+except :
+    logging.warning("缺少cv2 若需要处理图片文件必不可少")
+    
+
+FONTS = ('宋体',"SWPMEH+SimSun",'SimSun','KaiTi','楷体',"SWLCQE+KaiTi",'Courier New','STSong-Light',"CourierNew","SWANVV+CourierNewPSMT","CourierNewPSMT","BWSimKai","hei","黑体","SimHei","SWDKON+SimSun","SWCRMF+CourierNewPSMT","SWHGME+KaiTi")
+pdfmetrics.registerFont(TTFont('宋体', 'simsun.ttc'))
+pdfmetrics.registerFont(TTFont('SWPMEH+SimSun', 'simsun.ttc'))
+pdfmetrics.registerFont(TTFont('SimSun', 'simsun.ttc'))
+pdfmetrics.registerFont(TTFont('SWDKON+SimSun', 'simsun.ttc'))
+pdfmetrics.registerFont(TTFont('KaiTi', 'simkai.ttf'))
+pdfmetrics.registerFont(TTFont('楷体', 'simkai.ttf'))
+pdfmetrics.registerFont(TTFont('SWLCQE+KaiTi', 'simkai.ttf'))
+pdfmetrics.registerFont(TTFont('SWHGME+KaiTi', 'simkai.ttf'))
+pdfmetrics.registerFont(TTFont('BWSimKai', 'simkai.ttf'))
+pdfmetrics.registerFont(TTFont('SWCRMF+CourierNewPSMT', 'COURI.TTF'))
+pdfmetrics.registerFont(TTFont('SWANVV+CourierNewPSMT', 'COURI.TTF'))
+pdfmetrics.registerFont(TTFont('CourierNew', 'COURI.TTF'))
+pdfmetrics.registerFont(TTFont('CourierNewPSMT', 'COURI.TTF'))
+pdfmetrics.registerFont(TTFont('Courier New', 'COURI.TTF'))
 pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))
+pdfmetrics.registerFont(TTFont('SimHei', 'simhei.ttf'))
+pdfmetrics.registerFont(TTFont('hei', 'simhei.ttf'))
+pdfmetrics.registerFont(TTFont('黑体', 'simhei.ttf'))
 
 
 logger = logging.getLogger("root")
@@ -47,13 +86,14 @@ class OfdParser(object):
             f.write(ofdbyte)
         self.zip_path = zip_path
 
-    # 解压
-    def unzip_file(self,zip_path, unzip_path=None):
+    # 解压odf
+    def unzip_file(self,zip_path="", unzip_path=None):
         """
         :param zip_path: ofd格式文件路径
         :param unzip_path: 解压后的文件存放目录
         :return: unzip_path
         """
+        # if not zip_path:
         zip_path = self.zip_path
         if not unzip_path:
             unzip_path = zip_path.split('.')[0]
@@ -62,65 +102,87 @@ class OfdParser(object):
                 f.extract(file, path=unzip_path)
         return unzip_path
 
+    def readjb2(self,jb2path,pbmpath) :
+    
+        """
+        imput jb2path pbmpath
+        output cv2_obj
+        """
+        res = os.system(f"jbig2dec -o {pbmpath} {jb2path}")
+        if res == 0:
+            print(res,"执行成功")
+        else:
+            raise Exception("jb2转换失败,检查参数")
+        pbm_content =  cv2.imread(f"{pbmpath}")
+        if os.path.exists(pbmpath):
+            os.remove(pbmpath)
+            
+        return pbm_content
+
+    # 解析Xml
+    def parserContntXml(self,path:str)->list:
+        """
+        输入xml 文件地址
+        输出主体坐标和文字信息 cell_list
+        [{"pos":row['@Boundary'].split(" "),
+                    "text":row['ofd:TextCode'].get('#text'),
+                    "font":row['@Font'],
+                    "size":row['@Size'],}]
+        
+        
+        """
+        
+        cell_list = []
+        
+        with open(f"{path}" , "r", encoding="utf-8") as f:
+            _text = f.read()
+            tree = xmltodict.parse(_text)  # xml 对象
+            TextObjectLayer = tree.get('ofd:Page',{}).get('ofd:Content',{}).get('ofd:Layer',{})
+            TextObjectList = []
+            if isinstance(TextObjectLayer,list):
+                for i in TextObjectLayer:
+                    if i.get('ofd:TextObject',[]):
+                        TextObjectList.extend(i.get('ofd:TextObject',[]))
+            else:
+                TextObjectList = tree.get('ofd:Page',{}).get('ofd:Content',{}).get('ofd:Layer',{}).get('ofd:TextObject',[])
+            
+            # print(TextObjectList)
+            for row in TextObjectList:
+                # print(row)
+               
+                if not row.get('ofd:TextCode',{}).get('#text'):
+                    continue
+                cell_d = {}
+                
+                cell_d ["pos"] = [float(pos_i) for pos_i in row['@Boundary'].split(" ")]
+                cell_d ["text"] = str(row['ofd:TextCode'].get('#text'))
+                cell_d ["font"] = row['@Font'] # 字体
+                cell_d ["size"] = float(row['@Size']) # 字号
+                
+                color = row.get("ofd:FillColor",{}).get("@Value","0 0 0")
+                
+                
+                cell_d ["color"] = tuple(color.split(" "))  # 颜色
+                cell_d ["DeltaY"] = row.get("ofd:TextCode",{}).get("@DeltaY","") # y 轴偏移量 竖版文字表示方法之一
+                cell_d ["DeltaX"] = row.get("ofd:TextCode",{}).get("@DeltaX","") # x 轴偏移量 
+                cell_d ["CTM"] = row.get("@CTM","") # 平移矩阵换 
+                
+                cell_d ["X"] = row.get("ofd:TextCode",{}).get("@X","") # X 文本之与文本框距离
+                cell_d ["Y"] = row.get("ofd:TextCode",{}).get("@Y","") # Y 文本之与文本框距离
+
+                cell_list.append(cell_d)
+                
+             
+                
+        return cell_list
+    
     # 提取主要文本内容 结构更改，加入 页码，每页大小，字体，字号，颜色
     def parse_ofd(self, path) ->list:
         """
         :param content: ofd文件字节内容
         :param path: ofd文件存取路径
         """
-        
-        # 以下解析部分
-        def parserContntXml(path:str)->list:
-            """
-            输入xml 文件地址
-            输出文件信息 cell_list
-            [{"pos":row['@Boundary'].split(" "),
-                        "text":row['ofd:TextCode'].get('#text'),
-                        "font":row['@Font'],
-                        "size":row['@Size'],}]
-            
-            
-            """
-            
-            cell_list = []
-            
-            with open(f"{path}" , "r", encoding="utf-8") as f:
-                _text = f.read()
-                tree = xmltodict.parse(_text)  # xml 对象
-                for row in tree['ofd:Page']['ofd:Content']['ofd:Layer']['ofd:TextObject']:
-                    # print(row)
-                    if not row['ofd:TextCode'].get('#text'):
-                        continue
-                    cell_d = {}
-                   
-                    cell_d ["pos"] = [float(pos_i) for pos_i in row['@Boundary'].split(" ")]
-                    cell_d ["text"] = str(row['ofd:TextCode'].get('#text'))
-                    cell_d ["font"] = row['@Font'] # 字体
-                    cell_d ["size"] = float(row['@Size']) # 字号
-                   
-                    color = row.get("ofd:FillColor",{}).get("@Value","0 0 0")
-                    
-                    
-                    cell_d ["color"] = tuple(color.split(" "))  # 颜色
-                    cell_d ["DeltaY"] = row.get("ofd:TextCode",{}).get("@DeltaY","") # y 轴偏移量 竖版文字表示方法之一
-                    cell_d ["DeltaX"] = row.get("ofd:TextCode",{}).get("@DeltaX","") # x 轴偏移量 竖版文字表示方法之一
 
-                    cell_d ["X"] = row.get("ofd:TextCode",{}).get("@X","") # X 文本之与文本框距离
-                    cell_d ["Y"] = row.get("ofd:TextCode",{}).get("@Y","") # Y 文本之与文本框距离
-                 
-                        
-                    
-                         
-                         # # 方向
-                    print(row)
-                    print(color)
-                    cell_list.append(cell_d)
-                   
-                    # print(type(cell_d),cell_d)
-                    
-            return cell_list
-        
-        
         # with open(path, "wb") as f:
             # f.write(content)
         # file_path = unzip_file("path")
@@ -160,7 +222,11 @@ class OfdParser(object):
                 _text = f.read()
                 tree = xmltodict.parse(_text)
                 contentPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Pages']['ofd:Page']['@BaseLoc']}"
-                tplsPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']['@BaseLoc']}"
+                try:
+                    tplsPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']['@BaseLoc']}"
+                except :
+                    tplsPath = ""
+                
                 # print(contentPath)
                 # print(tplsPath)
                 page_size = [float(pos_i) for pos_i in tree['ofd:Document']['ofd:CommonData']['ofd:PageArea']['ofd:PhysicalBox'].split(" ")] 
@@ -168,13 +234,24 @@ class OfdParser(object):
 
             
             cell_list = [] 
-            cell_list = parserContntXml(contentPath)
+            cell_list = self.parserContntXml(contentPath)
             # print(cell_list)
-            tpls_cellS = parserContntXml(tplsPath)
+            tpls_cellS = []
+            if tplsPath :
+                tpls_cellS = self.parserContntXml(tplsPath)
         
             cell_list.extend(tpls_cellS)
             cell_list.sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
-                    
+            # 重新获取页面size
+            with open(contentPath, "r", encoding="utf-8") as f:
+                _text = f.read()
+                tree = xmltodict.parse(_text)
+                try:
+                    page_size = [float(pos_i) for pos_i in tree['ofd:Page']['ofd:Area']['ofd:PhysicalBox'].split(" ")] 
+                    # print(page_size)
+                except Exception as e:
+                    print(e)
+                    pass
             page_list.append({
                 "page":page,
                 "page_size":page_size,
@@ -187,14 +264,14 @@ class OfdParser(object):
         return page_list
 
     # 转json格式
-    def odf2json(self, ofd_date:list,dpi=None) ->dict:
+    def odf2json(self, ofd_date:list,dpi=200) ->dict:
         """
         坐标默认为毫米单位 
         dpi 有则转化为px
         """
         Op = 1 # 转换算子单位
         
-        
+        dpi = 200
         if dpi:
             Op = dpi/25.4
         
@@ -271,8 +348,8 @@ class OfdParser(object):
             os.remove(self.zip_path)
         return dict
 
-    
-    def cmp_offset(self,pos,offset,DeltaRule,text)->list:
+    # 单个字符偏移量计算
+    def cmp_offset(self,pos,offset,DeltaRule,text,resize=1)->list:
         """
         pos 文本框x|y 坐标
         offset 初始偏移量
@@ -300,12 +377,12 @@ class OfdParser(object):
                 elif offset_i != "g" :
                     # print("offset_i",offset_i)
                     if g_no == None:
-                        char_pos += float(offset_i) 
+                        char_pos += float(offset_i) * resize
                         pos_list.append(char_pos)
                     elif  (int(_no) > int(g_no+2)) and g_no!=None:
                         # print("非g offset")
                         
-                        char_pos += float(offset_i) 
+                        char_pos += float(offset_i)  * resize
                         pos_list.append(char_pos)
                     
                 # print("len(pos_list)",len(pos_list))
@@ -316,7 +393,10 @@ class OfdParser(object):
         else:
             for i in offsets:
                 # print(i,char_pos)
-                char_pos += float(i) 
+                if not i:
+                    char_pos += 0
+                else:
+                    char_pos += float(i)  * resize
                 pos_list.append(char_pos)
                 
         return pos_list
@@ -334,15 +414,10 @@ class OfdParser(object):
         
         #v (210*mm,140*mm)
     
-        Op = 72/25.4
+        Op = 200/25.4
        
         c = canvas.Canvas(gen_pdf_path)
         # print("gen_pdf_path",gen_pdf_path)
-        pdfmetrics.registerFont(TTFont('宋体', 'simsun.ttc'))
-        pdfmetrics.registerFont(TTFont('KaiTi', 'simkai.ttf'))
-        pdfmetrics.registerFont(TTFont('楷体', 'simkai.ttf'))
-        pdfmetrics.registerFont(TTFont('Courier New', 'COUR.TTF'))
-        # pdfmetrics.registerFont(TTFont('hei', 'SIMHEI.TTF'))
         
 
                     
@@ -351,8 +426,9 @@ class OfdParser(object):
             page_size= page.get("page_size")
             fonts = page.get("fonts")
             
-            
+            # print(page_size)
             c = canvas.Canvas(gen_pdf_path,(page_size[2]*Op,page_size[3]*Op))
+            c.setPageSize((page_size[2]*Op, page_size[3]*Op))
             # c.setPageSize = ((page_size[2]*Op,page_size[3]*Op))
 
             
@@ -364,9 +440,13 @@ class OfdParser(object):
             
                 for line_dict in page.get("page_info"):
                     # print("line_dict",line_dict)
-                     
+                    
                     font = fonts.get(line_dict["font"],'STSong-Light')
-           
+                    
+                    if font not in FONTS:
+                        print("font----------------：",font)
+                        font = '宋体'
+                    # print(font)
                     # print("font",font)
                     c.setFont(font, line_dict["size"]*Op)
                     # 原点在页面的左下角 
@@ -381,11 +461,18 @@ class OfdParser(object):
                     DeltaY = line_dict.get("DeltaY","")
                     X = line_dict.get("X","")
                     Y = line_dict.get("Y","")
-                    x_list = self.cmp_offset(line_dict.get("pos")[0],X,DeltaX,text)
-                    y_list = self.cmp_offset(line_dict.get("pos")[1],Y,DeltaY,text)
+                    CTM = line_dict.get("CTM","") # 因为ofd 的傻逼 增加这个字符缩放
+                    resizeX =1
+                    resizeY =1
+                    if CTM :
+                        # print(CTM)
+                        resizeX = float(CTM.split(" ")[0])
+                        resizeY = float(CTM.split(" ")[3])
+                  
+                    x_list = self.cmp_offset(line_dict.get("pos")[0],X,DeltaX,text,resizeX)
+                    y_list = self.cmp_offset(line_dict.get("pos")[1],Y,DeltaY,text,resizeY)
                             
-                          
-                       
+                    
                         
                     # print ("text",text)
                     # print ("x_list",x_list)
@@ -426,8 +513,8 @@ class OfdParser(object):
         shutil.rmtree(unzip_path)
         if os.path.exists(self.zip_path):
             os.remove(self.zip_path)
-        with open("test.pdf","wb") as f:
-            f.write(pdfbytes)
+        # with open("test.pdf","wb") as f:
+            # f.write(pdfbytes)
         return pdfbytes
 
 
@@ -436,21 +523,40 @@ if __name__ == "__main__":
     import time
     import json
     import base64
-    f = open("增值税电子专票5.ofd","rb")
-    ofdb64 = str(base64.b64encode(f.read()),"utf-8")
-    f.close
-    t = time.time()
-    # 传入b64 字符串
-    
-    # 输出ocr 格式解析结果
-    # data_dict = OfdParser(ofdb64).parserodf2json()
-    
-    # 转pdf输出
-    pdfbytes = OfdParser(ofdb64).ofd2pdf()
-    
-    # print(data_dict)
-    # print(pdfbytes)
-    
-    print(f"ofd解析耗时{(time.time()-t)*1000}/ms")	
-    # json.dump(data_dict,open("data_dict.json","w",encoding="utf-8"),ensure_ascii=False,indent=4)
+    dirPath = "/home/0305data/OFD数据"
+    dirPath = "/home/data/调用成功但返回报错样本-0308"
+    dir_ = os.listdir(dirPath)
+    t_t = time.time()
+
+    # OfdParser("").unzip_file("/home/data/调用成功但返回报错样本-0308/ff378288-00fa-47e5-a447-ed017a80ea8c.ofd","ff378288-00fa-47e5-a447-ed017a80ea8c")
+    for i in dir_:
+        # break
+        if i.split(".")[-1].lower() != "ofd":
+            continue
+        # f = open("增值税电子专票5.ofd","rb")
+        f = open(f"{dirPath}/{i}","rb")
+        # print(i)
+        ofdb64 = str(base64.b64encode(f.read()),"utf-8")
+        
+        f.close
+        t = time.time()
+        
+        # 传入b64 字符串
+        
+        # 输出ocr 格式解析结果
+        # data_dict = OfdParser(ofdb64).parserodf2json()
+        
+        # 转pdf输出
+        pdfbytes = OfdParser(ofdb64).ofd2pdf()
+        
+        # print(data_dict)
+        # print(pdfbytes)
+        with open(f"pdfs/{i}.pdf","wb") as f:
+            f.write(pdfbytes)
+        print(f"ofd解析耗时{(time.time()-t)*1000}/ms")	
+        # json.dump(data_dict,open("data_dict.json","w",encoding="utf-8"),ensure_ascii=False,indent=4)
+        # pbmpath = "image_80.pbm"
+        # jb2path = "增值税电子专票5/Doc_0/Res/image_80.jb2"
+        # pdfbytes = OfdParser(ofdb64).readjb2(jb2path,pbmpath)
+    print(f"ofd解析耗时{(time.time()-t_t)*1000}/ms")
     

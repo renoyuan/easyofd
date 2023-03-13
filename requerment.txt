@@ -1,1 +1,2 @@
-reportlab
+reportlab -- 3.6.11
+xmltodict -- 0.13.0
