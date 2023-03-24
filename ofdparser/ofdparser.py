@@ -6,6 +6,14 @@
 #AUTHOR: reno 
 
 # encoding: utf-8
+from __future__ import print_function, division, absolute_import
+from fontTools.ttLib import TTFont as ttLib_TTFont
+from fontTools.pens.basePen import BasePen
+from reportlab.graphics.shapes import Path
+from reportlab.lib import colors
+from reportlab.graphics import renderPM
+from reportlab.graphics.shapes import Group, Drawing, scale
+
 import time
 import json
 import base64
@@ -31,7 +39,8 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfbase.ttfonts import TTFont
-
+from concurrent.futures import ThreadPoolExecutor
+import threading
 import PIL
 
 
@@ -42,7 +51,7 @@ except :
     logging.warning("缺少cv2 若需要处理图片文件必不可少")
     
 
-FONTS = ('宋体',"SWPMEH+SimSun",'SimSun','KaiTi','楷体',"SWLCQE+KaiTi",'Courier New','STSong-Light',"CourierNew","SWANVV+CourierNewPSMT","CourierNewPSMT","BWSimKai","hei","黑体","SimHei","SWDKON+SimSun","SWCRMF+CourierNewPSMT","SWHGME+KaiTi")
+FONTS = ['宋体',"SWPMEH+SimSun",'SimSun','KaiTi','楷体',"SWLCQE+KaiTi",'Courier New','STSong-Light',"CourierNew","SWANVV+CourierNewPSMT","CourierNewPSMT","BWSimKai","hei","黑体","SimHei","SWDKON+SimSun","SWCRMF+CourierNewPSMT","SWHGME+KaiTi"]
 pdfmetrics.registerFont(TTFont('宋体', 'simsun.ttc'))
 pdfmetrics.registerFont(TTFont('SWPMEH+SimSun', 'simsun.ttc'))
 pdfmetrics.registerFont(TTFont('SimSun', 'simsun.ttc'))
@@ -78,7 +87,86 @@ def _genShortId(length=12):
             uuidChars = tuple(list(string.ascii_letters) + list(range(10)))
             result += str(uuidChars[x % 0x3E])
         return result + ''.join(random.sample(uuid, length - 8))
-    
+
+class ReportLabPen(BasePen):
+ 
+    """A pen for drawing onto a reportlab.graphics.shapes.Path object."""
+ 
+    def __init__(self, glyphSet, path=None):
+        BasePen.__init__(self, glyphSet)
+        if path is None:
+            path = Path()
+        self.path = path
+ 
+    def _moveTo(self, p):
+        (x,y) = p
+        self.path.moveTo(x,y)
+ 
+    def _lineTo(self, p):
+        (x,y) = p
+        self.path.lineTo(x,y)
+ 
+    def _curveToOne(self, p1, p2, p3):
+        (x1,y1) = p1
+        (x2,y2) = p2
+        (x3,y3) = p3
+        self.path.curveTo(x1, y1, x2, y2, x3, y3)
+ 
+    def _closePath(self):
+        self.path.closePath()
+
+
+def draw_Glyph(fontName,index,char_):
+    font = ttLib_TTFont(fontName)
+    gs = font.getGlyphSet()
+    glyphset = font.getGlyphSet()
+    # print(dir(gs))
+    # font_id = font.getGlyphID(char_)
+    char_aa = font.getGlyphOrder()[index]
+    # char_aa = 
+    # print("aa",aa)
+    # print("char_",char_)
+    # print("font_id",font_id)
+    # glyphNames = font.getGlyphNames()
+    # g = gs['cmap'][char_]
+    g = gs[char_aa]
+    pen = ReportLabPen(gs, Path(fillColor=colors.black, strokeWidth=5))
+    g.draw(pen)
+    w, h = g.width, g.width
+    g = Group(pen.path)
+    g.translate(0, 0)
+    d = Drawing(w, h)
+    d.add(g)
+    imageFile = "images"+"/"+str(index)+".png"
+    if not os.path.exists(imageFile):
+        renderPM.drawToFile(d, imageFile, "png")
+    return imageFile
+        
+def ttfToImage(fontName,imagePath,fmt="png"):
+    font = ttLib_TTFont(fontName)
+    gs = font.getGlyphSet()
+    glyphNames = font.getGlyphNames()
+    dict_={}
+    for i in glyphNames:
+        if i[0] == '.':#跳过'.notdef', '.null'
+            continue
+        
+        g = gs[i]
+        pen = ReportLabPen(gs, Path(fillColor=colors.black, strokeWidth=5))
+        g.draw(pen)
+        w, h = g.width, g.width
+        g = Group(pen.path)
+        g.translate(0, 0)
+        # g.translate(w, h)
+        
+        d = Drawing(w, h)
+        d.add(g)
+        imageFile = imagePath+"/"+i+".png"
+        renderPM.drawToFile(d, imageFile, fmt)
+        
+        print(i)
+
+
 class OfdParser(object):
     def __init__(self,ofdb64,zip_path="ofd.ofd") -> None:
         ofdbyte = base64.b64decode(ofdb64)
@@ -134,46 +222,66 @@ class OfdParser(object):
         """
         
         cell_list = []
-        
-        with open(f"{path}" , "r", encoding="utf-8") as f:
-            _text = f.read()
-            tree = xmltodict.parse(_text)  # xml 对象
-            TextObjectLayer = tree.get('ofd:Page',{}).get('ofd:Content',{}).get('ofd:Layer',{})
-            TextObjectList = []
-            if isinstance(TextObjectLayer,list):
-                for i in TextObjectLayer:
-                    if i.get('ofd:TextObject',[]):
-                        TextObjectList.extend(i.get('ofd:TextObject',[]))
-            else:
-                TextObjectList = tree.get('ofd:Page',{}).get('ofd:Content',{}).get('ofd:Layer',{}).get('ofd:TextObject',[])
+        try:
+            with open(f"{path}" , "r", encoding="utf-8") as f:
+                _text = f.read()
+                tree = xmltodict.parse(_text)  # xml 对象
+                TextObjectLayer = tree.get('ofd:Page',{}).get('ofd:Content',{}).get('ofd:Layer',{})
+                
+                TextObjectList = []
+                
+                
+                        
+                # 判断ofd标签格式
+                if isinstance(TextObjectLayer,list):
+                    for i in TextObjectLayer: 
+                        if i.get('ofd:TextObject',[]):
+                            TextObjectList.extend(i.get('ofd:TextObject',[]))
+                elif TextObjectLayer.get("ofd:PageBlock",{}).get("ofd:PageBlock",{}).get("ofd:TextObject",{}) :
+                    TextObjectList_new = TextObjectLayer.get("ofd:PageBlock").get("ofd:PageBlock").get("ofd:TextObject")
+                    if isinstance(TextObjectList_new,list):
+                        TextObjectList.extend(TextObjectList_new)
+                else:
+                    TextObjectList = tree.get('ofd:Page',{}).get('ofd:Content',{}).get('ofd:Layer',{}).get('ofd:TextObject',[])
+                
             
-            # print(TextObjectList)
-            for row in TextObjectList:
-                # print(row)
-               
-                if not row.get('ofd:TextCode',{}).get('#text'):
-                    continue
-                cell_d = {}
-                
-                cell_d ["pos"] = [float(pos_i) for pos_i in row['@Boundary'].split(" ")]
-                cell_d ["text"] = str(row['ofd:TextCode'].get('#text'))
-                cell_d ["font"] = row['@Font'] # 字体
-                cell_d ["size"] = float(row['@Size']) # 字号
-                
-                color = row.get("ofd:FillColor",{}).get("@Value","0 0 0")
-                
-                
-                cell_d ["color"] = tuple(color.split(" "))  # 颜色
-                cell_d ["DeltaY"] = row.get("ofd:TextCode",{}).get("@DeltaY","") # y 轴偏移量 竖版文字表示方法之一
-                cell_d ["DeltaX"] = row.get("ofd:TextCode",{}).get("@DeltaX","") # x 轴偏移量 
-                cell_d ["CTM"] = row.get("@CTM","") # 平移矩阵换 
-                
-                cell_d ["X"] = row.get("ofd:TextCode",{}).get("@X","") # X 文本之与文本框距离
-                cell_d ["Y"] = row.get("ofd:TextCode",{}).get("@Y","") # Y 文本之与文本框距离
+                # print(TextObjectList)
+                for row in TextObjectList:
+                    # print(row)
+            
+                    if not row.get('ofd:TextCode',{}).get('#text'):
+                        continue
+                    cell_d = {}
+                    if row.get("ofd:CGTransform"):
+                        Glyphs_d = {
+                            "Glyphs":row.get("ofd:CGTransform").get("ofd:Glyphs"),
+                            "GlyphCount":row.get("ofd:CGTransform").get("@GlyphCount"),
+                            "CodeCount":row.get("ofd:CGTransform").get("@CodeCount"),
+                            "CodePosition":row.get("ofd:CGTransform").get("@CodePosition")
+                            }
+                        cell_d["Glyphs_d"] = Glyphs_d
+                    
+                    cell_d ["pos"] = [float(pos_i) for pos_i in row['@Boundary'].split(" ")]
+                    cell_d ["text"] = str(row['ofd:TextCode'].get('#text'))
+                    cell_d ["font"] = row['@Font'] # 字体
+                    cell_d ["size"] = float(row['@Size']) # 字号
+                    
+                    color = row.get("ofd:FillColor",{}).get("@Value","0 0 0")
+                    
+                    
+                    cell_d ["color"] = tuple(color.split(" "))  # 颜色
+                    cell_d ["DeltaY"] = row.get("ofd:TextCode",{}).get("@DeltaY","") # y 轴偏移量 竖版文字表示方法之一
+                    cell_d ["DeltaX"] = row.get("ofd:TextCode",{}).get("@DeltaX","") # x 轴偏移量 
+                    cell_d ["CTM"] = row.get("@CTM","") # 平移矩阵换 
+                    
+                    cell_d ["X"] = row.get("ofd:TextCode",{}).get("@X","") # X 文本之与文本框距离
+                    cell_d ["Y"] = row.get("ofd:TextCode",{}).get("@Y","") # Y 文本之与文本框距离
 
-                cell_list.append(cell_d)
-                
-             
+                    cell_list.append(cell_d)
+                    
+        except Exception as e:
+            traceback.print_exc()
+            print(e)
                 
         return cell_list
     
@@ -187,83 +295,86 @@ class OfdParser(object):
         
         """
         img_list = []
-        with open(f"{path}" , "r", encoding="utf-8") as f:
-            _text = f.read()
-            tree = xmltodict.parse(_text)  # xml 对象
-            
-            
-
-        ImageObjectList = [] # 图片资源xml对象
-        
-        
-        if path.endswith("Annotation.xml"):
-            Annot =  tree.get('ofd:PageAnnot',{}).get('ofd:Annot',{})
-            # print("Annot",Annot)
-            if isinstance(Annot,dict):
-                Annot = [Annot]
-            for Annot_cell in Annot:
-                Appearance = Annot_cell.get('ofd:Appearance',{})
-                AppearanceBoundary = Appearance.get("@Boundary","")
-                if AppearanceBoundary:
-                    AppearanceBoundary = [float(i) for i in AppearanceBoundary.split(" ")]
+        try:
+            with open(f"{path}" , "r", encoding="utf-8") as f:
+                _text = f.read()
+                tree = xmltodict.parse(_text)  # xml 对象
                 
-                print("AppearanceBoundary",AppearanceBoundary)
-                if  isinstance(Appearance,dict):
-                    Appearance = [Appearance]
-                # print("Appearance",Appearance)
-                for i in Appearance :
-                    if i.get('ofd:ImageObject',{}) and isinstance(i,list):
-                        ImageObjectL = i.get('ofd:ImageObject',{})
-                        for ImageObject_cell in  ImageObjectL:
-                            ImageObject_cell["@wrap_pos"] = AppearanceBoundary
-                        ImageObjectList.extend(ImageObjectL)
-                        
-                    elif i.get('ofd:ImageObject',{}) and isinstance(i,dict):
-                        ImageObject = copy.deepcopy(i.get('ofd:ImageObject',{})) 
-                        ImageObject["@wrap_pos"] = AppearanceBoundary
-                        ImageObjectList.extend(
-                            [ImageObject]
-                            )
-            # print("ImageObjectList",ImageObjectList)
-            
-        elif path.endswith("Content.xml"):
-            ImageObjectLayer = tree.get('ofd:Page',{}).get('ofd:Content',{}).get('ofd:Layer',{})
-            
-            if isinstance(ImageObjectLayer,list):
-                for i in ImageObjectLayer:
-                    if i.get('ofd:ImageObject',[]):
-                        ImageObjectList.extend(i.get('ofd:ImageObject',[]))
-
-            else:
-                ImageObjectList = tree.get('ofd:Page',{}).get('ofd:Content',{}).get('ofd:Layer',{}).get('ofd:ImageObject',[])
-            
-            
-            if isinstance(ImageObjectList,dict):
-                ImageObjectList = [ImageObjectList]
                 
-        # print(ImageObjectList)
-        for row in ImageObjectList:
-            # print(row)
-            if row.get("@ResourceID") in _org_images:
-                f = open(_org_images.get(row.get("@ResourceID")).get("Path"),"rb")
-                b64img_b =  f.read()
-                f.close()
-                b64img = str( base64.b64encode(b64img_b) ,encoding="utf-8")
-                img_list.append(
+
+            ImageObjectList = [] # 图片资源xml对象
+            
+            
+            if path.endswith("Annotation.xml"):
+                Annot =  tree.get('ofd:PageAnnot',{}).get('ofd:Annot',{})
+                # print("Annot",Annot)
+                if isinstance(Annot,dict):
+                    Annot = [Annot]
+                for Annot_cell in Annot:
+                    Appearance = Annot_cell.get('ofd:Appearance',{})
+                    AppearanceBoundary = Appearance.get("@Boundary","")
+                    if AppearanceBoundary:
+                        AppearanceBoundary = [float(i) for i in AppearanceBoundary.split(" ")]
                     
-                    {
-                        "ResourceID":row.get("@ResourceID"), #ID
-                        "pos":[float(pos_i) for pos_i in row['@Boundary'].split(" ")],  #POS
-                        "CTM":row.get("@CTM","") ,# 平移矩阵换 
-                        "format":   _org_images[row.get("@ResourceID")]["format"] , 
-                        "b64img":   b64img , # b64 
-                        "wrap_pos" :row.get("@wrap_pos","")
+                    # print("AppearanceBoundary",AppearanceBoundary)
+                    if  isinstance(Appearance,dict):
+                        Appearance = [Appearance]
+                    # print("Appearance",Appearance)
+                    for i in Appearance :
+                        if i.get('ofd:ImageObject',{}) and isinstance(i,list):
+                            ImageObjectL = i.get('ofd:ImageObject',{})
+                            for ImageObject_cell in  ImageObjectL:
+                                ImageObject_cell["@wrap_pos"] = AppearanceBoundary
+                            ImageObjectList.extend(ImageObjectL)
+                            
+                        elif i.get('ofd:ImageObject',{}) and isinstance(i,dict):
+                            ImageObject = copy.deepcopy(i.get('ofd:ImageObject',{})) 
+                            ImageObject["@wrap_pos"] = AppearanceBoundary
+                            ImageObjectList.extend(
+                                [ImageObject]
+                                )
+                # print("ImageObjectList",ImageObjectList)
+                
+            elif path.endswith("Content.xml"):
+                ImageObjectLayer = tree.get('ofd:Page',{}).get('ofd:Content',{}).get('ofd:Layer',{})
+                
+                if isinstance(ImageObjectLayer,list):
+                    for i in ImageObjectLayer:
+                        if i.get('ofd:ImageObject',[]):
+                            ImageObjectList.extend(i.get('ofd:ImageObject',[]))
+
+                else:
+                    ImageObjectList = tree.get('ofd:Page',{}).get('ofd:Content',{}).get('ofd:Layer',{}).get('ofd:ImageObject',[])
+                
+                
+                if isinstance(ImageObjectList,dict):
+                    ImageObjectList = [ImageObjectList]
+                    
+            # print(ImageObjectList)
+            for row in ImageObjectList:
+                # print(row)
+                if row.get("@ResourceID") in _org_images:
+                    f = open(_org_images.get(row.get("@ResourceID")).get("Path"),"rb")
+                    b64img_b =  f.read()
+                    f.close()
+                    b64img = str( base64.b64encode(b64img_b) ,encoding="utf-8")
+                    img_list.append(
                         
-                        }
-                    
-                )
-               
-                    
+                        {
+                            "ResourceID":row.get("@ResourceID"), #ID
+                            "pos":[float(pos_i) for pos_i in row['@Boundary'].split(" ")],  #POS
+                            "CTM":row.get("@CTM","") ,# 平移矩阵换 
+                            "format":   _org_images[row.get("@ResourceID")]["format"] , 
+                            "b64img":   b64img , # b64 
+                            "wrap_pos" :row.get("@wrap_pos","")
+                            
+                            }
+                        
+                    )
+                
+        except Exception as e:
+            traceback.print_exc()
+            print(e)       
           
                 
                 
@@ -304,19 +415,29 @@ class OfdParser(object):
             _org_images = {}
             # font 
             fonts = {}
+            FontFilePath_dict = {}
             with open(f"{file_path}/{root_path.split('/')[0]}/PublicRes.xml" , "r", encoding="utf-8") as f:
                 _text = f.read()
                 tree = xmltodict.parse(_text)
                 fonts_obj = tree["ofd:Res"]["ofd:Fonts"]["ofd:Font"]
                 for i in fonts_obj:
                     fonts[i.get("@ID")] = i.get("@FontName")
+                    if i.get("@FontName") not in FONTS and i.get("ofd:FontFile"):
+                        
+                        FontFilePath = f"{file_path}/{root_path.split('/')[0]}/Res/{i.get('ofd:FontFile')}"
+                        if os.path.exists(FontFilePath):
+                            FontFilePath_dict[i.get("@ID")] = FontFilePath
+                            FONTS.append(i.get("@FontName"))
+                            # print(FONTS)
+                            pdfmetrics.registerFont(TTFont(i.get("@FontName"), FontFilePath))
+                            # print(FontFilePath)
                 
             # image
             with open(f"{file_path}/{root_path.split('/')[0]}/DocumentRes.xml" , "r", encoding="utf-8") as f:
                 _text = f.read()
                 tree = xmltodict.parse(_text)
                 MutiMedias_obj = tree.get("ofd:Res",{}).get("ofd:MultiMedias",{}).get("ofd:MultiMedia",{})
-                if MutiMedias_obj:
+                if MutiMedias_obj and isinstance(MutiMedias_obj,list) :
               
                     for Media_obj in MutiMedias_obj:
                         if Media_obj.get("@Type") == "Image" and Media_obj.get("@Format","").lower() in _img_format:
@@ -336,30 +457,47 @@ class OfdParser(object):
                 _text = f.read()
                 tree = xmltodict.parse(_text)
                 contentPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Pages']['ofd:Page']['@BaseLoc']}"
+                # print("contentPath",contentPath)
                  # AnnotstplsPath
-                AnnotationsPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Annotations']}"
-                if AnnotationsPath:
-                    AnnotFileLocPath =  xmltodict.parse(open(f"{AnnotationsPath}" , "r", encoding="utf-8").read()).get("ofd:Annotations",{}).get("ofd:Page").get("ofd:FileLoc","")
-                    AnnotFileLocPath = os.path.join( os.path.abspath(os.path.dirname(AnnotationsPath)) , AnnotFileLocPath) 
-                    # print(AnnotFileLocPath)
-
                 try:
                     tplsPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']['@BaseLoc']}"
                 except :
                     tplsPath = ""
+                try:
+                    AnnotationsPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Annotations']}"
+                except :
+                    AnnotationsPath = ""
+                if AnnotationsPath:
+                    AnnotFileLocPath =  xmltodict.parse(open(f"{AnnotationsPath}" , "r", encoding="utf-8").read()).get("ofd:Annotations",{}).get("ofd:Page").get("ofd:FileLoc","")
+                    AnnotFileLocPath = os.path.join( os.path.abspath(os.path.dirname(AnnotationsPath)) , AnnotFileLocPath) 
+                else:
+                    AnnotFileLocPath = ""
+                    # print(AnnotFileLocPath)
+
+                
                 
                 # print(contentPath)
                 # print(tplsPath)
-                page_size = [float(pos_i) for pos_i in tree['ofd:Document']['ofd:CommonData']['ofd:PageArea']['ofd:PhysicalBox'].split(" ")] 
+                page_size = [float(pos_i) for pos_i in tree.get('ofd:Document',{}).get("ofd:CommonData",{}).get("ofd:PageArea").get("ofd:PhysicalBox","").split(" ")] 
                 # print("page_size",page_size)
 
             
             cell_list = [] 
+           
             _images = self.parserImageXml(contentPath,_org_images)
-            _images2 = self.parserImageXml(AnnotFileLocPath,_org_images)
+           
+            if AnnotFileLocPath:
+                _images2 = self.parserImageXml(AnnotFileLocPath,_org_images)
+            else:
+                _images2 = []
             _images.extend(_images2)
             # print(_images)
-            cell_list = self.parserContntXml(contentPath)
+            try:
+                cell_list = self.parserContntXml(contentPath)
+            except Exception as e:
+                cell_list = []
+                traceback.print_exc()
+                print(e)
             # print(cell_list)
             tpls_cellS = []
             if tplsPath :
@@ -373,16 +511,18 @@ class OfdParser(object):
                 _text = f.read()
                 tree = xmltodict.parse(_text)
                 try:
-                    page_size = [float(pos_i) for pos_i in tree['ofd:Page']['ofd:Area']['ofd:PhysicalBox'].split(" ")] 
+                    page_size = [float(pos_i) for pos_i in tree.get('ofd:Page',{}).get("ofd:Area",{}).get("ofd:PhysicalBox","").split(" ")] 
                     # print(page_size)
                 except Exception as e:
+                    traceback.print_exc()
                     print(e)
-                    pass
+                    
             page_list.append({
                 "page":page,
                 "images":_images,
                 "page_size":page_size,
                 "fonts":fonts,
+                "FontFilePath":FontFilePath_dict,
                 "page_info":cell_list        
                               })
             # print(cell_list)
@@ -494,7 +634,17 @@ class OfdParser(object):
             if os.path.exists(self.zip_path):
                 os.remove(self.zip_path)
         return dict
-
+    
+    # task 
+    @staticmethod
+    def draw_task(c,parms):
+        
+        font_path,Glyph_id,char_,_cahr_x,_cahr_y,w,h = parms
+        imageFile = draw_Glyph(font_path,Glyph_id,char_)
+        print("写入")
+        c.drawImage(imageFile,_cahr_x,_cahr_y,w,h)
+        return "写入成功"
+        
     # 单个字符偏移量计算
     def cmp_offset(self,pos,offset,DeltaRule,text,resize=1)->list:
         """
@@ -564,9 +714,8 @@ class OfdParser(object):
         Op = 200/25.4
        
         c = canvas.Canvas(gen_pdf_path)
-        # print("gen_pdf_path",gen_pdf_path)
-        
-
+        c.setAuthor("reno")
+        # print("gen_pdf_path",gen_pdf_path)    
                     
         for page in json_list :
             
@@ -575,10 +724,13 @@ class OfdParser(object):
             page_size= page.get("page_size")
             fonts = page.get("fonts")
             images = page.get("images")
+            line_dict = page.get("line_dict")
+            FontFilePath = page.get("FontFilePath")
             
             # print(page_size)
             c = canvas.Canvas(gen_pdf_path,(page_size[2]*Op,page_size[3]*Op))
             c.setPageSize((page_size[2]*Op, page_size[3]*Op))
+            
             # c.setPageSize = ((page_size[2]*Op,page_size[3]*Op))
 
             # 图片
@@ -620,12 +772,14 @@ class OfdParser(object):
             # 循环写文本到图片
             # print(json_list)
             try:
-            
+                # font_img_info = [] # 图片任务
                 for line_dict in page.get("page_info"):
                     # print("line_dict",line_dict)
                     
                     font = fonts.get(line_dict["font"],'STSong-Light')
-                    
+                    # if font == "BWSimKai-KaiTi-0":
+                    #     print(font)
+                    #     print(line_dict.get("text"))
                     if font not in FONTS:
                         # print("font----------------：",font)
                         font = '宋体'
@@ -654,49 +808,79 @@ class OfdParser(object):
                   
                     x_list = self.cmp_offset(line_dict.get("pos")[0],X,DeltaX,text,resizeX)
                     y_list = self.cmp_offset(line_dict.get("pos")[1],Y,DeltaY,text,resizeY)
-                            
                     
+                    # 对于自定义字体 写入字形 drawPath
+                    if line_dict.get("Glyphs_d") and  FontFilePath.get(line_dict["font"]):
+                        # continue
+                        # print(line_dict.get("Glyphs_d"))
                         
-                    # print ("text",text)
-                    # print ("x_list",x_list)
-                    # print ("y_list",y_list)
-                    # print ("x_list",len(x_list))
-                    # print ("y_list",len(y_list))
-                    # print ("text",len(text))
-                    
-                    
-                    # 按字符写入
-                    for cahr_id, _cahr_ in enumerate(text) :
-                        _cahr_x= float(x_list[cahr_id])*Op
-                        _cahr_y= (float(page_size[3])-(float(y_list[cahr_id])))*Op
-                        c.drawString( _cahr_x,  _cahr_y, _cahr_, mode=0) # mode=3 文字不可见 0可見
-                    
+                        d_obj = []
+                        # try:
+                        Glyphs = [int(i) for i in line_dict.get("Glyphs_d").get("Glyphs").split(" ")]
+                        for idx,Glyph_id in enumerate(Glyphs):
+                            # print(FontFilePath.get(line_dict["font"]))
+                            _cahr_x= float(x_list[idx])*Op
+                            _cahr_y= (float(page_size[3])-(float(y_list[idx])))*Op
+                            imageFile = draw_Glyph( FontFilePath.get(line_dict["font"]), Glyph_id,text[idx])
+                            # print("size",line_dict["size"]*Op*2)
+                            
+                            # font_img_info.append((FontFilePath.get(line_dict["font"]), Glyph_id,text[idx],_cahr_x,_cahr_y,-line_dict["size"]*Op*2,line_dict["size"]*Op*2))
+                            c.drawImage(imageFile,_cahr_x,_cahr_y,-line_dict["size"]*Op*2,line_dict["size"]*Op*2  )
+                           
+                        # except Exception as e:
+                        #     print(e)
+                            
+                    else:
+                          # 按字符写入
+                        for cahr_id, _cahr_ in enumerate(text) :
+                            _cahr_x= float(x_list[cahr_id])*Op
+                            _cahr_y= (float(page_size[3])-(float(y_list[cahr_id])))*Op
+                            c.drawString( _cahr_x,  _cahr_y, _cahr_, mode=0) # mode=3 文字不可见 0可見
+                   
                     # 按行写入
                     #c.drawString( float(line_dict.get("pos")[0])*Op,  (float(page_size[3])-(float(line_dict.get("pos")[1])))*Op, text, mode=0) # mode=3 文字不可见 0可見
                    
 
+               
                 
-                    
                 c.showPage()
             except Exception as e:
                 traceback.print_exc()
                 logger.info("genpdf2 error")
         c.save()
 
+    def gen_empty_pdf(self,json_list=None, gen_pdf_path="",need_image=False):
+        c = canvas.Canvas(gen_pdf_path)
+        c.setPageSize(A4)
+        c.setFont('宋体', 20)
+        c.drawString(0,210,"ofd 格式错误,不支持解析", mode=1  )
+        c.save()
+    
     # ofd2pdf流程
     def ofd2pdf(self,need_image=False)->bytes:
         
         try:
+            images_path = "images"
+            if not os.path.exists(images_path):
+                os.mkdir(images_path)
             pdfname=BytesIO()
             
             unzip_path = self.unzip_file(self.zip_path)
             page_list = self.parse_ofd(unzip_path)
+            # print(page_list)
             self.gen_pdf(page_list,pdfname,need_image=need_image)
             # 删除文件
+            # raise Exception("异常")
             pdfbytes  = None
             pdfbytes  = pdfname.getvalue()
-            
+        except Exception as e:
+            self.gen_empty_pdf(page_list,pdfname,need_image=need_image)
+            pdfbytes  = None
+            pdfbytes  = pdfname.getvalue()
         finally:
+            
+            if os.path.exists(images_path):
+                shutil.rmtree(images_path)
             if os.path.exists(unzip_path):
                 shutil.rmtree(unzip_path)
             if os.path.exists(self.zip_path):
@@ -713,27 +897,32 @@ if __name__ == "__main__":
     import base64
     dirPath = "/home/0305data/OFD数据"
     dirPath = "/home/data/调用成功但返回报错样本-0308"
+    dirPath = "/home/zhongjiayi/azx_projects/dataprocessengine/ofd"
+    dirPath = "/home/reno/input/22"
     dir_ = os.listdir(dirPath)
     t_t = time.time()
 
-    # OfdParser("").unzip_file("/home/data/调用成功但返回报错样本-0308/ff378288-00fa-47e5-a447-ed017a80ea8c.ofd","ff378288-00fa-47e5-a447-ed017a80ea8c")
-    f = open(f"/home/data/调用成功但返回报错样本-0308/ff378288-00fa-47e5-a447-ed017a80ea8c.ofd","rb")
-    ofdb64 = str(base64.b64encode(f.read()),"utf-8")
-    pdfbytes = OfdParser(ofdb64).ofd2pdf(need_image=True) # 插入图片 支持jpg ,jpeg ，png 
-    pdfbytes = OfdParser(ofdb64).ofd2pdf() # 不插入图片
-    ocr_json = OfdParser(ofdb64).parserodf2json() #
-    print(ocr_json)
-    with open(f"pdfs/ff378288-00fa-47e5-a447-ed017a80ea8c.pdf","wb") as f:
-            f.write(pdfbytes)
+    
+   
+    # f = open(f"/home/reno/input/22/(_23512000000008376724)20230216.ofd","rb")
+    # ofdb64 = str(base64.b64encode(f.read()),"utf-8")
+    # OfdParser(ofdb64).unzip_file("/home/reno/input/22/(_23512000000008376724)20230216.ofd","(_23512000000008376724)20230216")
+    # pdfbytes = OfdParser(ofdb64).ofd2pdf(need_image=True) # 插入图片 支持jpg ,jpeg ，png 
+    # pdfbytes = OfdParser(ofdb64).ofd2pdf() # 不插入图片
+    # ocr_json = OfdParser(ofdb64).parserodf2json() #
+    # print(ocr_json)
+    # with open(f"test.pdf","wb") as f:
+            # f.write(pdfbytes)
+    # 批量调
     for i in dir_:
-        break
+        # break
         if i.split(".")[-1].lower() != "ofd":
             continue
         # f = open("增值税电子专票5.ofd","rb")
         f = open(f"{dirPath}/{i}","rb")
-        # print(i)
+        print(i)
         ofdb64 = str(base64.b64encode(f.read()),"utf-8")
-        
+        # print(ofdb64)
         f.close
         t = time.time()
         

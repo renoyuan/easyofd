@@ -7,5 +7,7 @@ pyofdpaerser 解析ofd 文件
     
 2 ofd 转pdf
 
+3 新增对内嵌字体的转换 
+
 项目链接： https://github.com/renoyuan/pyofdpaerser
 

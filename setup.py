@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
  
 setuptools.setup(
     name="ofdparser", # 项目名称
-    version="0.0.5",    #包版本号，便于维护版本
+    version="0.0.6",    #包版本号，便于维护版本
     author="renoyuan",    #作者，可以写自己的姓名
     author_email="renoyuan@foxmail.com",    #作者联系方式，可写自己的邮箱地址
     description="ofdparser",#包的简述
