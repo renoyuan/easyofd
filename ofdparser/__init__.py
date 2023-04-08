@@ -1,1 +1,1 @@
-from ofdparser import OfdParser
+from .ofdparser import OfdParser

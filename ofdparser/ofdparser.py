@@ -15,6 +15,7 @@ from reportlab.graphics import renderPM
 from reportlab.graphics.shapes import Group, Drawing, scale
 
 import time
+import re
 import json
 import base64
 import zipfile
@@ -28,7 +29,7 @@ import random
 import traceback
 import logging
 import numpy as np
-
+import tempfile
 import xmltodict
 from reportlab import platypus
 from reportlab.lib.pagesizes import letter, A4
@@ -41,6 +42,7 @@ from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfbase.ttfonts import TTFont
 from concurrent.futures import ThreadPoolExecutor
 import threading
+import multiprocessing
 import PIL
 
 
@@ -168,12 +170,20 @@ def ttfToImage(fontName,imagePath,fmt="png"):
 
 
 class OfdParser(object):
-    def __init__(self,ofdb64,zip_path="ofd.ofd") -> None:
-        ofdbyte = base64.b64decode(ofdb64)
-        zip_path = f"{str(_genShortId())}.ofd"
-        with open(zip_path,"wb") as f:
-            f.write(ofdbyte)
+    def __init__(self,ofdb64,zip_path="") -> None:
+        self.zip_path = ""
+        self.ofdbyte = base64.b64decode(ofdb64) 
+        if not zip_path:
+            pid=os.getpid()
+            zip_path = f"{os.getcwd()}/{pid}_{str(uuid1())}.ofd"
         self.zip_path = zip_path
+        # fp = tempfile.TemporaryFile()
+        # fp.write(ofdbyte)
+        
+        # self.zip_path_fp = fp
+        # self.zip_path = fp.name
+        
+        
 
     # 解压odf
     def unzip_file(self,zip_path="", unzip_path=None):
@@ -184,11 +194,15 @@ class OfdParser(object):
         """
         # if not zip_path:
         zip_path = self.zip_path
+        # unzip_path_fp = tempfile.TemporaryDirectory()
+        # unzip_path = unzip_path_fp.name
+       
         if not unzip_path:
             unzip_path = zip_path.split('.')[0]
         with zipfile.ZipFile(zip_path, 'r') as f:
             for file in f.namelist():
                 f.extract(file, path=unzip_path)
+        
         return unzip_path
 
     def readjb2(self,jb2path,pbmpath) :
@@ -262,6 +276,8 @@ class OfdParser(object):
                         cell_d["Glyphs_d"] = Glyphs_d
                     
                     cell_d ["pos"] = [float(pos_i) for pos_i in row['@Boundary'].split(" ")]
+                    if row.get('ofd:Clips',{}).get('ofd:Clip',{}).get('ofd:Area',{}).get('ofd:Path',{}):
+                        cell_d ["pos"] = [float(pos_i) for pos_i in row.get('ofd:Clips',{}).get('ofd:Clip',{}).get('ofd:Area',{}).get('ofd:Path',{}).get('@Boundary',"").split(" ")]
                     cell_d ["text"] = str(row['ofd:TextCode'].get('#text'))
                     cell_d ["font"] = row['@Font'] # 字体
                     cell_d ["size"] = float(row['@Size']) # 字号
@@ -381,8 +397,59 @@ class OfdParser(object):
         # print(img_list)
         return img_list
         
+    
+    def get_xml_path(self,file_path,root_path):
+        """
+        获取关键xml 路径
         
-    # 提取主要文本内容 结构更改，加入 页码，每页大小，字体，字号，颜色, 图片
+        
+        """
+         # contentPath&tplsPath
+        with open(f"{file_path}/{root_path}" , "r", encoding="utf-8") as f:
+                _text = f.read()
+                tree = xmltodict.parse(_text)
+                # print(tree['ofd:Document']['ofd:Pages'])
+                content_label = tree['ofd:Document']['ofd:Pages']['ofd:Page']
+                
+                if isinstance(content_label,list) :
+                    contentPath_l = [f"{file_path}/{root_path.split('/')[0]}/{i.get('@BaseLoc')}" for i in  content_label]
+                    # contentPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Pages']['ofd:Page'][0]['@BaseLoc']}"
+                else:
+                    # contentPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Pages']['ofd:Page']['@BaseLoc']}"
+                    contentPath_l = [f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Pages']['ofd:Page']['@BaseLoc']}"]
+                # print("contentPath",contentPath)
+                 # AnnotstplsPath
+                try:
+                    tpls_label = tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']
+                    if isinstance(tpls_label,list) :
+                        tplsPath_l = [f"{file_path}/{root_path.split('/')[0]}/{i.get('@BaseLoc')}" for i in  tpls_label]
+                    else:
+                        tplsPath_l = [f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']['@BaseLoc']}"]
+                    # tplsPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']['@BaseLoc']}"
+                
+                except :
+                    tplsPath_l = []
+                try:
+                    AnnotationsPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Annotations']}"
+                except :
+                    AnnotationsPath = ""
+                if AnnotationsPath:
+                    AnnotFileLocPath =  xmltodict.parse(open(f"{AnnotationsPath}" , "r", encoding="utf-8").read()).get("ofd:Annotations",{}).get("ofd:Page").get("ofd:FileLoc","")
+                    AnnotFileLocPath = os.path.join( os.path.abspath(os.path.dirname(AnnotationsPath)) , AnnotFileLocPath) 
+                else:
+                    AnnotFileLocPath = ""
+                    
+        path_tree = {
+            "PublicRes" :f"{file_path}/{root_path.split('/')[0]}/PublicRes.xml",
+            "DocumentRes" :f"{file_path}/{root_path.split('/')[0]}/DocumentRes.xml",
+            "contentPath" : contentPath_l,
+            "tplsPath" : tplsPath_l,
+            "AnnotationsPath" : AnnotationsPath,
+            
+        }
+        return path_tree
+        
+    # 提取主要文本内容 结构更改，加入 页码，每页大小，字体，字号，颜色, 图片 兼容一些不规范的文件
     def parse_ofd(self, path) ->list:
         """
         :param content: ofd文件字节内容
@@ -411,29 +478,45 @@ class OfdParser(object):
         
     
         _img_format = ("png","jpg","jpeg")
+        
+        page_ID = 0
         for page,root_path in enumerate(rootPath) :
+            
             _org_images = {}
-            # font 
+            contentPath_l = []
+            tplsPath_l = []
+            # font  PublicRes
             fonts = {}
             FontFilePath_dict = {}
-            with open(f"{file_path}/{root_path.split('/')[0]}/PublicRes.xml" , "r", encoding="utf-8") as f:
-                _text = f.read()
-                tree = xmltodict.parse(_text)
-                fonts_obj = tree["ofd:Res"]["ofd:Fonts"]["ofd:Font"]
-                for i in fonts_obj:
-                    fonts[i.get("@ID")] = i.get("@FontName")
-                    if i.get("@FontName") not in FONTS and i.get("ofd:FontFile"):
-                        
-                        FontFilePath = f"{file_path}/{root_path.split('/')[0]}/Res/{i.get('ofd:FontFile')}"
-                        if os.path.exists(FontFilePath):
-                            FontFilePath_dict[i.get("@ID")] = FontFilePath
-                            FONTS.append(i.get("@FontName"))
-                            # print(FONTS)
-                            pdfmetrics.registerFont(TTFont(i.get("@FontName"), FontFilePath))
-                            # print(FontFilePath)
-                
-            # image
-            with open(f"{file_path}/{root_path.split('/')[0]}/DocumentRes.xml" , "r", encoding="utf-8") as f:
+            path_tree = self.get_xml_path(file_path,root_path)
+            # "PublicRes" :f"{file_path}/{root_path.split('/')[0]}/PublicRes.xml",
+            # "DocumentRes" :f"{file_path}/{root_path.split('/')[0]}/DocumentRes.xml",
+            # "contentPath" : contentPath_l,
+            # "tplsPath" : tplsPath_l,
+            # "AnnotationsPath" : AnnotationsPath,
+            if os.path.exists(path_tree.get("PublicRes")):
+                with open(f"{file_path}/{root_path.split('/')[0]}/PublicRes.xml" , "r", encoding="utf-8") as f:
+                    _text = f.read()
+                    tree = xmltodict.parse(_text)
+                    fonts_obj = tree["ofd:Res"]["ofd:Fonts"]["ofd:Font"]
+                    for i in fonts_obj:
+                        fonts[i.get("@ID")] = { 
+                                               "FontName":i.get("@FontName"),
+                                               "FamilyName":i.get("@FamilyName"),          
+                            } 
+                        # fonts[i.get("@ID")] = i.get("@FontName")
+                        if i.get("@FontName") not in FONTS and i.get("ofd:FontFile"):
+                            
+                            FontFilePath = f"{file_path}/{root_path.split('/')[0]}/Res/{i.get('ofd:FontFile')}"
+                            if os.path.exists(FontFilePath):
+                                FontFilePath_dict[i.get("@ID")] = FontFilePath
+                                FONTS.append(i.get("@FontName"))
+                                # print(FONTS)
+                                pdfmetrics.registerFont(TTFont(i.get("@FontName"), FontFilePath))
+                                # print(FontFilePath)
+                    
+            # image DocumentRes
+            with open(path_tree.get("DocumentRes") , "r", encoding="utf-8") as f:
                 _text = f.read()
                 tree = xmltodict.parse(_text)
                 MutiMedias_obj = tree.get("ofd:Res",{}).get("ofd:MultiMedias",{}).get("ofd:MultiMedia",{})
@@ -452,15 +535,28 @@ class OfdParser(object):
                             # print(f"{file_path}/{root_path.split('/')[0]}/Res/{name}")
                             # print(Media_obj.get("ofd:MediaFile",""))
             
-            # read contentPath&tplsPath
+            # contentPath&tplsPath
             with open(f"{file_path}/{root_path}" , "r", encoding="utf-8") as f:
                 _text = f.read()
                 tree = xmltodict.parse(_text)
-                contentPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Pages']['ofd:Page']['@BaseLoc']}"
+                # print(tree['ofd:Document']['ofd:Pages'])
+                content_label = tree['ofd:Document']['ofd:Pages']['ofd:Page']
+                if isinstance(content_label,list) :
+                    contentPath_l = [f"{file_path}/{root_path.split('/')[0]}/{i.get('@BaseLoc')}" for i in  content_label]
+                    # contentPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Pages']['ofd:Page'][0]['@BaseLoc']}"
+                else:
+                    # contentPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Pages']['ofd:Page']['@BaseLoc']}"
+                    contentPath_l = [f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:Pages']['ofd:Page']['@BaseLoc']}"]
                 # print("contentPath",contentPath)
                  # AnnotstplsPath
                 try:
-                    tplsPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']['@BaseLoc']}"
+                    tpls_label = tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']
+                    if isinstance(tpls_label,list) :
+                        tplsPath_l = [f"{file_path}/{root_path.split('/')[0]}/{i.get('@BaseLoc')}" for i in  tpls_label]
+                    else:
+                        tplsPath_l = [f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']['@BaseLoc']}"]
+                    # tplsPath = f"{file_path}/{root_path.split('/')[0]}/{tree['ofd:Document']['ofd:CommonData']['ofd:TemplatePage']['@BaseLoc']}"
+                
                 except :
                     tplsPath = ""
                 try:
@@ -478,56 +574,75 @@ class OfdParser(object):
                 
                 # print(contentPath)
                 # print(tplsPath)
-                page_size = [float(pos_i) for pos_i in tree.get('ofd:Document',{}).get("ofd:CommonData",{}).get("ofd:PageArea").get("ofd:PhysicalBox","").split(" ")] 
+                page_size = []
+                try:
+                    page_size = [float(pos_i) for pos_i in tree.get('ofd:Document',{}).get("ofd:CommonData",{}).get("ofd:PageArea",{}).get("ofd:PhysicalBox","").split(" ") if re.match("[\d\.]",pos_i)] 
+                except:
+                    traceback.print_exc()
+                    
                 # print("page_size",page_size)
 
             
             cell_list = [] 
+            _images = []
+            # _images = self.parserImageXml(contentPath,_org_images)
            
-            _images = self.parserImageXml(contentPath,_org_images)
-           
-            if AnnotFileLocPath:
-                _images2 = self.parserImageXml(AnnotFileLocPath,_org_images)
-            else:
-                _images2 = []
-            _images.extend(_images2)
+            # if AnnotFileLocPath:
+            #     _images2 = self.parserImageXml(AnnotFileLocPath,_org_images)
+            # else:
+            #     _images2 = []
+            # _images.extend(_images2)
             # print(_images)
-            try:
-                cell_list = self.parserContntXml(contentPath)
-            except Exception as e:
-                cell_list = []
-                traceback.print_exc()
-                print(e)
-            # print(cell_list)
-            tpls_cellS = []
-            if tplsPath :
-                tpls_cellS = self.parserContntXml(tplsPath)
-        
-            cell_list.extend(tpls_cellS)
-            cell_list.sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
-            
-            # 重新获取页面size
-            with open(contentPath, "r", encoding="utf-8") as f:
-                _text = f.read()
-                tree = xmltodict.parse(_text)
+            contentPathL = path_tree.get("contentPath")
+            tplsPathL = path_tree.get("tplsPath")
+          
+            for idx,contentPath in enumerate(contentPathL) :
                 try:
-                    page_size = [float(pos_i) for pos_i in tree.get('ofd:Page',{}).get("ofd:Area",{}).get("ofd:PhysicalBox","").split(" ")] 
-                    # print(page_size)
+                    cell_list = self.parserContntXml(contentPath)
                 except Exception as e:
+                    cell_list = []
                     traceback.print_exc()
                     print(e)
-                    
-            page_list.append({
-                "page":page,
-                "images":_images,
-                "page_size":page_size,
-                "fonts":fonts,
-                "FontFilePath":FontFilePath_dict,
-                "page_info":cell_list        
-                              })
+                # print(cell_list)
+                tpls_cellS = []
+                if len(contentPathL) == len(tplsPathL):
+                    tplsPath = tplsPathL[idx]
+                else:
+                    tplsPath = ""
+                if tplsPath :
+                    tpls_cellS = self.parserContntXml(tplsPath)
+            
+                cell_list.extend(tpls_cellS)
+                cell_list.sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
+                
+                # 重新获取页面size
+                with open(contentPath, "r", encoding="utf-8") as f:
+                    _text = f.read()
+                    tree = xmltodict.parse(_text)
+                    try:
+                        page_size_new = [float(pos_i) for pos_i in tree.get('ofd:Page',{}).get("ofd:Area",{}).get("ofd:PhysicalBox","").split(" ") if re.match("[\d\.]",pos_i)] 
+                        # print(page_size)
+                        if page_size_new and len(page_size_new)>=2 :
+                            page_size = page_size_new
+                            # print("page_size",page_size)
+                    except Exception as e:
+                        
+                        traceback.print_exc()
+                        print(e)
+                
+                # _images = ""
+                page_list.append({
+                    "page":page_ID,
+                    "images":_images,
+                    "page_size":page_size,
+                    "fonts":fonts,
+                    "FontFilePath":FontFilePath_dict,
+                    "page_info":cell_list        
+                                })
+                page_ID +=1
             # print(cell_list)
         
-        
+        # json.dump(page_list,open("a.josn","w",encoding="utf-8"),indent=4,ensure_ascii=False)
         return page_list
 
     # 转json格式
@@ -641,7 +756,7 @@ class OfdParser(object):
         
         font_path,Glyph_id,char_,_cahr_x,_cahr_y,w,h = parms
         imageFile = draw_Glyph(font_path,Glyph_id,char_)
-        print("写入")
+        # print("写入")
         c.drawImage(imageFile,_cahr_x,_cahr_y,w,h)
         return "写入成功"
         
@@ -714,21 +829,23 @@ class OfdParser(object):
         Op = 200/25.4
        
         c = canvas.Canvas(gen_pdf_path)
+        # c = canvas.Canvas(gen_pdf_path,(page_size[2]*Op,page_size[3]*Op))
         c.setAuthor("reno")
         # print("gen_pdf_path",gen_pdf_path)    
-                    
-        for page in json_list :
+        # print(len(json_list))
+        for idx,page in enumerate(json_list)  :
             
                         
             # 写入 文本
             page_size= page.get("page_size")
+            # print("page_size",page_size)
             fonts = page.get("fonts")
             images = page.get("images")
             line_dict = page.get("line_dict")
             FontFilePath = page.get("FontFilePath")
             
-            # print(page_size)
-            c = canvas.Canvas(gen_pdf_path,(page_size[2]*Op,page_size[3]*Op))
+            # print("page_size",page_size)
+            
             c.setPageSize((page_size[2]*Op, page_size[3]*Op))
             
             # c.setPageSize = ((page_size[2]*Op,page_size[3]*Op))
@@ -775,8 +892,14 @@ class OfdParser(object):
                 # font_img_info = [] # 图片任务
                 for line_dict in page.get("page_info"):
                     # print("line_dict",line_dict)
-                    
-                    font = fonts.get(line_dict["font"],'STSong-Light')
+                    # print(FONTS)
+                    # "FontName":i.get("@FontName"),
+                                            #    "FamilyName":i.get("@FamilyName"),     
+                    # print(fonts.get(line_dict.get("font"),{}).get("FontName"),)
+                    # print(fonts.get(line_dict.get("font"),{}).get("FamilyName"),)
+                    font = fonts.get(line_dict.get("font"),{}).get("FontName",'STSong-Light')
+                    font =  font if font in FONTS else fonts.get(line_dict.get("font"),{}).get("FamilyName",'STSong-Light')
+                    font_f = font
                     # if font == "BWSimKai-KaiTi-0":
                     #     print(font)
                     #     print(line_dict.get("text"))
@@ -789,11 +912,12 @@ class OfdParser(object):
                     # 原点在页面的左下角 
                     # 原点在页面的左下角
                     color = line_dict.get("color",[0,0,0])
-                    # print(color)
+                    # print("color",color)
                     c.setFillColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
                     c.setStrokeColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
                     # 按每个字写入精确到每个字的坐标
                     text = line_dict.get("text")
+                    # print(text)
                     DeltaX = line_dict.get("DeltaX","")
                     DeltaY = line_dict.get("DeltaY","")
                     X = line_dict.get("X","")
@@ -810,11 +934,12 @@ class OfdParser(object):
                     y_list = self.cmp_offset(line_dict.get("pos")[1],Y,DeltaY,text,resizeY)
                     
                     # 对于自定义字体 写入字形 drawPath
-                    if line_dict.get("Glyphs_d") and  FontFilePath.get(line_dict["font"]):
+                    
+                    if line_dict.get("Glyphs_d") and  FontFilePath.get(line_dict["font"])  and font_f not in FONTS:
                         # continue
                         # print(line_dict.get("Glyphs_d"))
                         
-                        d_obj = []
+                        # d_obj = []
                         # try:
                         Glyphs = [int(i) for i in line_dict.get("Glyphs_d").get("Glyphs").split(" ")]
                         for idx,Glyph_id in enumerate(Glyphs):
@@ -831,11 +956,42 @@ class OfdParser(object):
                         #     print(e)
                             
                     else:
-                          # 按字符写入
-                        for cahr_id, _cahr_ in enumerate(text) :
-                            _cahr_x= float(x_list[cahr_id])*Op
-                            _cahr_y= (float(page_size[3])-(float(y_list[cahr_id])))*Op
-                            c.drawString( _cahr_x,  _cahr_y, _cahr_, mode=0) # mode=3 文字不可见 0可見
+                          
+                        if len(text) > len(x_list) or len(text) > len(y_list) :
+                            text = re.sub("[^\u4e00-\u9fa5]","",text)  
+                        try:
+                            # 按行写入
+                            if y_list[-1]*Op > page_size[3]*Op or x_list[-1]*Op >page_size[2]*Op or x_list[-1]<0 or y_list[-1]<0:
+                                # c.drawString( float(line_dict.get("pos")[0])*Op,  (float(page_size[3])-(float(line_dict.get("pos")[1])))*Op, text, mode=0) # mode=3 文字不可见 0可見
+                                # x_p = abs(float(line_dict.get("pos")[0])+float(X) )*Op
+                                x_p = abs(float(X) )*Op
+                                # y_p = abs(float(page_size[3])-(float(line_dict.get("pos")[1])+float(Y)))*Op
+                                y_p = abs(float(page_size[3])-(float(Y)))*Op
+                                c.drawString( x_p,  y_p, text, mode=0) # mode=3 文字不可见 0可見
+                                X = line_dict.get("X","")
+                                Y = line_dict.get("Y","")
+                                # print(x_p,  y_p, text)
+                            # 按字符写入
+                            else:
+                                for cahr_id, _cahr_ in enumerate(text) :
+                                    _cahr_x= float(x_list[cahr_id])*Op
+                                    _cahr_y= (float(page_size[3])-(float(y_list[cahr_id])))*Op
+                                    # print(page_size)
+                                    # print((page_size[2]*Op,page_size[3]*Op))
+                                    # print(_cahr_x,  _cahr_y, _cahr_)
+                                    
+                                    c.drawString( _cahr_x,  _cahr_y, _cahr_, mode=0) # mode=3 文字不可见 0可見
+                                # print(text)
+                            # 如果字符坐标异常超过按行写入
+                            
+                        except Exception as e:
+                            # print("len(text)",len(text))
+                            # print("cahr_id",cahr_id)
+                            # print("x_list",x_list)
+                            # print("text",text)
+                            traceback.print_exc()
+                            print(e)
+                            
                    
                     # 按行写入
                     #c.drawString( float(line_dict.get("pos")[0])*Op,  (float(page_size[3])-(float(line_dict.get("pos")[1])))*Op, text, mode=0) # mode=3 文字不可见 0可見
@@ -843,10 +999,12 @@ class OfdParser(object):
 
                
                 
-                c.showPage()
+               
             except Exception as e:
                 traceback.print_exc()
                 logger.info("genpdf2 error")
+            if idx+1 <= len(json_list):
+                c.showPage()  
         c.save()
 
     def gen_empty_pdf(self,json_list=None, gen_pdf_path="",need_image=False):
@@ -860,12 +1018,20 @@ class OfdParser(object):
     def ofd2pdf(self,need_image=False)->bytes:
         
         try:
+            
+            zip_path = ""
+            unzip_path = ""
+            zip_path = self.zip_path
+            with open(zip_path,"wb") as f:
+                f.write(self.ofdbyte)
+            # zip_path_fp = self.zip_path_fp
             images_path = "images"
             if not os.path.exists(images_path):
                 os.mkdir(images_path)
             pdfname=BytesIO()
             
-            unzip_path = self.unzip_file(self.zip_path)
+            unzip_path = self.unzip_file(zip_path=zip_path)
+            # print("unzip_path",unzip_path)
             page_list = self.parse_ofd(unzip_path)
             # print(page_list)
             self.gen_pdf(page_list,pdfname,need_image=need_image)
@@ -874,17 +1040,24 @@ class OfdParser(object):
             pdfbytes  = None
             pdfbytes  = pdfname.getvalue()
         except Exception as e:
-            self.gen_empty_pdf(page_list,pdfname,need_image=need_image)
+            print(e)
+            traceback.print_exc()
+            time.sleep(10)
+            print("ofd格式不兼容文件")
+            self.gen_empty_pdf(None,pdfname,need_image=need_image)
             pdfbytes  = None
             pdfbytes  = pdfname.getvalue()
         finally:
+            # zip_path_fp.close()
             
             if os.path.exists(images_path):
                 shutil.rmtree(images_path)
             if os.path.exists(unzip_path):
                 shutil.rmtree(unzip_path)
-            if os.path.exists(self.zip_path):
-                os.remove(self.zip_path)
+            # print("zip_path",zip_path)
+            if os.path.exists(zip_path):
+                os.remove(zip_path)
+           
         # with open("test.pdf","wb") as f:
             # f.write(pdfbytes)
         return pdfbytes
@@ -899,28 +1072,40 @@ if __name__ == "__main__":
     dirPath = "/home/data/调用成功但返回报错样本-0308"
     dirPath = "/home/zhongjiayi/azx_projects/dataprocessengine/ofd"
     dirPath = "/home/reno/input/22"
-    dir_ = os.listdir(dirPath)
+    dirPath = "/home/0305data/ofd数据收集/0323"
+    dirPath = "/home/data/0305data/ofd数据收集/0404"
+    dirPath = "/home/data/0305data/OFD数据总"
+    # dir_ = os.listdir(dirPath)
     t_t = time.time()
+    dir_ = []
+    for root, dirs, files in os.walk(dirPath):
+        for file in files:
+            file_path = os.path.join(root, file)
+            dir_.append(file_path)
 
     
-   
-    # f = open(f"/home/reno/input/22/(_23512000000008376724)20230216.ofd","rb")
-    # ofdb64 = str(base64.b64encode(f.read()),"utf-8")
-    # OfdParser(ofdb64).unzip_file("/home/reno/input/22/(_23512000000008376724)20230216.ofd","(_23512000000008376724)20230216")
+    f_path = f"/home/data/0305data/ofd数据收集/0404/e20b0612-9807-481b-81b4-2ce57ace833c.ofd"
+    f = open(f_path,"rb")
+    ofdb64 = str(base64.b64encode(f.read()),"utf-8")
+    OfdParser(ofdb64,f_path).unzip_file("/home/data/0305data/ofd数据收集/0404/e20b0612-9807-481b-81b4-2ce57ace833c.ofd","e20b0612-9807-481b-81b4-2ce57ace833c")
     # pdfbytes = OfdParser(ofdb64).ofd2pdf(need_image=True) # 插入图片 支持jpg ,jpeg ，png 
-    # pdfbytes = OfdParser(ofdb64).ofd2pdf() # 不插入图片
+    pdfbytes = OfdParser(ofdb64).ofd2pdf() # 不插入图片
+    # print(pdfbytes)
     # ocr_json = OfdParser(ofdb64).parserodf2json() #
     # print(ocr_json)
-    # with open(f"test.pdf","wb") as f:
-            # f.write(pdfbytes)
+    with open(f"test.pdf","wb") as f:
+            f.write(pdfbytes)
     # 批量调
+    count = 0
     for i in dir_:
+        name =  i.split("/")[-1]
         # break
         if i.split(".")[-1].lower() != "ofd":
             continue
         # f = open("增值税电子专票5.ofd","rb")
-        f = open(f"{dirPath}/{i}","rb")
+        f = open(f"{i}","rb")
         print(i)
+        count += 1
         ofdb64 = str(base64.b64encode(f.read()),"utf-8")
         # print(ofdb64)
         f.close
@@ -936,12 +1121,12 @@ if __name__ == "__main__":
         
         # print(data_dict)
         # print(pdfbytes)
-        with open(f"pdfs/{i}.pdf","wb") as f:
+        with open(f"pdfs/{name}.pdf","wb") as f:
             f.write(pdfbytes)
         print(f"ofd解析耗时{(time.time()-t)*1000}/ms")	
         # json.dump(data_dict,open("data_dict.json","w",encoding="utf-8"),ensure_ascii=False,indent=4)
         # pbmpath = "image_80.pbm"
         # jb2path = "增值税电子专票5/Doc_0/Res/image_80.jb2"
         # pdfbytes = OfdParser(ofdb64).readjb2(jb2path,pbmpath)
-    print(f"ofd解析耗时{(time.time()-t_t)*1000}/ms")
+    print(f"ofd解析 文件 {count} -------------- 总耗时{(time.time()-t_t)*1000}/ms")
     
