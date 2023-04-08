@@ -1,6 +1,6 @@
 # pyofdpaerser
 安装
-pip install pyofdpaerser
+pip install ofdparser
 
 项目链接： https://github.com/renoyuan/pyofdpaerser
 
@@ -16,7 +16,7 @@ pip install pyofdpaerser
 
 demo
 ```
-from pyofdpaerser,ofdpaser import OfdParser
+from ofdparser import OfdParser
 # 转pdf输出
 pdfbytes = OfdParser(ofdb64).ofd2pdf()
 
