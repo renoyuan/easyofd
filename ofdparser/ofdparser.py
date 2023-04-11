@@ -170,8 +170,9 @@ def ttfToImage(fontName,imagePath,fmt="png"):
 
 
 class OfdParser(object):
-    def __init__(self,ofdb64,zip_path="") -> None:
+    def __init__(self,ofdb64,zip_path="",dpi=200) -> None:
         self.zip_path = ""
+        self.dpi = dpi
         self.ofdbyte = base64.b64decode(ofdb64) 
         if not zip_path:
             pid=os.getpid()
@@ -646,14 +647,14 @@ class OfdParser(object):
         return page_list
 
     # 转json格式
-    def odf2json(self, page_list:list,dpi=200) ->dict:
+    def odf2json(self, page_list:list) ->dict:
         """
         坐标默认为毫米单位 
         dpi 有则转化为px
         """
         Op = 1 # 转换算子单位
         
-        dpi = 200
+        dpi = self.dpi # 200
         if dpi:
             Op = dpi/25.4
         
@@ -672,7 +673,7 @@ class OfdParser(object):
             else:
                 size = [0,0]
             pageInfo["imageQuality"] = {
-                "size": size
+                "size": [size[0]*Op, size[1]*Op]
             }
             pageInfo["lineList"] = []
             
@@ -703,11 +704,35 @@ class OfdParser(object):
             
                 
                 # print(values)
-                line['objContent'] = values.get("text")
+                text = values.get("text")
+                line['objContent'] = text
                 pos = values.get("pos")
                 
                 offset = float(pos[3])*Op
-                pos = [float(pos[1])*Op, float(pos[0])*Op,float(pos[3])*Op,float(pos[2])*Op]
+                
+                DeltaX = values.get("DeltaX","")
+                DeltaY = values.get("DeltaY","")
+                X = values.get("X","")
+                Y = values.get("Y","")
+                CTM = values.get("CTM","") # 因为ofd 的傻逼 增加这个字符缩放
+                resizeX =1
+                resizeY =1
+                if CTM :
+                    # print(CTM)
+                    resizeX = float(CTM.split(" ")[0])
+                    resizeY = float(CTM.split(" ")[3])
+                
+                x_list = self.cmp_offset(values.get("pos")[0],X,DeltaX,text,resizeX)
+                y_list = self.cmp_offset(values.get("pos")[1],Y,DeltaY,text,resizeY)
+                # print("x_list",x_list,Op,CTM)
+                # print("pos",pos,float(X),float(x_list[-1]))
+                w = (float(x_list[-1])- float(X)-float(pos[0]))*Op
+                # print(text,w)
+                if w == 0:
+                    
+                    w = (float(x_list[-1])- float(X))*Op
+                # pos = [float(pos[1])*Op, float(pos[0])*Op,float(pos[3])*Op,float(pos[2])*Op]
+                pos = [float(y_list[0])*Op, float(x_list[0])*Op,float(pos[3])*Op,w]
                 offsetPost = [offset*(i+1) for i in range(len(values.get("text")))]
                 pos.append(offsetPost)
                 line['objPos'] = pos
@@ -733,13 +758,129 @@ class OfdParser(object):
             pageInfo["contIndex"] = contIndex
             pageList.append(pageInfo)
         return pageList
+    
+    def sort_x(self,lineList):
+        lineList_bak = copy.deepcopy(lineList)
+        for idx,line in enumerate(lineList) :
+            for line2 in lineList_bak[idx:]:
+                if abs(line.get("objPos")[0] - line2.get("objPos")[0]) < 3 :
+                    line.get("objPos")[0] = line2.get("objPos")[0]
+                    
+        lineList.sort(key=lambda line:(line.get("objPos")[0],line.get("objPos")[1]))
+        return lineList
+    
+    # 合并行 并重排序 排除竖版块
+    def merge_line_pipeline(self, page_list):
+        page_list_new = []
+        for page_info in  page_list:
+            lineList = page_info.get("lineList")
+            lineList = self.sort_x(lineList)
+            page_list_new.append(
+                {
+                "pageNo": page_info.get("pageNo"),
+                "docID": page_info.get("docID"),
+                "imageQuality": page_info.get("imageQuality"),
+                
+                "lineList":self.merge_line(lineList),
+                "images": page_info.get("images"),
+                "contIndex": page_info.get("contIndex"),
+                
+                }
+                   
+               )
+           
+        
+        return page_list_new
+    
+    # 合并行  
+    def merge_line(self,lineList):
+        
+        lineList_new = []
+        non_id = []
+        for idx,line_info in enumerate(lineList) :
+            objPos = line_info.get("objPos")
+            if objPos[2]/objPos[3] >1: # 排除竖版块
+                if line_info and line_info.get("lineId") not in non_id:
+                    lineList_new.append(line_info)
+                    # print("line_info",line_info)
+                non_id.append(line_info.get("lineId"))
+                continue
+            
+            else:
+                # 找是否有符合条件的，有则合并无则返回
+                line_new = None
+                for line_info2 in lineList[idx:]:
+                    objPos2 = line_info2.get("objPos")
+                    if objPos == objPos2:
+                        line_new = line_info2
+                    if objPos[2]/objPos[3] >1 :
+                        # print("合并行")
+                        continue
+                    # print(line_info.get("objContent"))
+                    # print("objPos","objPos2")
+                    # print(objPos,objPos2)
+                    if objPos2[1] > objPos[1] and abs(objPos2[0] - objPos[0])<objPos[2]/2 and 0 < abs(objPos2[1] - objPos[1] - objPos[3]) < objPos[2]:
+                        # print("合并")
+                        # print(line_info.get("objContent") +  line_info2.get("objContent") )
+                        non_id.append(line_info2.get("lineId"))
+                        new_objContent = line_info.get("objContent") +  line_info2.get("objContent")
+                        # print("new_objContent",new_objContent)
+                        new_objPos = self.merge_pos (line_info.get("objPos"),line_info2.get("objPos"))
+                        
+                        line_new = {
+                            "lineId":line_info.get("lineId"),
+                            "lineNo":line_info.get("lineNo"),
+                            "objType_postpreprocess":line_info.get("objType_postpreprocess"),
+                            "objContent": new_objContent ,
+                            "objPos": new_objPos,
+                            "objType":line_info.get("objType") 
+                        }
+                        # print(line_new)
+                        # print(line_info.get("objContent") ,  line_info2.get("objContent"))
+                        
+                    
+                if line_new and line_new.get("lineId") not in non_id:
+                    # print(line_new)
+                    lineList_new.append(line_new)
+                    non_id.append(line_new.get("lineId"))
+                else:
+                    
+                    # print("banline_new",line_new)
+                    pass
+        
+        # print("non_id",non_id)
+        return lineList_new
+        
+    def merge_pos(self,pos1,pos2):
+        # print(pos1,pos2)
+        y = min(pos1[0],pos2[0])
+        x = min(pos1[1],pos2[1]) 
+        bottom = max( (pos1[2]),(pos2[0]+pos2[2]))
+        top = max( (pos1[1]+pos1[3]),(pos2[1]+pos2[3]))
+        h = bottom -y
+        w = top -x
+        offset_l = pos1[4]
+        offset = (pos2[1] - (pos1[1]+pos1[3]) )+ pos1[4][-1]
+        if len(pos2) == 4:
+            
+            for i in pos2[4]:
+                offset_l.append(offset+i)
+        pos = [y,x,h,w,offset_l]
+        
+        return pos
         
     # ofd2json流程
     def parserodf2json(self):
         try:
+            zip_path = self.zip_path
+            with open(zip_path,"wb") as f:
+                f.write(self.ofdbyte)
             unzip_path = self.unzip_file(self.zip_path)
             page_list = self.parse_ofd(unzip_path)
-            dict = self.odf2json(page_list,200)
+            page_list_new = self.odf2json(page_list)
+            #  结果后处理合并接近的块
+            page_list_new = self.merge_line_pipeline(page_list_new)
+            
             
            
         finally:
@@ -748,7 +889,7 @@ class OfdParser(object):
                 shutil.rmtree(unzip_path)
             if os.path.exists(self.zip_path):
                 os.remove(self.zip_path)
-        return dict
+        return page_list_new
     
     # task 
     @staticmethod
@@ -1068,12 +1209,7 @@ if __name__ == "__main__":
     import time
     import json
     import base64
-    dirPath = "/home/0305data/OFD数据"
-    dirPath = "/home/data/调用成功但返回报错样本-0308"
-    dirPath = "/home/zhongjiayi/azx_projects/dataprocessengine/ofd"
-    dirPath = "/home/reno/input/22"
-    dirPath = "/home/0305data/ofd数据收集/0323"
-    dirPath = "/home/data/0305data/ofd数据收集/0404"
+
     dirPath = "/home/data/0305data/OFD数据总"
     # dir_ = os.listdir(dirPath)
     t_t = time.time()
@@ -1085,44 +1221,45 @@ if __name__ == "__main__":
 
     
     f_path = f"/home/data/0305data/ofd数据收集/0404/e20b0612-9807-481b-81b4-2ce57ace833c.ofd"
+    f_path = f"/home/data/0305data/OFD数据总/增值税电子专票4.ofd"
     f = open(f_path,"rb")
     ofdb64 = str(base64.b64encode(f.read()),"utf-8")
-    OfdParser(ofdb64,f_path).unzip_file("/home/data/0305data/ofd数据收集/0404/e20b0612-9807-481b-81b4-2ce57ace833c.ofd","e20b0612-9807-481b-81b4-2ce57ace833c")
+    OfdParser(ofdb64,f_path).unzip_file(f"{f_path}","增值税电子专票4")
     # pdfbytes = OfdParser(ofdb64).ofd2pdf(need_image=True) # 插入图片 支持jpg ,jpeg ，png 
-    pdfbytes = OfdParser(ofdb64).ofd2pdf() # 不插入图片
+    # pdfbytes = OfdParser(ofdb64).ofd2pdf() # 不插入图片
+    json_ =json.dump( OfdParser(ofdb64).parserodf2json(), open(f"json/增值税电子专票4.json","w",encoding="utf-8"), indent=4, ensure_ascii=False)
     # print(pdfbytes)
     # ocr_json = OfdParser(ofdb64).parserodf2json() #
     # print(ocr_json)
-    with open(f"test.pdf","wb") as f:
-            f.write(pdfbytes)
+    # with open(f"test.pdf","wb") as f:
+    #         f.write(pdfbytes)
     # 批量调
     count = 0
     for i in dir_:
         name =  i.split("/")[-1]
-        # break
+        break
         if i.split(".")[-1].lower() != "ofd":
             continue
         # f = open("增值税电子专票5.ofd","rb")
         f = open(f"{i}","rb")
         print(i)
         count += 1
+        # 传入b64 字符串
         ofdb64 = str(base64.b64encode(f.read()),"utf-8")
         # print(ofdb64)
         f.close
         t = time.time()
         
-        # 传入b64 字符串
-        
-        # 输出ocr 格式解析结果
-        # data_dict = OfdParser(ofdb64).parserodf2json()
-        
-        # 转pdf输出
-        pdfbytes = OfdParser(ofdb64).ofd2pdf()
-        
-        # print(data_dict)
-        # print(pdfbytes)
-        with open(f"pdfs/{name}.pdf","wb") as f:
-            f.write(pdfbytes)
+
+        # # 转pdf输出
+        # pdfbytes = OfdParser(ofdb64).ofd2pdf()
+        # with open(f"pdfs/{name}.pdf","wb") as f:
+        #     f.write(pdfbytes)
+            
+        # 转json输出
+        json_ =json.dump( OfdParser(ofdb64).parserodf2json(), open(f"json/{name}.json","w",encoding="utf-8"), indent=4, ensure_ascii=False)
+       
+       
         print(f"ofd解析耗时{(time.time()-t)*1000}/ms")	
         # json.dump(data_dict,open("data_dict.json","w",encoding="utf-8"),ensure_ascii=False,indent=4)
         # pbmpath = "image_80.pbm"
