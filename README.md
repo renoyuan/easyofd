@@ -1,8 +1,8 @@
-# pyofdpaerser
+# easyofd
 安装
-pip install ofdparser
+pip install easyofd
 
-项目链接： https://github.com/renoyuan/pyofdpaerser
+项目链接： https://github.com/renoyuan/easyofd
 
 解析ofd 文件
 

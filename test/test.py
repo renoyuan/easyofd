@@ -16,7 +16,7 @@ if __name__ == "__main__":
     print(os.path.abspath( os.path.dirname(os.getcwd())))
     sys.path.insert(0,os.path.abspath( os.path.dirname(os.getcwd())))
     print(sys.path)
-    from ofdparser import OfdParser
+    from easyofd import OfdParser
     f = open("增值税电子专票5.ofd","rb")
     ofdb64 = str(base64.b64encode(f.read()),"utf-8")
     f.close
