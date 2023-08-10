@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ofd:Page xmlns:ofd="http://www.ofdspec.org/2016">
+    <ofd:Area>
+        <ofd:PhysicalBox>0 0 211.62 141.08</ofd:PhysicalBox>
+    </ofd:Area>
+    <ofd:Content>
+        <ofd:Layer ID="2" Type="Body">
+            <ofd:PathObject ID="3" CTM="0.3527 0 0 -0.3527 0.35 141.43001"
+                Boundary="-0.35 -0.35 212.33 141.78999" LineWidth="1" MiterLimit="10" Stroke="false"
+                Fill="true">
+                <ofd:FillColor ColorSpace="4" Value="255 255 255" />
+                <ofd:StrokeColor ColorSpace="4" Value="0 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="5" Boundary="0.00766 -0.00763 600 400.00003"
+                                Stroke="false" Fill="true">
+                                <ofd:AbbreviatedData>M 0 0 L 600 0 L 600 400.00003 L 0 400.00003 C</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:AbbreviatedData>M -1 401 L 601 401 L 601 -1 L -1 -1 C</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="6" CTM="0.3527 0 0 0.3527 0.17415 0.3576"
+                Boundary="4.94 30.68 0.71 95.23" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0.5 0 L 0.5 268</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="7" CTM="0.3527 0 0 0.3527 0.17316 0.3576"
+                Boundary="205.98 30.68 0.71 95.23" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0.5 0 L 0.5 268</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="8" CTM="0.3527 0 0 -0.3527 -90.82 132.97"
+                Boundary="90.82 8.11 30.68 20.81" LineWidth="1" MiterLimit="10" Stroke="false"
+                Fill="true">
+                <ofd:FillColor ColorSpace="4" Value="255 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="0 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="9" Boundary="258.4993 319.00595 85 57.00003"
+                                Stroke="false" Fill="true" Rule="Even-Odd">
+                                <ofd:AbbreviatedData>M 42.49999 57.00002 B 19.02797 57.00002 -0
+                                    44.24035 -0 28.49949 B -0 12.7597 19.02797 0.00001 42.49999
+                                    0.00001 B 65.97201 0.00001 85 12.7597 85 28.49949 B 85 44.24035
+                                    65.97201 57.00002 42.49999 57.00002 M 42.49999 54.14965 B
+                                    64.37169 54.14965 82.16631 42.64372 82.16631 28.49949 B 82.16631
+                                    14.35629 64.37169 2.85038 42.49999 2.85038 B 20.62729 2.85038
+                                    2.83367 14.35629 2.83367 28.49949 B 2.83367 42.64372 20.62729
+                                    54.14965 42.49999 54.14965</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:AbbreviatedData>M 257.5 377 L 344.5 377 L 344.5 318 L 257.5 318 C</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="10" CTM="0.3527 0 0 -0.3527 -92.19 131.59"
+                Boundary="92.19 9.49 27.94 18.05" LineWidth="1" MiterLimit="10" Stroke="false"
+                Fill="true">
+                <ofd:FillColor ColorSpace="4" Value="255 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="0 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="11" Boundary="262.38364 322.93054 77.20859 49.16278"
+                                Stroke="false" Fill="true" Rule="Even-Odd">
+                                <ofd:AbbreviatedData>M 38.6048 48.44997 B 28.15171 48.44997 18.3863
+                                    45.7615 11.10671 40.88119 B 4.4019 36.38498 0.7086 30.59579
+                                    0.7086 24.58137 B 0.7086 18.56697 4.4019 12.77876 11.10671
+                                    8.28261 B 18.38528 3.40029 28.15171 0.71278 38.6048 0.71278 B
+                                    49.05787 0.71278 58.8233 3.40029 66.10188 8.28261 B 72.80772
+                                    12.77876 76.50001 18.56697 76.50001 24.58137 B 76.50001 30.59579
+                                    72.80772 36.38498 66.10188 40.88119 B 58.8233 45.7615 49.05787
+                                    48.44997 38.6048 48.44997 M 38.6048 -0.00001 B 28.01279 -0.00001
+                                    18.1084 2.73069 10.7139 7.68939 B 3.80522 12.3224 -0 18.3207 -0
+                                    24.58137 B -0 30.84109 3.80522 36.84038 10.7139 41.47437 B
+                                    18.1084 46.43207 28.01381 49.16277 38.6048 49.16277 B 49.19582
+                                    49.16277 59.1002 46.43207 66.49466 41.47437 B 73.40343 36.84038
+                                    77.20859 30.84109 77.20859 24.58137 B 77.20859 18.3207 73.40343
+                                    12.3224 66.49568 7.68939 B 59.1012 2.73069 49.19582 -0.00001
+                                    38.6048 -0.00001</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:AbbreviatedData>M 261.3952 373.08148 L 340.60379 373.08148 L 340.60379 321.9187
+                    L 261.3952 321.9187 C</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:TextObject ID="12" CTM="7.054 0 0 7.054 0 134.026"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="10" GlyphCount="10">
+                    <ofd:Glyphs>18 10 11 42 60 53 24 11 42 61</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="13.925" Y="10" DeltaX="1 1 1 1 1 1 1 1 1">电⼦发票（普通发票）</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:PathObject ID="14" CTM="0.3527 0 0 0.3527 0.35125 0.17581"
+                Boundary="65.78 18.87 73.71 0.71" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0 0.5 L 207 0.5</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="15" CTM="0.3527 0 0 0.3527 0.35125 0.1739"
+                Boundary="65.78 19.93 73.71 0.71" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0 0.5 L 207 0.5</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:TextObject ID="16" CTM="0 3.1743 -3.1743 0 3.1743 141.08"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="102 102 102" />
+                <ofd:CGTransform CodePosition="0" CodeCount="6" GlyphCount="6">
+                    <ofd:Glyphs>8 21 15 33 62 3</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="25.33332" Y="-73.77777" DeltaX="1.0444 1.0444 1.0444 1.0444 1.0444">
+                    下载次数：1</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:PathObject ID="17" CTM="0.3527 0 0 0.3527 0.35685 0.1776"
+                Boundary="5.11 30.86 201.74001 0.71" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="102 102 102" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0 0.50039 L 569.99921 0.50039</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:TextObject ID="18" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="19" Boundary="14.61111 33.22221 4 1.44445" Stroke="false"
+                                Fill="true">
+                                <ofd:AbbreviatedData>M 0 1.44445 L 4 1.44445 L 4 0 L 0 0 C</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:CGTransform CodePosition="0" CodeCount="4" GlyphCount="4">
+                    <ofd:Glyphs>47 40 19 50</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="14.61111" Y="34.33333" DeltaX="1 1 1">项目名称</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="20" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="21" Boundary="22.83333 33.22221 4 1.44445" Stroke="false"
+                                Fill="true">
+                                <ofd:AbbreviatedData>M 0 1.44445 L 4 1.44445 L 4 0 L 0 0 C</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:CGTransform CodePosition="0" CodeCount="4" GlyphCount="4">
+                    <ofd:Glyphs>51 39 45 32</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="22.83333" Y="34.33333" DeltaX="1 1 1">规格型号</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="22" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="23" Boundary="30.72222 33.22221 2.77778 1.44445"
+                                Stroke="false" Fill="true">
+                                <ofd:AbbreviatedData>M 0 1.44445 L 2.77778 1.44445 L 2.77778 0 L 0 0
+                                    C</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:CGTransform CodePosition="0" CodeCount="5" GlyphCount="5">
+                    <ofd:Glyphs>30 1 1 1 26</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="30.72222" Y="34.33333" DeltaX="1 0.25 0.25 0.25">单 位</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="24" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="25" Boundary="38.94444 33.22221 2.77777 1.44445"
+                                Stroke="false" Fill="true">
+                                <ofd:AbbreviatedData>M 0 1.44445 L 2.77777 1.44445 L 2.77777 0 L 0 0
+                                    C</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:CGTransform CodePosition="0" CodeCount="5" GlyphCount="5">
+                    <ofd:Glyphs>33 1 1 1 23</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="38.94444" Y="34.33333" DeltaX="1 0.25 0.25 0.25">数 量</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="26" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="27" Boundary="46.72222 33.22221 2.77777 1.44445"
+                                Stroke="false" Fill="true">
+                                <ofd:AbbreviatedData>M 0 1.44445 L 2.77777 1.44445 L 2.77777 0 L 0 0
+                                    C</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:CGTransform CodePosition="0" CodeCount="5" GlyphCount="5">
+                    <ofd:Glyphs>30 1 1 1 34</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="46.72222" Y="34.33333" DeltaX="1 0.25 0.25 0.25">单 价</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="28" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="29" Boundary="54.83333 33.22221 2.77778 1.44445"
+                                Stroke="false" Fill="true">
+                                <ofd:AbbreviatedData>M 0 1.44445 L 2.77778 1.44445 L 2.77778 0 L 0 0
+                                    C</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:CGTransform CodePosition="0" CodeCount="5" GlyphCount="5">
+                    <ofd:Glyphs>31 1 1 1 58</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="54.83333" Y="34.33333" DeltaX="1 0.25 0.25 0.25">⾦ 额</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="30" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="31" Boundary="59.16666 33.22221 5.55556 1.44445"
+                                Stroke="false" Fill="true">
+                                <ofd:AbbreviatedData>M 0 1.44445 L 5.55556 1.44445 L 5.55556 0 L 0 0
+                                    C</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:CGTransform CodePosition="0" CodeCount="6" GlyphCount="6">
+                    <ofd:Glyphs>59 54 2 56 27 54</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="59.16666" Y="34.33333" DeltaX="1 1 0.5 1 1">税率/征收率</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="32" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="33" Boundary="71.16666 33.22221 2.77778 1.44445"
+                                Stroke="false" Fill="true">
+                                <ofd:AbbreviatedData>M 0 1.44445 L 2.77778 1.44445 L 2.77778 0 L 0 0
+                                    C</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:CGTransform CodePosition="0" CodeCount="5" GlyphCount="5">
+                    <ofd:Glyphs>59 1 1 1 58</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="71.16666" Y="34.33333" DeltaX="1 0.25 0.25 0.25">税 额</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:PathObject ID="34" CTM="0.3527 0 0 0.3527 0.35685 0.1777"
+                Boundary="5.11 53.08 201.74001 0.71" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0 0.50039 L 569.99921 0.50039</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="35" CTM="0.3527 0 0 0.3527 0.17275 0.3503"
+                Boundary="11.29 31.04 0.71 22.57" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0.5 0 L 0.5 62</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="36" CTM="0.3527 0 0 0.3527 0.17635 0.3503"
+                Boundary="105.81 31.04 0.71 22.57" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0.5 0 L 0.5 62</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="37" CTM="0.3527 0 0 0.3527 0.17494 0.3503"
+                Boundary="112.16 31.04 0.71 22.57" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0.5 0 L 0.5 62</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:TextObject ID="38" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="5" GlyphCount="5">
+                    <ofd:Glyphs>11 42 32 38 62</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="58.27777" Y="21.11111" DeltaX="1 1 1 1">发票号码：</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="39" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="5" GlyphCount="5">
+                    <ofd:Glyphs>12 42 13 29 62</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="58.27777" Y="22.99999" DeltaX="1 1 1 1">开票日期：</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="40" CTM="3.17425 0 0 3.17425 0 137.90575"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>48</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="11.50019" Y="27.77821">购</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="41" CTM="3.17425 0 0 3.17425 0 137.90575"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>22</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="11.50019" Y="28.88934">买</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="42" CTM="3.17425 0 0 3.17425 0 137.90575"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>17</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="11.50019" Y="30.00046">⽅</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="43" CTM="3.17425 0 0 3.17425 0 137.90575"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>16</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="11.50019" Y="31.1116">信</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="44" CTM="3.17425 0 0 3.17425 0 137.90575"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>25</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="11.50019" Y="32.22273">息</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="45" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="16" GlyphCount="16">
+                    <ofd:Glyphs>46 4 49 7 16 14 36 38 2 57 59 5 44 20 32 62</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="13.16667" Y="31.55555" DeltaX="1 1 1 1 1 1 1 1 0.5 1 1 1 1 1 1">
+                    统⼀社会信用代码/纳税⼈识别号：</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="46" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:Clips>
+                    <ofd:Clip>
+                        <ofd:Area>
+                            <ofd:Path ID="47" Boundary="13.16667 27.55554 3 1.44445" Stroke="false"
+                                Fill="true">
+                                <ofd:AbbreviatedData>M 0 1.44445 L 3 1.44445 L 3 0 L 0 0 C</ofd:AbbreviatedData>
+                            </ofd:Path>
+                        </ofd:Area>
+                    </ofd:Clip>
+                </ofd:Clips>
+                <ofd:CGTransform CodePosition="0" CodeCount="3" GlyphCount="3">
+                    <ofd:Glyphs>19 50 62</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="13.16667" Y="28.66666" DeltaX="1 1">名称：</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="48" CTM="3.17425 0 0 3.17425 0 137.90575"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>52</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="43.16737" Y="27.77821">销</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="49" CTM="3.17425 0 0 3.17425 0 137.90575"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>55</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="43.16737" Y="28.88934">售</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="50" CTM="3.17425 0 0 3.17425 0 137.90575"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>17</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="43.16737" Y="30.00046">⽅</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="51" CTM="3.17425 0 0 3.17425 0 137.90575"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>16</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="43.16737" Y="31.1116">信</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="52" CTM="3.17425 0 0 3.17425 0 137.90575"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>25</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="43.16737" Y="32.22273">息</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="53" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="16" GlyphCount="16">
+                    <ofd:Glyphs>46 4 49 7 16 14 36 38 2 57 59 5 44 20 32 62</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="45.05555" Y="31.55555" DeltaX="1 1 1 1 1 1 1 1 0.5 1 1 1 1 1 1">
+                    统⼀社会信用代码/纳税⼈识别号：</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="54" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="3" GlyphCount="3">
+                    <ofd:Glyphs>19 50 62</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="45.05555" Y="28.66666" DeltaX="1 1">名称：</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:PathObject ID="55" CTM="0.3527 0 0 0.3527 0.35685 0.1752"
+                Boundary="5.11 97.17 201.74001 0.71" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0 0.50039 L 569.99921 0.50039</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="56" CTM="0.3527 0 0 0.3527 0.35685 0.1746"
+                Boundary="5.11 104.93 201.74001 0.71" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0 0.50039 L 569.99921 0.50039</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="57" CTM="0.3527 0 0 0.3527 0.35685 0.1785"
+                Boundary="5.11 125.03 201.74001 0.71" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0 0.50039 L 569.99921 0.50039</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="58" CTM="0.3527 0 0 0.3527 0.17275 0.35731"
+                Boundary="11.29 105.1 0.71 20.81" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0.5 0 L 0.5 57</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="59" CTM="0.3527 0 0 0.3527 0.18105 0.3552"
+                Boundary="56.78 96.99 0.71 8.82" LineWidth="1" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="128 0 0" />
+                <ofd:AbbreviatedData>M 0.5 0 L 0.5 23</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:TextObject ID="60" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>28</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="16.05555" Y="46.66666">合</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="61" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>37</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="21.05556" Y="46.66666">计</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="62" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="8" GlyphCount="8">
+                    <ofd:Glyphs>34 59 28 37 60 6 41 61</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="14.94444" Y="48.66666" DeltaX="1 1 1 1 1 1 1">价税合计（⼤写）</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="63" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="4" GlyphCount="4">
+                    <ofd:Glyphs>60 9 41 61</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="54.83333" Y="48.66666" DeltaX="1 1 1">（小写）</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="64" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>43</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="11.5" Y="52">备</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="65" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>35</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="11.5" Y="53.88888">注</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="66" CTM="3.1743 0 0 3.1743 0 137.9057"
+                Boundary="-29.6268 -189.75258 397.84558 414.06976" Font="13" Size="1">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:CGTransform CodePosition="0" CodeCount="4" GlyphCount="4">
+                    <ofd:Glyphs>12 42 5 62</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="15.72222" Y="58.33332" DeltaX="1 1 1">开票⼈：</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:PathObject ID="67" CTM="0.3527 0 0 0.3527 0.17725 0.1714"
+                Boundary="58.9 99.29 4.59 4.59" LineWidth="0.5" MiterLimit="10" Stroke="true">
+                <ofd:FillColor ColorSpace="4" Value="128 0 0" />
+                <ofd:StrokeColor ColorSpace="4" Value="0 0 0" />
+                <ofd:AbbreviatedData>M 12 6 B 12 2.69603 9.31412 0 5.99332 0 B 2.68575 0 0 2.69603 0
+                    6 B 0 9.30397 2.68575 12 5.99332 12 B 9.31412 12 12 9.30397 12 6 M 2 2 L 10 10 M
+                    2 10 L 10 2</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:TextObject ID="68" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="304" Y="137.50006" DeltaX="7 7 7 7 7">国家税务总局</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="70" CTM="0.17635 -0.30545 0.30545 0.17635 -0.30545 140.90366"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="33.18378" Y="322.47632">全</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="71" CTM="0.30545 -0.17635 0.17635 0.30545 -0.17635 140.77455"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="198.17345" Y="259.75177">国</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="72" CTM="0.34068 -0.09129 0.09129 0.34068 -0.09129 140.73932"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="266.44574" Y="196.6265">统</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="73" CTM="0.34734 -0.06125 0.06125 0.34734 -0.06125 140.73267"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="289.89661" Y="170.92163">一</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="74" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="323" Y="118">发</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="75" CTM="0.34734 0.06125 -0.06125 0.34734 0.06125 140.73267"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="347.27222" Y="58.57062">票</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="76" CTM="0.34068 0.09129 -0.09129 0.34068 0.09129 140.73932"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="359.21277" Y="27.94662">监</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="77" CTM="0.30545 0.17635 -0.17635 0.30545 0.17635 140.77455"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="362.37561" Y="-67.34375">制</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="78" CTM="0.17635 0.30545 -0.30545 0.17635 0.30545 140.90366"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="286.61749" Y="-243.43874">章</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="79" CTM="0.31966 0.14906 -0.14906 0.31966 0.14906 140.76035"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="338.06415" Y="6.65738">四</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="80" CTM="0.34068 0.09129 -0.09129 0.34068 0.09129 140.73932"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="340.57849" Y="66.58603">川</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="81" CTM="0.35136 0.03074 -0.03074 0.35136 0.03074 140.72865"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="331.66461" Y="126.06866">省</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="82" CTM="0.35136 -0.03074 0.03074 0.35136 -0.03074 140.72865"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="312.83228" Y="182.95978">税</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="83" CTM="0.34068 -0.09129 0.09129 0.34068 -0.09129 140.73932"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="283.85529" Y="235.97293">务</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="84" CTM="0.31966 -0.14906 0.14906 0.31966 -0.14906 140.76035"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="7">
+                <ofd:FillColor ColorSpace="4" Value="255 2 0" />
+                <ofd:TextCode X="245.71841" Y="283.29361">局</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="85" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="422.91" Y="355" DeltaX="9 4.158 4.158 4.158 4.158 2.142 4.158">
+                    ¥1455.45</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="86" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="579.7301" Y="355" DeltaX="9 4.158 4.158 2.142 4.158">¥14.55</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="87" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="207" Y="373.00012" DeltaX="9 9 9 9 9 9 9">壹仟肆佰柒拾圆整</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="88" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="471.00003" Y="373.00012"
+                    DeltaX="9 1.863 4.158 4.158 4.158 4.158 2.142 4.158">¥ 1470.00</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="89" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="118.50002" Y="459.00006" DeltaX="9 9">李海伦</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="90" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="511.50003" Y="124.50006"
+                    DeltaX="4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158">
+                    23512000000058396237</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="91" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="511.50003" Y="141.50006"
+                    DeltaX="4.158 4.158 4.158 4.158 9 4.158 4.158 9 4.158 4.158">2023年07月07日</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="92" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="86.5" Y="192.50006" DeltaX="9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9">
+                    中国移动通信集团四川有限公司成都分公司</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="93" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="373.5" Y="192.50006" DeltaX="9 9 9 9 9 9 9">武侯区极客火锅店</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="94" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="11">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="199.5" Y="218.50006"
+                    DeltaX="5.082 5.082 5.082 5.082 5.082 5.082 5.082 5.082 5.082 5.082 5.082 5.082 5.082 5.082 5.082 5.082 5.082">
+                    91510000765055994P</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="95" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="11">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="486.5" Y="218.50006"
+                    DeltaX="5.082 5.082 5.082 5.082 5.082 5.082 5.082 5.082 9.856 7.524 5.082 5.082 5.082 10.692 5.082 7.326 5.082">
+                    92510107MA634W4K90</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="96" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="41" Y="257.00006" DeltaX="3.807 9 9 9 9 3.807 9 9">*餐饮服务*餐饮费</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="97" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="147.00002" Y="257.00006">1</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="98" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="312.84" Y="257.00006">1</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="99" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="322.48999" Y="257.00006"
+                    DeltaX="4.158 4.158 4.158 4.158 2.142 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158 4.158">
+                    1455.44554455446</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="100" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="431.91" Y="257.00006" DeltaX="4.158 4.158 4.158 4.158 2.142 4.158">
+                    1455.45</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="101" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="494.33002" Y="257.00006" DeltaX="4.158">1%</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="102" CTM="0.3527 0 0 0.3527 0 140.72729"
+                Boundary="-8.8175 -169.29601 361.51749 399.96179" Font="69" Size="9">
+                <ofd:FillColor ColorSpace="4" Value="0 0 0" />
+                <ofd:TextCode X="588.73004" Y="257.00006" DeltaX="4.158 4.158 2.142 4.158">14.55</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:ImageObject ID="103" CTM="19.7512 0 0 19.7512 0 0"
+                Boundary="7.23035 7.40671 19.7512 19.7512" ResourceID="104" />
+            <ofd:ImageObject ID="105" CTM="4.9378 0 0 4.9378 0 0"
+                Boundary="14.63705 14.8134 4.9378 4.93781" ResourceID="106" />
+        </ofd:Layer>
+    </ofd:Content>
+</ofd:Page>

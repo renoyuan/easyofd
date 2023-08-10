@@ -27,6 +27,7 @@ class FileRead(object):
         self.ofdbyte = base64.b64decode(ofdb64) 
         pid=os.getpid()
         self.name = f"{pid}_{str(uuid1())}.ofd"
+        self.pdf_name = self.name.replace(".ofd",".pdf")
         self.zip_path = f"{os.getcwd()}/{self.name}"
         self.unzip_path = ""
         self.file_tree = {}
@@ -47,6 +48,7 @@ class FileRead(object):
     def buld_file_tree(self):
         "xml读取对象其他b64"
         self.file_tree["root"] = self.unzip_path
+        self.file_tree["pdf_name"] = self.pdf_name
         for root, dirs, files in os.walk(self.unzip_path):
             for file in files:
                 

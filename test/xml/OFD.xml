@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ofd:OFD xmlns:ofd="http://www.ofdspec.org/2016" Version="1.1" DocType="OFD">
+    <ofd:DocBody>
+        <ofd:DocInfo>
+            <ofd:DocID>0C1D4F7159954EEEDE517F7285E84DC4</ofd:DocID>
+            <ofd:Creator>HTFoxit</ofd:Creator>
+            <ofd:CreatorVersion>1.0</ofd:CreatorVersion>
+            <ofd:CreationDate>2023-7-19T14:0:38</ofd:CreationDate>
+        </ofd:DocInfo>
+        <ofd:DocRoot>Doc_0/Document.xml</ofd:DocRoot>
+    </ofd:DocBody>
+</ofd:OFD>

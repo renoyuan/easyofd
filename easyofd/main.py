@@ -8,6 +8,8 @@
 import base64
 import os
 import sys
+print(os.getcwd())
+sys.path.insert(0,os.getcwd())
 sys.path.insert(0,"..")
 from typing import Any
 
@@ -26,6 +28,7 @@ class OFD2PDF(object):
         实现流程
         """
         data = OFDParser(ofdb64)()
+        print(data)
         return DrawPDF(data)()
     
 if __name__ == "__main__":

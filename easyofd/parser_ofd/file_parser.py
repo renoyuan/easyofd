@@ -202,6 +202,7 @@ class DocumentResFileParser(FileParserBase):
                 info[media.get("@ID")] = {
                     "format":media.get("@Format",""),
                     "type":media.get("@Type",""),
+                    "type":os.path.splitext(name)[-1], # 文件后缀名
                     "fileName":name,
                     }
         return info 

@@ -7,17 +7,19 @@
 #NOTE: ofd解析主流程
 
 import sys
-import logging
-sys.path.insert(0,"..")
 import os
+import logging
+print(os.getcwd())
+sys.path.insert(0,"..")
+
 import traceback
 import base64
 import re
 from typing import Any
 
-from file_deal import FileRead
-from file_parser import OFDFileParser, DocumentFileParser, ContentFileParser,DocumentResFileParser,PublicResFileParser
-from font_parser import FontParser
+from parser_ofd.file_deal import FileRead
+from parser_ofd.file_parser import OFDFileParser, DocumentFileParser, ContentFileParser,DocumentResFileParser,PublicResFileParser
+from parser_ofd.font_parser import FontParser
 
 
 class OFDParser(object):
@@ -35,73 +37,14 @@ class OFDParser(object):
     # 获得xml 对象
     def get_xml_obj(self, label):
         assert label
-       
         for abs_p in self.file_tree:
-           
             # 统一符号，避免win linux 路径冲突
             abs_p_compare = abs_p.replace("\\","-").replace("/","-")  
             label_compare = label.replace("\\","-").replace("/","-") 
             
             if label_compare in abs_p_compare:
                 return self.file_tree[abs_p]
-                    
-    
-    
-    # TODO 待解耦
-    def get_xmls_d(self,rootPath):
-        """
-        从 file_tree 中筛选出需要的xml对象
-        以及其他必要信息
-        """
-        # contentPath&
-        tree = None
-        tree = self.get_xml_obj(rootPath)
-        if not tree:
-            return None
-        
-        # Content 正文节点收集
-        content_label = tree.get("ofd:Document",{}).get("ofd:Pages",{}).get("ofd:Page")
-        
-        if isinstance(content_label,list) : # 正文多页情况
-            content_objs = [self.get_xml_obj(i.get('@BaseLoc')) for i in  content_label]
-          
-        else:
-           
-            content_objs = [self.get_xml_obj(tree['ofd:Document']['ofd:Pages']['ofd:Page']['@BaseLoc'])]
-        
-        # tpls  模板节点收集
-        try:
-            tpls_label = []
-            TemplatePage_key = "ofd:TemplatePage"
-            self.recursion_ext(tree,tpls_label,TemplatePage_key)
-            tpls_objs = [self.get_xml_obj(i.get('@BaseLoc'))  for i in  tpls_label]
-           
-        except :
-            tpls_objs = []
-        
-        # Annotations    
-        try:
-            Annotations_obj = self.get_xml_obj(tree['ofd:Document']['ofd:Annotations']) 
-        except :
-            Annotations_obj = ""
-            
-        if Annotations_obj:
-            AnnotFileLoc_dir =  Annotations_obj.get("ofd:Annotations",{}).get("ofd:Page").get("ofd:FileLoc","")
-
-        else:
-            AnnotFileLoc_dir = ""
-        tree_objs = {
-            "PublicRes" : self.get_xml_obj("PublicRes.xml") ,
-            "DocumentRes" :self.get_xml_obj("DocumentRes.xml") ,
-            "content" : content_objs,
-            "tpls" : tpls_objs,
-            "AnnotationsPath" : Annotations_obj,
-            
-        }
-        return tree_objs
-    
-    
-    
+                      
     def parser(self, ):
         """
         解析流程
@@ -126,7 +69,7 @@ class OFDParser(object):
         # print("doc_root_name",doc_root_name)
         
         doc_root_xml_obj = self.get_xml_obj(doc_root_name[0])
-        print("doc_root_xml_obj",doc_root_xml_obj)
+        # print("doc_root_xml_obj",doc_root_xml_obj)
         doc_root_info = DocumentFileParser(doc_root_xml_obj)()
         doc_size = doc_root_info.get("size")
         
@@ -158,6 +101,7 @@ class OFDParser(object):
         document_res_name:list = doc_root_info.get("document_res")
         if document_res_name:
             document_res_xml_obj = self.get_xml_obj(document_res_name[0])
+            
             img_info = DocumentResFileParser(document_res_xml_obj)()
             # 找到图片b64
             for img_id,img_v in img_info.items(): 
@@ -179,13 +123,13 @@ class OFDParser(object):
                         # print("page_size",page_size)
                 except Exception as e:
                     traceback.print_exc()
-                    print(e)
+                    # print(e)
                 page_info = ContentFileParser(page_xml_obj)()
                 try:
                     pg_no = int(re.match(r"\d+",_page).group())
                 except Exception as e:
                     logging.info(traceback.format_exc())
-                    print(e)
+                    # print(e)
                     traceback.print_exc()
                     pg_no = index
                 finally:
@@ -200,7 +144,7 @@ class OFDParser(object):
                 try:
                     tpl_no = int(re.match(r"\d+",_tpl).group())
                 except Exception as e:
-                    logging.info(traceback.format_exc())
+                    logging.error(traceback.format_exc())
                     print(e)
                     tpl_no = index
                 finally:
@@ -215,7 +159,8 @@ class OFDParser(object):
             
             page_ID = 0
             doc_list.append({
-                "page":page_ID,
+                "pdf_name": self.file_tree["pdf_name"],
+                "doc_no":page_ID,
                 "images":img_info,
                 "page_size":page_size,
                 "fonts":font_info,

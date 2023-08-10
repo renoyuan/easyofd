@@ -5,17 +5,6 @@
 #E_MAIL: renoyuan@foxmail.com
 #AUTHOR: reno 
 
-# ofd 解析主流程 实现逻辑变得复杂好多需要解耦代码了
-
-# encoding: utf-8
-from __future__ import print_function, division, absolute_import
-from fontTools.ttLib import TTFont as ttLib_TTFont
-from fontTools.pens.basePen import BasePen
-from reportlab.graphics.shapes import Path
-from reportlab.lib import colors
-from reportlab.graphics import renderPM
-from reportlab.graphics.shapes import Group, Drawing, scale
-
 import time
 import re
 import json
@@ -30,7 +19,17 @@ from uuid import uuid1
 import random
 import traceback
 import logging
-import numpy as np
+from concurrent.futures import ThreadPoolExecutor
+import threading
+import multiprocessing
+import PIL
+
+from fontTools.ttLib import TTFont as ttLib_TTFont
+from fontTools.pens.basePen import BasePen
+from reportlab.graphics.shapes import Path
+from reportlab.lib import colors
+from reportlab.graphics import renderPM
+from reportlab.graphics.shapes import Group, Drawing, scale
 import tempfile
 import xmltodict
 from reportlab import platypus
@@ -42,17 +41,6 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfbase.ttfonts import TTFont
-from concurrent.futures import ThreadPoolExecutor
-import threading
-import multiprocessing
-import PIL
-
-
-
-try:
-    import cv2
-except :
-    logging.warning("缺少cv2 若需要处理图片文件必不可少")
     
 
 FONTS = ['宋体',"SWPMEH+SimSun",'SimSun','KaiTi','楷体',"STKAITI","SWLCQE+KaiTi",
@@ -1021,8 +1009,8 @@ class OfdParser(object):
                     # print(image.get('b64img'))
                     
                     imgbyte = base64.b64decode(image.get('b64img'))
-                    
-                    
+                    image = Image.open(BytesIO(imgbyte))
+                    image = Image.frombytes(mode="RGBA",size=(64,25),data=content,decoder_name="raw")
                     img = cv2.imdecode(np.frombuffer(imgbyte, np.uint8), cv2.IMREAD_COLOR)
                     rgb_img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
                     img = PIL.Image.fromarray(rgb_img)
@@ -1208,7 +1196,7 @@ class OfdParser(object):
         except Exception as e:
             print(e)
             traceback.print_exc()
-            time.sleep(10)
+            # time.sleep(10)
             print("ofd格式不兼容文件")
             self.gen_empty_pdf(None,pdfname,need_image=need_image)
             pdfbytes  = None
