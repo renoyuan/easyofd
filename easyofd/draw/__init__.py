@@ -1,7 +1,7 @@
 from reportlab.pdfbase import pdfmetrics
 
 
-from .draw_pdf import DrawPDF
+
 from parser_ofd import *
 
 FONTS = ['宋体',"SWPMEH+SimSun",'SimSun','KaiTi','楷体',"STKAITI","SWLCQE+KaiTi",
@@ -9,6 +9,8 @@ FONTS = ['宋体',"SWPMEH+SimSun",'SimSun','KaiTi','楷体',"STKAITI","SWLCQE+Ka
          "CourierNewPSMT","BWSimKai","hei","黑体","SimHei","SWDKON+SimSun",
          "SWCRMF+CourierNewPSMT","SWHGME+KaiTi"]
 
+from .font_tools import FontTool
+from .draw_pdf import DrawPDF
 pdfmetrics.registerFont(TTFont('宋体', 'simsun.ttc'))
 pdfmetrics.registerFont(TTFont('SWPMEH+SimSun', 'simsun.ttc'))
 pdfmetrics.registerFont(TTFont('SimSun', 'simsun.ttc'))

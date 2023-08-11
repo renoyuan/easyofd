@@ -4,16 +4,7 @@
 #CREATE_TIME: 2023-07-27 
 #E_MAIL: renoyuan@foxmail.com
 #AUTHOR: reno 
-#NOTE: 字体处理逻辑  
-
-from __future__ import print_function, division, absolute_import
-from fontTools.ttLib import TTFont as ttLib_TTFont
-from fontTools.pens.basePen import BasePen
-from reportlab.graphics.shapes import Path
-from reportlab.lib import colors
-from reportlab.graphics import renderPM
-from reportlab.graphics.shapes import Group, Drawing, scale
-
+#NOTE: 字体处理  
 import time
 import re
 import json
@@ -28,9 +19,16 @@ from uuid import uuid1
 import random
 import traceback
 import logging
+
 import numpy as np
 import tempfile
 import xmltodict
+from fontTools.ttLib import TTFont as ttLib_TTFont
+from fontTools.pens.basePen import BasePen
+from reportlab.graphics.shapes import Path
+from reportlab.lib import colors
+from reportlab.graphics import renderPM
+from reportlab.graphics.shapes import Group, Drawing, scale
 from reportlab import platypus
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib.units import mm,inch
@@ -44,25 +42,34 @@ from concurrent.futures import ThreadPoolExecutor
 import threading
 import multiprocessing
 import PIL
+from draw import  FONTS
+
+from reportlab.lib.fonts import _tt2ps_map 
+from reportlab.lib.fonts import _family_alias 
+logger = logging.getLogger("root")
 
 
 
-try:
-    import cv2
-except :
-    logging.warning("缺少cv2 若需要处理图片文件必不可少")
+class FontTool(object):
+    FONTS = FONTS
     
-
-
-
-class FontParser(object):
     def __init__(self):
         # 初始支持字体
-        self.FONTS = ['宋体',"SWPMEH+SimSun",'SimSun','KaiTi','楷体',
-        "STKAITI","SWLCQE+KaiTi",'Courier New','STSong-Light',"CourierNew",
-        "SWANVV+CourierNewPSMT","CourierNewPSMT","BWSimKai","hei","黑体","SimHei",
-        "SWDKON+SimSun","SWCRMF+CourierNewPSMT","SWHGME+KaiTi"]
-         
+        # 字体检测
+        pass
+    
+    def font_check(self):
+        logger.info("f{_tt2ps_map}")
+        logger.info("f{_family_alias}")
+        
+        for font in self.FONTS:
+            if font in _tt2ps_map.values():
+                logger.info(f"已注册{font}")
+            else:
+                logger.warning(f"-{font}-未注册可能导致写入失败")
+                 
+        
+        
     def register_font(self,file_name,FontName,font_b64):
         if font_b64:
             file_name = os.path.split(file_name)
@@ -75,7 +82,7 @@ class FontParser(object):
                 
             except Exception as e:
                 traceback.print_exc()
-                print(f"register_font_error:\n{e}")
+                logger.error(f"register_font_error:\n{e}")
             
             finally:
                 if os.path.exists(file_name):

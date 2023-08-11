@@ -8,12 +8,13 @@
 
 import sys
 sys.path.insert(0,"..")
+import logging
 import os
 import traceback
 import base64
 import re
 from typing import Any
-
+logger = logging.getLogger("root")
 
 class FileParserBase(object):
     """xml解析"""
@@ -103,7 +104,7 @@ class DocumentFileParser(FileParserBase):
         document_res:list = []
         document_res_key = "ofd:DocumentRes" 
         self.recursion_ext(self.xml_obj,document_res,document_res_key)
-        document_info["document_res"] = public_res
+        document_info["document_res"] = document_res
         
         # ofd:Page 正文
         page:list = []
@@ -137,15 +138,20 @@ class ContentFileParser(FileParserBase):
                     "font":row['@Font'],
                     "size":row['@Size'],}]
         """
-        cell_list = []
-        try:
-            TextObjectList = []
-            text_key = "ofd:TextObject" # 正文
-            self.recursion_ext(self.xml_obj,TextObjectList,text_key)
-            # print(TextObjectList)
-            for row in TextObjectList:
-                # print(row)
+        text_list = []
+        img_list = []
         
+        content_d = {
+        "text_list":text_list,
+        "img_list":img_list,
+                     }
+        
+        text:list = [] # 正文
+        text_key = "ofd:TextObject" 
+        self.recursion_ext(self.xml_obj,text,text_key)
+        
+        if text:
+            for row in text:
                 if not row.get('ofd:TextCode',{}).get('#text'):
                     continue
                 cell_d = {}
@@ -178,13 +184,22 @@ class ContentFileParser(FileParserBase):
                 cell_d ["X"] = row.get("ofd:TextCode",{}).get("@X","") # X 文本之与文本框距离
                 cell_d ["Y"] = row.get("ofd:TextCode",{}).get("@Y","") # Y 文本之与文本框距离
 
-                cell_list.append(cell_d)
-                    
-        except Exception as e:
-            traceback.print_exc()
-            print(e)
-                
-        return cell_list
+                text_list.append(cell_d)
+            
+        img:list = [] # 图片
+        img_key = "ofd:ImageObject"
+        self.recursion_ext(self.xml_obj,img,img_key)
+            
+        if img:
+            for _i in img:
+                img_d = {}
+                img_d["CTM"] = _i.get("@CTM","") # 平移矩阵换
+                img_d["ID"] = _i.get("ID","") # 图片id
+                img_d["ResourceID"] = _i.get("@ResourceID","") # 图片id
+                img_d["pos"] = [float(pos_i) for pos_i in _i['@Boundary'].split(" ")] # 平移矩阵换
+                img_list.append(img_d)
+        
+        return content_d
 
 class DocumentResFileParser(FileParserBase):
     """
@@ -201,8 +216,9 @@ class DocumentResFileParser(FileParserBase):
                 name = media.get("ofd:MediaFile","")
                 info[media.get("@ID")] = {
                     "format":media.get("@Format",""),
+                    "wrap_pos":media.get("@wrap_pos",""),
                     "type":media.get("@Type",""),
-                    "type":os.path.splitext(name)[-1], # 文件后缀名
+                    "suffix":os.path.splitext(name)[-1].replace(".",""), # 文件后缀名
                     "fileName":name,
                     }
         return info 

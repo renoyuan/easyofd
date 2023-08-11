@@ -5,11 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: 模块",
+            "name": "Python: 当前文件",
             "type": "python",
             "request": "launch",
-            "module": "main.py",
-            "justMyCode": true
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ]
 }

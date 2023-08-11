@@ -9,7 +9,6 @@
 import sys
 import os
 import logging
-print(os.getcwd())
 sys.path.insert(0,"..")
 
 import traceback
@@ -19,7 +18,7 @@ from typing import Any
 
 from parser_ofd.file_deal import FileRead
 from parser_ofd.file_parser import OFDFileParser, DocumentFileParser, ContentFileParser,DocumentResFileParser,PublicResFileParser
-from parser_ofd.font_parser import FontParser
+
 
 
 class OFDParser(object):
@@ -32,7 +31,7 @@ class OFDParser(object):
     def __init__(self, ofdb64):
         self.ofdb64 = ofdb64
         self.file_tree = None
-        self.font_parser = FontParser()
+      
     
     # 获得xml 对象
     def get_xml_obj(self, label):
@@ -41,7 +40,6 @@ class OFDParser(object):
             # 统一符号，避免win linux 路径冲突
             abs_p_compare = abs_p.replace("\\","-").replace("/","-")  
             label_compare = label.replace("\\","-").replace("/","-") 
-            
             if label_compare in abs_p_compare:
                 return self.file_tree[abs_p]
                       
@@ -51,31 +49,21 @@ class OFDParser(object):
         """
         # 默认只有 doc_0 一层有多层后面改
         page_size = []
-        doc_list = []
-        
-        # print(self.file_tree["root_doc"])
-        # print(list(self.file_tree.keys()))
-        
+        doc_list = []       
         ofd_xml_obj = self.get_xml_obj(self.file_tree["root_doc"])  # OFD.xml xml 对象 
-        # print(type(ofd_xml_obj))
-        # print(ofd_xml_obj.get("ofd:OFD").get("ofd:DocBody").get("ofd:DocRoot"))
-        # print(ofd_xml_obj)
+
         if ofd_xml_obj:
             doc_root_name = OFDFileParser(ofd_xml_obj)().get("doc_root")
         else:
             # 考虑根节点丢失情况
             doc_root_name = ["Doc_0/Document.xml"]
         
-        # print("doc_root_name",doc_root_name)
-        
         doc_root_xml_obj = self.get_xml_obj(doc_root_name[0])
-        # print("doc_root_xml_obj",doc_root_xml_obj)
         doc_root_info = DocumentFileParser(doc_root_xml_obj)()
         doc_size = doc_root_info.get("size")
         
         if doc_size:
             try:
-                
                 page_size = [float(pos_i) for pos_i in doc_size.split(" ") if re.match("[\d\.]",pos_i)] 
             except:
                 traceback.print_exc()
@@ -93,8 +81,8 @@ class OFDParser(object):
                 if file_name:
                     font_b64 = self.get_xml_obj(file_name)
                     if font_b64:
-                        self.font_parser.register_font(os.path.split(file_name)[1],i.get("@FontName"),font_b64)
-                
+                        font_v["font_b64"] = font_b64
+                        
                 
         
         # 图片资源
@@ -109,7 +97,7 @@ class OFDParser(object):
         
         # 正文信息 会有多页 情况
         page_name:list = doc_root_info.get("page")
-        # print(page_name)
+        
         page_info_d = {}
         if page_name:
             for index,_page in enumerate(page_name):
@@ -117,23 +105,18 @@ class OFDParser(object):
                 # 重新获取页面size
                 try:
                     page_size_new = [float(pos_i) for pos_i in page_xml_obj.get('ofd:Page',{}).get("ofd:Area",{}).get("ofd:PhysicalBox","").split(" ") if re.match("[\d\.]",pos_i)] 
-                    # print(page_size)
-                    if page_size_new and len(page_size_new)>=2 :
+                    if page_size_new and len(page_size_new)>=2:
                         page_size = page_size_new
-                        # print("page_size",page_size)
                 except Exception as e:
                     traceback.print_exc()
-                    # print(e)
+                  
                 page_info = ContentFileParser(page_xml_obj)()
-                try:
-                    pg_no = int(re.match(r"\d+",_page).group())
-                except Exception as e:
-                    logging.info(traceback.format_exc())
-                    # print(e)
-                    traceback.print_exc()
+                pg_no = re.search(r"\d+",_page) 
+                if pg_no:
+                    pg_no = int(pg_no.group())
+                else:
                     pg_no = index
-                finally:
-                    page_info_d[pg_no] = page_info
+                page_info_d[pg_no] = page_info
                 
         # 模板信息
         tpls_name:list = doc_root_info.get("tpls")
@@ -141,23 +124,23 @@ class OFDParser(object):
             for index,_tpl in enumerate(tpls_name):
                 tpl_xml_obj = self.get_xml_obj(_tpl)
                 tpl_info = ContentFileParser(tpl_xml_obj)()
-                try:
-                    tpl_no = int(re.match(r"\d+",_tpl).group())
-                except Exception as e:
-                    logging.error(traceback.format_exc())
-                    print(e)
-                    tpl_no = index
-                finally:
-                    # 合并
-                    if tpl_no in page_info_d:
-                        page_info_d[pg_no].extend(tpl_info)
-                        page_info_d[pg_no].sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
-                    else:
-                        page_info_d[tpl_no] = tpl_info
-                        page_info_d[tpl_no].sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
-
+                tpl_no = re.search(r"\d+",_tpl)
             
-            page_ID = 0
+                if tpl_no:
+                    tpl_no = int(tpl_no.group())
+                else:
+                    tpl_no = index
+                    
+                if tpl_no in page_info_d:
+                    page_info_d[pg_no]["text_list"].extend(tpl_info["text_list"])
+                    page_info_d[pg_no]["text_list"].sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
+                    page_info_d[pg_no]["img_list"].extend(tpl_info["img_list"])
+                    page_info_d[pg_no]["img_list"].sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
+                else:
+                    page_info_d[tpl_no] = tpl_info
+                    page_info_d[tpl_no].sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
+
+            page_ID = 0 # 没遇到过doc多个的情况
             doc_list.append({
                 "pdf_name": self.file_tree["pdf_name"],
                 "doc_no":page_ID,
@@ -166,10 +149,7 @@ class OFDParser(object):
                 "fonts":font_info,
                 "page_info":page_info_d        
                             })
-            
-        
             return doc_list
-            
                
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         """

@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
  
 setuptools.setup(
     name="easyofd", 
-    version="0.0.8",    
+    version="0.0.9",    
     author="renoyuan",    
     author_email="renoyuan@foxmail.com",    
     description="easy parser OFD",
@@ -19,5 +19,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',   
+    python_requires='>=3.8',   
 )
