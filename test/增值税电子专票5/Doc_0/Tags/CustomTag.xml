@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<:eInvoice xmlns:="">
+    <InvoiceCode>
+        <ofd:ObjectRef PageRef="1">64</ofd:ObjectRef>
+    </InvoiceCode>
+    <Buyer>
+        <BuyerName>
+            <ofd:ObjectRef PageRef="1">65</ofd:ObjectRef>
+        </BuyerName>
+        <BuyerTaxID>
+            <ofd:ObjectRef PageRef="1">67</ofd:ObjectRef>
+        </BuyerTaxID>
+        <BuyerAddrTel>
+            <ofd:ObjectRef PageRef="1">76</ofd:ObjectRef>
+        </BuyerAddrTel>
+        <BuyerFinancialAccount>
+            <ofd:ObjectRef PageRef="1">79</ofd:ObjectRef>
+        </BuyerFinancialAccount>
+    </Buyer>
+    <Seller>
+        <SellerAddrTel>
+            <ofd:ObjectRef PageRef="1">68</ofd:ObjectRef>
+        </SellerAddrTel>
+        <SellerFinancialAccount>
+            <ofd:ObjectRef PageRef="1">69</ofd:ObjectRef>
+        </SellerFinancialAccount>
+        <SellerName>
+            <ofd:ObjectRef PageRef="1">73</ofd:ObjectRef>
+        </SellerName>
+        <SellerTaxID>
+            <ofd:ObjectRef PageRef="1">77</ofd:ObjectRef>
+        </SellerTaxID>
+    </Seller>
+    <InvoiceNo>
+        <ofd:ObjectRef PageRef="1">70</ofd:ObjectRef>
+    </InvoiceNo>
+    <MachineNo>
+        <ofd:ObjectRef PageRef="1">71</ofd:ObjectRef>
+    </MachineNo>
+    <InvoiceClerk>
+        <ofd:ObjectRef PageRef="1">72</ofd:ObjectRef>
+    </InvoiceClerk>
+    <InvoiceCheckCode>
+        <ofd:ObjectRef PageRef="1">74</ofd:ObjectRef>
+    </InvoiceCheckCode>
+    <TaxControlCode>
+        <ofd:ObjectRef PageRef="1">75</ofd:ObjectRef>
+    </TaxControlCode>
+    <IssueDate>
+        <ofd:ObjectRef PageRef="1">78</ofd:ObjectRef>
+    </IssueDate>
+    <TaxInclusiveTotalAmount>
+        <ofd:ObjectRef PageRef="1">84</ofd:ObjectRef>
+        <ofd:ObjectRef PageRef="1">85</ofd:ObjectRef>
+    </TaxInclusiveTotalAmount>
+    <TaxExclusiveTotalAmount>
+        <ofd:ObjectRef PageRef="1">86</ofd:ObjectRef>
+        <ofd:ObjectRef PageRef="1">87</ofd:ObjectRef>
+    </TaxExclusiveTotalAmount>
+    <TaxTotalAmount>
+        <ofd:ObjectRef PageRef="1">88</ofd:ObjectRef>
+        <ofd:ObjectRef PageRef="1">89</ofd:ObjectRef>
+    </TaxTotalAmount>
+    <Payee>
+        <ofd:ObjectRef PageRef="1">90</ofd:ObjectRef>
+    </Payee>
+    <Checker>
+        <ofd:ObjectRef PageRef="1">91</ofd:ObjectRef>
+    </Checker>
+    <GoodsInfos>
+        <GoodsInfo>
+            <Item>
+                <ofd:ObjectRef PageRef="1">94</ofd:ObjectRef>
+            </Item>
+            <TaxScheme>
+                <ofd:ObjectRef PageRef="1">95</ofd:ObjectRef>
+            </TaxScheme>
+            <MeasurementDimension>
+                <ofd:ObjectRef PageRef="1">96</ofd:ObjectRef>
+            </MeasurementDimension>
+            <Amount>
+                <ofd:ObjectRef PageRef="1">97</ofd:ObjectRef>
+            </Amount>
+            <TaxAmount>
+                <ofd:ObjectRef PageRef="1">98</ofd:ObjectRef>
+            </TaxAmount>
+            <Price>
+                <ofd:ObjectRef PageRef="1">99</ofd:ObjectRef>
+            </Price>
+            <Quantity>
+                <ofd:ObjectRef PageRef="1">100</ofd:ObjectRef>
+            </Quantity>
+        </GoodsInfo>
+    </GoodsInfos>
+</:eInvoice>

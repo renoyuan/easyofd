@@ -27,7 +27,7 @@ from reportlab.lib import fonts as reportlab_fonts
 from draw.font_tools import FontTool
 logger = logging.getLogger("root")
 
-print(reportlab_fonts)
+# print(reportlab_fonts)
 class DrawPDF():
     """
     ofd 解析结果 绘制pdf
@@ -119,6 +119,7 @@ class DrawPDF():
             for page_id,page in doc.get("page_info").items():     
                 text_list = page.get("text_list")
                 img_list = page.get("img_list")
+                # print("img_list",img_list)
               
                 c.setPageSize((page_size[2]*self.OP, page_size[3]*self.OP))
 
@@ -129,20 +130,20 @@ class DrawPDF():
                     if image.get("suffix").upper() not in self.SupportImgType:
                         continue
                     
-                    imgbyte = base64.b64decode(image.get('b64img'))
+                    imgbyte = base64.b64decode(image.get('imgb64'))
                     img = PILImage.open(BytesIO(imgbyte))
                     imgReade  = ImageReader(img)
-                    CTM = image.get('CTM')
+                    CTM = img_d.get('CTM')
                     x_offset = 0
                     y_offset = 0
                     wrap_pos = image.get("wrap_pos")
-                    x = (image.get('pos')[0]+x_offset)*self.OP
-                    y = (page_size[3] - (image.get('pos')[1]+y_offset))*self.OP
+                    x = (img_d.get('pos')[0]+x_offset)*self.OP
+                    y = (page_size[3] - (img_d.get('pos')[1]+y_offset))*self.OP
                     if wrap_pos:
                         x = x+(wrap_pos[0]*self.OP)
                         y = y-(wrap_pos[1]*self.OP)
-                    w =   image.get('pos')[2]*self.OP
-                    h =  -image.get('pos')[3]*self.OP
+                    w =   img_d.get('pos')[2]*self.OP
+                    h =  -img_d.get('pos')[3]*self.OP
                     c.drawImage(imgReade,x,y ,w, h, 'auto')
 
                 # 写入文本

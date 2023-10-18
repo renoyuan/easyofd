@@ -61,7 +61,7 @@ class OFDFileParser(FileParserBase):
         # DocRoot 
         doc_root:list = []
         doc_root_key = "ofd:DocRoot" 
-        print(self.xml_obj,doc_root)
+        # print(self.xml_obj,doc_root)
         self.recursion_ext(self.xml_obj,doc_root,doc_root_key)
         
         info["doc_root"] = doc_root

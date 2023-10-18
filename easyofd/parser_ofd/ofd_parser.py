@@ -16,6 +16,7 @@ import base64
 import re
 from typing import Any
 
+from loguru import logger
 from parser_ofd.file_deal import FileRead
 from parser_ofd.file_parser import OFDFileParser, DocumentFileParser, ContentFileParser,DocumentResFileParser,PublicResFileParser
 
@@ -31,6 +32,7 @@ class OFDParser(object):
     def __init__(self, ofdb64):
         self.ofdb64 = ofdb64
         self.file_tree = None
+        self.jbig2dec_path = r"C:/msys64/mingw64/bin/jbig2dec.exe"
       
     
     # 获得xml 对象
@@ -42,7 +44,39 @@ class OFDParser(object):
             label_compare = label.replace("\\","-").replace("/","-") 
             if label_compare in abs_p_compare:
                 return self.file_tree[abs_p]
-                      
+    
+    def jb22png(self, img_d:dict):
+        """
+        jb22png
+        没有安装 jbig2dec 无法操作 
+        """          
+        if not os.path.exists(self.jbig2dec_path):
+            logger.warning(f"未安装jbig2dec，无法处理jb2文件")
+            return
+        
+        # todo ib2 转png C:/msys64/mingw64/bin/jbig2dec.exe -o F:\code\easyofd\test\image_80.png F:\code\easyofd\test\image_80.jb2
+        fileName = img_d["fileName"]
+        new_fileName = img_d['fileName'].replace(".jb2",".png")
+        with open(fileName, "wb") as f:
+            f.write(base64.b64decode(img_d["imgb64"]))
+        
+        command = "{} -o {} {}"
+        res=os.system(command.format(self.jbig2dec_path, new_fileName ,fileName))
+        if res != 0:
+            logger.warning(f"jbig2dec处理失败")
+        if  os.path.exists(fileName):
+            os.remove(fileName)
+        if  os.path.exists(new_fileName):
+            logger.info(f"jbig2dec处理成功{fileName}>>{new_fileName}")
+            img_d["fileName"] = new_fileName
+            img_d["suffix"] = "png"
+            img_d["format"] = "png"
+            with open(new_fileName,"rb") as f:
+                data = f.read()
+                img_d["imgb64"] =  str(base64.b64encode(data),encoding="utf-8") 
+               
+            os.remove(new_fileName)
+        
     def parser(self, ):
         """
         解析流程
@@ -94,6 +128,8 @@ class OFDParser(object):
             # 找到图片b64
             for img_id,img_v in img_info.items(): 
                 img_v["imgb64"] = self.get_xml_obj(img_v.get("fileName"))
+                if img_v["suffix"] == 'jb2': # todo ib2 转png C:/msys64/mingw64/bin/jbig2dec.exe -o F:\code\easyofd\test\image_80.png F:\code\easyofd\test\image_80.jb2
+                    self.jb22png(img_v)
         
         # 正文信息 会有多页 情况
         page_name:list = doc_root_info.get("page")

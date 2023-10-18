@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ofd:Res xmlns:ofd="http://www.ofdspec.org/2016" BaseLoc="Res"><ofd:ColorSpaces><ofd:ColorSpace ID="5" Type="RGB" BitsPerComponent="8"/></ofd:ColorSpaces><ofd:Fonts><ofd:Font ID="29" FontName="楷体" FamilyName="楷体"/><ofd:Font ID="61" FontName="KaiTi" FamilyName="KaiTi"/><ofd:Font ID="63" FontName="宋体" FamilyName="宋体"/><ofd:Font ID="66" FontName="Courier New" FamilyName="Courier New"/></ofd:Fonts></ofd:Res>
