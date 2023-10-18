@@ -27,7 +27,15 @@ class OFD2PDF(object):
         实现流程
         """
         data = OFDParser(ofdb64)()
+        print(data)
         return DrawPDF(data)()
+
+class OFD2IMG(object):
+    """_summary_
+
+    Args:
+        object (_type_): _description_
+    """
     
 if __name__ == "__main__":
     with open(r"E:\code\easyofd\test\增值税电子专票5.ofd","rb") as f:
