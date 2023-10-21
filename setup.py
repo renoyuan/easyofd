@@ -6,18 +6,27 @@ with open("README.md", "r", encoding="utf-8") as fh:
  
 setuptools.setup(
     name="easyofd", 
-    version="0.0.9",    
+    version="0.0.10",    
     author="renoyuan",    
     author_email="renoyuan@foxmail.com",    
-    description="easy parser OFD",
+    description="easy operate OFD",
     long_description=long_description,   
     long_description_content_type="text/markdown",
     url="https://github.com/renoyuan/easyofd",    
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(exclude=["README.md",".vscode", ".vscode.*", ".git", ".git.*"]),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: Apache License",
         "Operating System :: OS Independent",
     ],
+    install_requires=[   ### 依赖包
+        "reportlab>=3.6.11",
+        "xmltodict>=0.13.0",
+        "numpy>=1.26.1"
+        "loguru>=0.7.2",
+        "fontTools>=4.43.1",
+        "PyMuPDF>=1.23.4",
+        "opencv-python>=4.6.0.66"
+                     ],
     python_requires='>=3.8',   
 )
