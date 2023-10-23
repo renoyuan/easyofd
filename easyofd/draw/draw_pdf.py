@@ -24,7 +24,7 @@ from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib import fonts as reportlab_fonts
 
-from draw.font_tools import FontTool
+from easyofd.draw.font_tools import FontTool
 logger = logging.getLogger("root")
 
 # print(reportlab_fonts)

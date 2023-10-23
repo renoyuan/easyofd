@@ -1,3 +1,3 @@
-from .parser_ofd import *
-from .draw import *
-from .main import OFD2PDF
+from .ofd import OFD
+
+__all__ = ["OFD"]

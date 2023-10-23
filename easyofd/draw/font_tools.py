@@ -42,10 +42,13 @@ from concurrent.futures import ThreadPoolExecutor
 import threading
 import multiprocessing
 import PIL
-from draw import  FONTS
+
 
 from reportlab.lib.fonts import _tt2ps_map 
 from reportlab.lib.fonts import _family_alias 
+
+from easyofd.draw import  FONTS
+
 logger = logging.getLogger("root")
 
 

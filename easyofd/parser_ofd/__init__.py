@@ -5,7 +5,7 @@ from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfbase.ttfonts import TTFont
 
 # from ofd_parser import *
-from .ofd_parser import OFDParser
+
 
 font_map = {"simsun.ttc":["宋体","SWPMEH+SimSun","SimSun","SWDKON+SimSun"],
             'simkai.ttf':["KaiTi","楷体","SWLCQE+KaiTi","SWHGME+KaiTi","BWSimKai"],
@@ -22,7 +22,8 @@ for font,names in font_map.items():
             pdfmetrics.registerFont(TTFont(name, font))
         except:
             logger.warning(f"FONT  registerFont failed {font}: {name}")
-            
+
+from easyofd.parser_ofd.ofd_parser import OFDParser
 __all__=["OFDParser"]
                                     
 

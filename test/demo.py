@@ -9,7 +9,10 @@ import sys
 import os
 project_dir = os.path.join(os.path.dirname(os.getcwd()),"easyofd")
 pkg_dir = os.path.dirname(os.getcwd())
-sys.path.insert(0,project_dir)
+
+# print(project_dir)
+print(pkg_dir)
+# sys.path.insert(0,project_dir)
 sys.path.insert(0,pkg_dir)
 import base64
 from PIL import Image

@@ -2,7 +2,7 @@ from reportlab.pdfbase import pdfmetrics
 
 
 
-from parser_ofd import *
+from easyofd.parser_ofd import *
 
 FONTS = ['宋体',"SWPMEH+SimSun",'SimSun','KaiTi','楷体',"STKAITI","SWLCQE+KaiTi",
          'Courier New','STSong-Light',"CourierNew","SWANVV+CourierNewPSMT",

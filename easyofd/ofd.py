@@ -17,8 +17,8 @@ import fitz
 import numpy as np
 from loguru import logger
 
-from parser_ofd import OFDParser
-from draw import DrawPDF
+from easyofd.parser_ofd import OFDParser
+from easyofd.draw import DrawPDF
 
 class OFD(object):
     """ofd对象"""
@@ -57,6 +57,7 @@ class OFD(object):
     def to_pdf(self,):
         """return ofdbytes"""
         assert self.data,f"data is None"
+        logger.info(f"to_pdf")
         return DrawPDF(self.data)()
     
     def to_jpg(self,format="jpg"):
@@ -66,6 +67,7 @@ class OFD(object):
         assert self.data,f"data is None"
         image_list = []
         pdfbytes = self.to_pdf()
+        
         doc = fitz.open(stream=pdfbytes, filetype="pdf")
       
         for page in doc:
@@ -77,6 +79,7 @@ class OFD(object):
             # print(image.shape)
             # print(image[2])
             image_list.append(image)
+        logger.info(f"to_jpg")
         return image_list
     
         

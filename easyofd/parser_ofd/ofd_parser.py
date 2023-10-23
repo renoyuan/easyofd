@@ -17,8 +17,8 @@ import re
 from typing import Any
 
 from loguru import logger
-from parser_ofd.file_deal import FileRead
-from parser_ofd.file_parser import OFDFileParser, DocumentFileParser, ContentFileParser,DocumentResFileParser,PublicResFileParser
+from .file_deal import FileRead
+from .file_parser import OFDFileParser, DocumentFileParser, ContentFileParser,DocumentResFileParser,PublicResFileParser
 
 
 
