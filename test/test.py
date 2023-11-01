@@ -13,10 +13,10 @@ from PIL import Image
 
 import numpy as np
 
-from easyofd.ofd import OFD
+from easyofd.ofd import OFD # 安装包
 
 if __name__ == "__main__":
-    with open(r"增值税电子专票5.ofd","rb") as f:
+    with open(r"015f85ea-e273-469d-8d73-aae89020e3e9.ofd","rb") as f:
         ofdb64 = str(base64.b64encode(f.read()),"utf-8")
     ofd = OFD()
     ofd.read(ofdb64) # 读取ofd
