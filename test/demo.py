@@ -24,6 +24,7 @@ from easyofd.ofd import OFD
 if __name__ == "__main__":
     with open(r"F:\code\easyofd\test\015f85ea-e273-469d-8d73-aae89020e3e9.ofd","rb") as f:
         ofdb64 = str(base64.b64encode(f.read()),"utf-8")
+  
     with open(r"F:\code\easyofd\test\test.pdf","rb") as f:
         pdfb64 = f.read()
     ofd = OFD()

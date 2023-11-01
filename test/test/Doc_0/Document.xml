@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ofd:Document xmlns:ofd="http://blog.yuanhaiying.cn/">
+	<ofd:CommonData>
+		<ofd:MaxUnitID>106</ofd:MaxUnitID>
+		<ofd:PageArea>
+			<ofd:PhysicalBox>0 0 215.89999 279.39999</ofd:PhysicalBox>
+		</ofd:PageArea>
+		<ofd:PublicRes>PublicRes.xml</ofd:PublicRes>
+		<ofd:DocumentRes>DocumentRes.xml</ofd:DocumentRes>
+	</ofd:CommonData>
+	<ofd:Pages>
+		<ofd:Page ID="0" BaseLoc="Pages/Page_0/Content.xml"></ofd:Page>
+	</ofd:Pages>
+</ofd:Document>

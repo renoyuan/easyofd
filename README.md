@@ -11,6 +11,7 @@
 
 3 ofd转图片
 
+4 pdf转ofd-暂不支持电子解析
 关于 jb2格式图片解析 
 使用了第三方库 jbig2dec 去读取jb2格式图片 参考下面链接安装使用jbig2dec 
 https://github.com/rillian/jbig2dec 

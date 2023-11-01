@@ -176,22 +176,23 @@ class OFDParser(object):
                     page_info_d[tpl_no] = tpl_info
                     page_info_d[tpl_no].sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
 
-            page_ID = 0 # 没遇到过doc多个的情况
-            doc_list.append({
-                "pdf_name": self.file_tree["pdf_name"],
-                "doc_no":page_ID,
-                "images":img_info,
-                "page_size":page_size,
-                "fonts":font_info,
-                "page_info":page_info_d        
-                            })
-            return doc_list
+        page_ID = 0 # 没遇到过doc多个的情况
+        doc_list.append({
+            "pdf_name": self.file_tree["pdf_name"],
+            "doc_no":page_ID,
+            "images":img_info,
+            "page_size":page_size,
+            "fonts":font_info,
+            "page_info":page_info_d        
+                        })
+        return doc_list
                
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         """
         输出ofd解析结果
         """
         self.file_tree = FileRead(self.ofdb64)()
+        # logger.info(self.file_tree)
         return self.parser()
     
 if __name__ == "__main__":

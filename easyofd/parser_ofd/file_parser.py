@@ -21,7 +21,7 @@ class FileParserBase(object):
     def __init__(self,xml_obj):
         assert xml_obj
         self.xml_obj = xml_obj
-   
+        # print(xml_obj)
     def recursion_ext(self,need_ext_obj,ext_list,key):
         """
         抽取需要xml要素

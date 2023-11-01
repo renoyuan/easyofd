@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ofd:Res xmlns:ofd="http://blog.yuanhaiying.cn/" BaseLoc="Res">
+	<ofd:ColorSpaces>
+		<ofd:ColorSpace ID="4" Type="RGB"></ofd:ColorSpace>
+	</ofd:ColorSpaces>
+	<ofd:Fonts>
+		<ofd:Font ID="69" FontName="STSong" FamilyName="SimSun" Serif="true" FixedWidth="true" Charset="prc"></ofd:Font>
+	</ofd:Fonts>
+</ofd:Res>

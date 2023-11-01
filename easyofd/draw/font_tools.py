@@ -49,7 +49,7 @@ from reportlab.lib.fonts import _family_alias
 
 from easyofd.draw import  FONTS
 
-logger = logging.getLogger("root")
+from loguru import logger
 
 
 
@@ -74,13 +74,21 @@ class FontTool(object):
         
         
     def register_font(self,file_name,FontName,font_b64):
+        
         if font_b64:
+            
             file_name = os.path.split(file_name)
+            # logger.error(f"file_name:{file_name}")
+            # logger.info(f"file_name:{file_name}")
+            if isinstance(file_name,(tuple,list)):
+                    file_name = file_name[1]
+            if not FontName:
+                FontName =  file_name.split(".")[0]
             try:
                 with open(file_name,"wb") as f: 
                     f.write(base64.b64decode(font_b64))
                 
-                pdfmetrics.registerFont(TTFont(FontName, font_b64))
+                pdfmetrics.registerFont(TTFont(FontName, file_name))
                 self.FONTS.append(FontName)
                 
             except Exception as e:
@@ -88,6 +96,7 @@ class FontTool(object):
                 logger.error(f"register_font_error:\n{e}")
             
             finally:
+                
                 if os.path.exists(file_name):
                         os.remove(file_name)
         

@@ -25,7 +25,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib import fonts as reportlab_fonts
 
 from easyofd.draw.font_tools import FontTool
-logger = logging.getLogger("root")
+from loguru import logger
 
 # print(reportlab_fonts)
 class DrawPDF():
@@ -44,7 +44,26 @@ class DrawPDF():
         self.init_font = "宋体"
         self.font_tool = FontTool()
     
+   
+    
+    def draw_lines(my_canvas):
+        """
+        draw_line
+        """
+        my_canvas.setLineWidth(.3)
+        
+        start_y = 710
+        my_canvas.line(30, start_y, 580, start_y)
+    
+        for x in range(10):
+            start_y -= 10
+            my_canvas.line(30, start_y, 580, start_y)
+    
+ 
+
     def gen_empty_pdf(self):
+        """
+        """
         c = canvas.Canvas(self.pdf_io)
         c.setPageSize(A4)
         c.setFont(self.init_font, 20)
@@ -153,11 +172,16 @@ class DrawPDF():
                     font_info = fonts.get(line_dict.get("font"),{})
                     if font_info:
                         font_name = font_info.get("FontName","")
-                        # TODO 判断是否通用已有字体 否则匹配相近字体使用
                     else:
                         font_name = self.init_font
+                        
+                    # TODO 判断是否通用已有字体 否则匹配相近字体使用
+                    if font_name not in self.font_tool.FONTS:
+                        font_name = self.font_tool.FONTS[0]
+                    
                     font=font_name
-
+                    # if font not in FONT: #  KeyError: 'SWDRSO+KaiTi-KaiTi-0'
+                        
                     c.setFont(font, line_dict["size"]*self.OP)
                     # 原点在页面的左下角 
                     color = line_dict.get("color",[0,0,0])

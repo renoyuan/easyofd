@@ -18,7 +18,7 @@ import numpy as np
 from loguru import logger
 
 from easyofd.parser_ofd import OFDParser
-from easyofd.draw import DrawPDF
+from easyofd.draw import DrawPDF,OFDWrite
 
 class OFD(object):
     """ofd对象"""
@@ -53,9 +53,14 @@ class OFD(object):
         """
         assert self.data,f"data is None"
 
+    def pdf2ofd(self,pdfbyte):
+        """pdf转ofd"""
+        ofd_byte = OFDWrite()(pdfbyte)
+        return ofd_byte
     
     def to_pdf(self,):
         """return ofdbytes"""
+
         assert self.data,f"data is None"
         logger.info(f"to_pdf")
         return DrawPDF(self.data)()

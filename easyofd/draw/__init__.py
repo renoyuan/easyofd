@@ -11,6 +11,7 @@ FONTS = ['宋体',"SWPMEH+SimSun",'SimSun','KaiTi','楷体',"STKAITI","SWLCQE+Ka
 
 from .font_tools import FontTool
 from .draw_pdf import DrawPDF
+from .draw_ofd import OFDWrite
 
 
 

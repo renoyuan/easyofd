@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ofd:OFD xmlns:ofd="http://blog.yuanhaiying.cn/" Version="1.1" DocType="OFD">
+	<ofd:DocBody>
+		<ofd:DocInfo>
+			<ofd:DocID>0C1D4F7159954EEEDE517F7285E84DC4</ofd:DocID>
+			<ofd:Creator>easyofd</ofd:Creator>
+			<ofd:author>renoyuan</ofd:author>
+			<ofd:authoremail>renoyuan@foxmail.com</ofd:authoremail>
+			<ofd:CreatorVersion>1.0</ofd:CreatorVersion>
+			<ofd:CreationDate>2023-10-27</ofd:CreationDate>
+		</ofd:DocInfo>
+		<ofd:DocRoot>Doc_0/Document.xml</ofd:DocRoot>
+	</ofd:DocBody>
+</ofd:OFD>
