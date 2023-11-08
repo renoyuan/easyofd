@@ -65,6 +65,25 @@ class OFD(object):
         logger.info(f"to_pdf")
         return DrawPDF(self.data)()
     
+    def pdf2img(self,pdfbytes):
+        
+        image_list = []
+      
+        
+        doc = fitz.open(stream=pdfbytes, filetype="pdf")
+      
+        for page in doc:
+            rotate = int(0)
+            zoom_x, zoom_y = 1.6, 1.6
+            mat = fitz.Matrix(zoom_x, zoom_y).prerotate(rotate)
+            pix = page.get_pixmap(matrix=mat, alpha=False)
+            image = np.ndarray((pix.height, pix.width, 3), dtype=np.uint8, buffer=pix.samples)
+            # print(image.shape)
+            # print(image[2])
+            image_list.append(image)
+        logger.info(f"to_jpg")
+        return image_list
+    
     def to_jpg(self,format="jpg"):
         """
         return numpy list

@@ -30,7 +30,7 @@ if __name__ == "__main__":
     ofd = OFD()
     # ofd.read(ofdb64) # 读取ofd
     # print(ofd.data)
-    ofd_bytes = ofd.pdf2ofd(pdfb64) # 转ofd
+    # ofd_bytes = ofd.pdf2ofd(pdfb64) # 转ofd
     # pdf_bytes = ofd.to_pdf() # 转pdf
     # img_np = ofd.to_jpg() # 转图片
     # ofd.del_data()
