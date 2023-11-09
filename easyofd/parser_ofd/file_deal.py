@@ -44,6 +44,11 @@ class FileRead(object):
         with zipfile.ZipFile(self.zip_path, 'r') as f:
             for file in f.namelist():
                 f.extract(file, path=self.unzip_path)
+        if self.save_xml:
+            print("saving xml {}".format(self.xml_name))
+            with zipfile.ZipFile(self.zip_path, 'r') as f:
+                for file in f.namelist():
+                    f.extract(file, path=self.xml_name)
        
     def buld_file_tree(self):
         "xml读取对象其他b64"
@@ -65,6 +70,9 @@ class FileRead(object):
             os.remove(self.zip_path)
                    
     def __call__(self, *args: Any, **kwds: Any) -> Any:
+        self.save_xml=kwds.get("save_xml",False)
+        self.xml_name=kwds.get("xml_name")
+    
         self.unzip_file()
         self.buld_file_tree()
         return self.file_tree 

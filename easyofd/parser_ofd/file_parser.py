@@ -155,7 +155,7 @@ class ContentFileParser(FileParserBase):
                 if not row.get('ofd:TextCode',{}).get('#text'):
                     continue
                 cell_d = {}
-                
+                cell_d ["ID"] = row['@ID'] # 字体
                 # 字体字形信息
                 if row.get("ofd:CGTransform"):
                     Glyphs_d = {

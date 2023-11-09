@@ -25,7 +25,7 @@ class OFD(object):
     def __init__(self,):
         self.data = None 
         
-    def read(self,ofd_f,fomat="b64"):
+    def read(self,ofd_f,fomat="b64",save_xml=False, xml_name="testxml"):
         """_summary_
 
         Args:
@@ -43,7 +43,7 @@ class OFD(object):
         else:
             raise "fomat Error: %s" % fomat
         
-        self.data = OFDParser(ofd_f)() 
+        self.data = OFDParser(ofd_f)(save_xml=save_xml, xml_name=xml_name) 
     
     def save(self,):
         """

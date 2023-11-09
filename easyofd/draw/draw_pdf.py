@@ -10,6 +10,8 @@ import re
 import traceback
 import base64
 import logging
+import copy
+import json
 from PIL import Image as PILImage
 from io import BytesIO
 
@@ -73,18 +75,19 @@ class DrawPDF():
     # 单个字符偏移量计算
     def cmp_offset(self,pos,offset,DeltaRule,text,resize=1)->list:
         """
-        pos 文本框x|y 坐标
-        offset 初始偏移量
+        pos 文本框x|y 坐标 
+        offset 第一个字符的X|Y 
         DeltaRule 偏移量规则
-        
+        resize 字符坐标缩放
+        返回 x|y  字符位置list 
         """
 
-        char_pos = float(pos if pos else 0 ) + float(offset if offset else 0 )
+        char_pos = float(pos if pos else 0 ) + float(offset if offset else 0 )* resize
         pos_list = []
-        pos_list.append(char_pos)
+        pos_list.append(char_pos) # 放入第一个字符
         offsets = [i for i in DeltaRule.split(" ")]
 
-        if "g" in   DeltaRule:  
+        if "g" in   DeltaRule:  # g 代表多个元素
             g_no = None
             for _no, offset_i in enumerate(offsets) :
             
@@ -103,11 +106,11 @@ class DrawPDF():
                         char_pos += float(offset_i)  * resize
                         pos_list.append(char_pos)
                     
-        elif not DeltaRule:
+        elif not DeltaRule: # 没有字符偏移量 一般单字符
             pos_list = []
             for i in range(len(text)):
                 pos_list.append(char_pos)
-        else:
+        else: # 有字符偏移量
             for i in offsets:
                 if not i:
                     char_pos += 0
@@ -117,7 +120,7 @@ class DrawPDF():
                 
         return pos_list
         
-          
+                       
     def draw_pdf(self):
        
         c = canvas.Canvas(self.pdf_io)
@@ -134,7 +137,7 @@ class DrawPDF():
                 font_b64 = font_v.get("font_b64")
                 if font_b64:
                     self.font_tool.register_font(os.path.split(file_name)[1],font_v.get("@FontName"),font_b64)
-                       
+            # text_write = [] 
             for page_id,page in doc.get("page_info").items():     
                 text_list = page.get("text_list")
                 img_list = page.get("img_list")
@@ -146,7 +149,7 @@ class DrawPDF():
                 for img_d in img_list:
                     image = images.get(img_d["ResourceID"])
                     
-                    if image.get("suffix").upper() not in self.SupportImgType:
+                    if not image or image.get("suffix").upper() not in self.SupportImgType:
                         continue
                     
                     imgbyte = base64.b64decode(image.get('imgb64'))
@@ -166,8 +169,10 @@ class DrawPDF():
                     c.drawImage(imgReade,x,y ,w, h, 'auto')
 
                 # 写入文本
+                # text_list_cp =  copy.deepcopy(text_list)
+                # text_list_new = self.text_seria(text_list_cp)
                 for line_dict in text_list:
-                    # 默认整行写入 也可以按字符写入
+                    # TODO 写入前对于正文内容整体序列化一次 方便 查看最后输入值 对于最终 格式先
                     text = line_dict.get("text")
                     font_info = fonts.get(line_dict.get("font"),{})
                     if font_info:
@@ -218,22 +223,23 @@ class DrawPDF():
                         if len(text) > len(x_list) or len(text) > len(y_list) :
                             text = re.sub("[^\u4e00-\u9fa5]","",text)  
                         try:
-                            # 按行写入
+                            # 按行写入  最后一个字符y  算出来大于 y轴  最后一个字符x  算出来大于 x轴 
                             if y_list[-1]*self.OP > page_size[3]*self.OP or x_list[-1]*self.OP >page_size[2]*self.OP or x_list[-1]<0 or y_list[-1]<0 :
+                                # print("line wtite")
                                 x_p = abs(float(X) )*self.OP
                                 y_p = abs(float(page_size[3])-(float(Y)))*self.OP
-                                c.drawString( x_p,  y_p, text, mode=0) # mode=3 文字不可见 0可見
-                                X = line_dict.get("X","")
-                                Y = line_dict.get("Y","")
-
+                                c.drawString(x_p,  y_p, text, mode=0) # mode=3 文字不可见 0可見
+                           
+                                # text_write.append((x_p,  y_p, text))
                             # 按字符写入
                             else:
                                 for cahr_id, _cahr_ in enumerate(text) :
+                                    # print("char wtite")
                                     _cahr_x= float(x_list[cahr_id])*self.OP
                                     _cahr_y= (float(page_size[3])-(float(y_list[cahr_id])))*self.OP                                        
                                     c.drawString( _cahr_x,  _cahr_y, _cahr_, mode=0) # mode=3 文字不可见 0可見
                                 
-                      
+                                    # text_write.append((_cahr_x,  _cahr_y, _cahr_))
                             
                         except Exception as e:
                             logger.error(f"{e}")
@@ -241,6 +247,7 @@ class DrawPDF():
             
                 if page_id != len(doc.get("page_info"))-1  and doc_id != len(self.data): 
                     c.showPage()  
+            # json.dump(text_write,open("text_write.json","w",encoding="utf-8"),ensure_ascii=False)
         c.save()
         
     def __call__(self):

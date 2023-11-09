@@ -22,22 +22,26 @@ import numpy as np
 from easyofd.ofd import OFD
 
 if __name__ == "__main__":
-    with open(r"F:\code\easyofd\test\015f85ea-e273-469d-8d73-aae89020e3e9.ofd","rb") as f:
+    import json
+    with open(r"0e7ff724-1011-4544-8464-ea6c025f6ade.ofd","rb") as f:
         ofdb64 = str(base64.b64encode(f.read()),"utf-8")
   
     with open(r"F:\code\easyofd\test\test.pdf","rb") as f:
         pdfb64 = f.read()
     ofd = OFD()
-    # ofd.read(ofdb64) # 读取ofd
+    ofd.read(ofdb64,save_xml=True, xml_name="testxml") # 读取ofd
     # print(ofd.data)
-    # ofd_bytes = ofd.pdf2ofd(pdfb64) # 转ofd
-    # pdf_bytes = ofd.to_pdf() # 转pdf
+    data = ofd.data
+    json.dump(data,open("data.json","w",encoding="utf-8"),ensure_ascii=False,indent=4)
+    # print(ofd.data)
+    ofd_bytes = ofd.pdf2ofd(pdfb64) # 转ofd
+    pdf_bytes = ofd.to_pdf() # 转pdf
     # img_np = ofd.to_jpg() # 转图片
-    # ofd.del_data()
-    # with open(r"test.pdf","wb") as f:
-    #     f.write(pdf_bytes)
-    with open(r"test.ofd","wb") as f:
-        f.write(ofd_bytes)
+    ofd.del_data()
+    with open(r"test.pdf","wb") as f:
+        f.write(pdf_bytes)
+    # with open(r"test.ofd","wb") as f:
+    #     f.write(ofd_bytes)
     # for idx, img in enumerate(img_np):
     #     im = Image.fromarray(img)
     #     im.save(f"test_img{idx}.jpg")

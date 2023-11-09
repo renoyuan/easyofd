@@ -191,8 +191,11 @@ class OFDParser(object):
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         """
         输出ofd解析结果
+        
         """
-        self.file_tree = FileRead(self.ofdb64)()
+        save_xml=kwds.get("save_xml",False)
+        xml_name=kwds.get("xml_name")
+        self.file_tree = FileRead(self.ofdb64)(save_xml=save_xml,xml_name=xml_name)
         # logger.info(self.file_tree)
         return self.parser()
     
