@@ -141,7 +141,7 @@ class Ui_MainWindow(object):
         msgBox.exec()
     
     def check_file(self,name,endswith:str):
-        if name.lower().endswith("endswith"):
+        if name.lower().endswith(endswith):
             return True
     
     def save_file(self,name,bytes):
@@ -159,24 +159,25 @@ class Ui_MainWindow(object):
         for file in inputs:
             if mode == "ofd2pdf":
                 if self.check_file(file,"ofd"):
-                    ofdb64 = self.read_ofd(os.path.join(inputs,file))
+                    
+                    ofdb64 = self.read_ofd(os.path.join(input,file))
                     self.ofd.read(ofdb64)
                     pdf_bytes = self.ofd.to_pdf()
                     self.save_file(os.path.join(output,os.path.splitext(file)[0]+".pdf"), pdf_bytes)
             elif mode == "ofd2img":  
                 if self.check_file(file,"ofd"):
-                    ofdb64 = self.read_ofd(os.path.join(inputs,file))
+                    ofdb64 = self.read_ofd(os.path.join(input,file))
                     self.ofd.read(ofdb64)
                     img_np = self.ofd.to_jpg()
                     self.save_img(os.path.join(output,os.path.splitext(file)[0]+"_{}"+".jpg"), img_np)
             elif mode == "pdf2ofd":
                 if self.check_file(file,"pfd"):
-                    pfdbyte = self.read_pfd(os.path.join(inputs,file))
+                    pfdbyte = self.read_pfd(os.path.join(input,file))
                     ofd_byte = self.ofd.pdf2ofd(pfdbyte)
                     self.save_file(os.path.join(output,os.path.splitext(file)[0]+".ofd"), ofd_byte)
             elif mode == "pdf2img":
                 if self.check_file(file,"pfd"):
-                    pfdbyte = self.read_pfd(os.path.join(inputs,file))
+                    pfdbyte = self.read_pfd(os.path.join(input,file))
                     img_np = self.ofd.pdf2img(pfdbyte)
                     self.save_file(os.path.join(output,os.path.splitext(file)[0]+"_{}"+".jpg"), img_np)
                     
@@ -210,12 +211,16 @@ class Ui_MainWindow(object):
         if mode[0]:
             # TODO ofd2pdf
             print("ofd2pdf")
+            self.run_convert("ofd2pdf",input_path,output_path)
         elif mode[1]:
             print("ofd2img")
+            self.run_convert("ofd2img",input_path,output_path)
         elif mode[2]:
             print("pdf2ofd")
+            self.run_convert("pdf2ofd",input_path,output_path)
         elif mode[3]:
             print("pdf2img")
+            self.run_convert("pdf2img",input_path,output_path)
         # msg = f'{sender.text()} was pressed'
         # self.statusBar().showMessage(msg)
         

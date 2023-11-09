@@ -120,6 +120,7 @@ class OFDParser(object):
                 
         
         # 图片资源
+        img_info:dict = dict()
         document_res_name:list = doc_root_info.get("document_res")
         if document_res_name:
             document_res_xml_obj = self.get_xml_obj(document_res_name[0])
