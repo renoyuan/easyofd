@@ -9,6 +9,7 @@
 from io import BytesIO
 
 import xmltodict
+import cv2
 from PIL import Image
 from .pdf_parse import DPFParser
 from .ofdtemplate import OFDTemplate,DocumentTemplate,DocumentResTemplate,PulicResTemplate,ContentTemplate,OFDStructure
@@ -52,6 +53,7 @@ class OFDWrite(object):
         """一张图片是一页"""
         content_res_list = []
         for idx, pil_img in enumerate(pil_img_list):
+            print(pil_img)
             print(idx,pil_img[1],pil_img[2])
             PhysicalBox = f"0 0 {pil_img[1]} {pil_img[2]}"
             ImageObject = [{
@@ -93,11 +95,14 @@ class OFDWrite(object):
         img_bytesio.close()
         return img_bytes
     
-    def __call__(self,pdf_bytes):
+    def __call__(self,pdf_bytes,CV2_img_list=None):
         # 读取 pdf 转图片 
-        pdf_obj = DPFParser()
-        img_list = pdf_obj.to_img(pdf_bytes)
-        pil_img_list = [(self.pil_2_bytes(Image.frombytes("RGB", [_img.width, _img.height], _img.samples)),_img.width,_img.height) for _img in img_list]
+        if CV2_img_list:
+            pil_img_list = [(self.pil_2_bytes(Image.fromarray(cv2.cvtColor(_img,cv2.COLOR_BGR2RGB))),_img.shape[1],_img.shape[0] ) for _img in CV2_img_list]
+        else:
+            pdf_obj = DPFParser()
+            img_list = pdf_obj.to_img(pdf_bytes)
+            pil_img_list = [(self.pil_2_bytes(Image.frombytes("RGB", [_img.width, _img.height], _img.samples)),_img.width,_img.height) for _img in img_list]
         document = DocumentTemplate()
         pulic_res = self.build_pulic_res()
         document_res = self.build_document_res(len(pil_img_list))

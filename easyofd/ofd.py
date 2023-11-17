@@ -14,6 +14,7 @@ sys.path.insert(0,"..")
 from typing import Any
 
 import fitz
+import cv2
 import numpy as np
 from loguru import logger
 
@@ -84,6 +85,24 @@ class OFD(object):
         logger.info(f"to_jpg")
         return image_list
     
+    def jpg2ofd(self,imglist:list):
+        """
+        imglist: cv2 image list
+        """
+        
+        ofd_byte = OFDWrite()(None,CV2_img_list=imglist)
+        return ofd_byte
+    
+    def jpg2pfd(self,imglist:list ):
+        """
+        imglist: cv2 image list
+        1 构建data 
+        2 DrawPDF(self.data)()
+        """
+        
+        data = OFDParser(None).img2data(imglist)
+        return DrawPDF(data)()
+     
     def to_jpg(self,format="jpg"):
         """
         return numpy list

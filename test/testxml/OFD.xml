@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ofd:OFD xmlns:ofd="http://www.ofdspec.org/2016" DocType="OFD" Version="1.0"><ofd:DocBody><ofd:DocInfo><ofd:DocID>30e1e538e5f54c94a2e55ae6d4232db5</ofd:DocID>
+<ofd:Author>Administrator</ofd:Author>
+<ofd:CreationDate>2023-03-02</ofd:CreationDate>
+<ofd:ModDate>2023-03-02</ofd:ModDate>
+<ofd:Creator>SurRead Creator</ofd:Creator>
+<ofd:CreatorVersion>3.2.0.262</ofd:CreatorVersion>
+</ofd:DocInfo>
+<ofd:DocRoot>/Doc_0/Document.xml</ofd:DocRoot>
+</ofd:DocBody>
+</ofd:OFD>

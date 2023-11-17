@@ -27,6 +27,8 @@ class Ui_MainWindow(object):
     
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
+        icon = QtGui.QIcon(r'gui\ico\reno.ico')
+        MainWindow.setWindowIcon(icon)
         MainWindow.resize(744, 463)
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -133,6 +135,13 @@ class Ui_MainWindow(object):
 
         # 点击事件
         self.pushButton.clicked.connect(self.buttonClicked)
+        text = f"作者:{' '*5}renoyuan\r\n版本:{' '*5}1.0.0\n"
+
+        
+        # self.mebnu_2.triggered.connect(lambda: self.showDialog(text))
+        self.mebnu_2.aboutToShow.connect(lambda:self.showDialog(text))
+        exit_action = QtGui.QAction(self.mebnu_2)
+        exit_action.triggered.connect( self.showDialog)
         
     def showDialog(self,msg:str):  
         # QMessageBox.warning(self, 'Alert', msg, QMessageBox.Ok())  
@@ -183,7 +192,7 @@ class Ui_MainWindow(object):
                     
             self.ofd.del_data()
                 
-       
+        self.showDialog("执行完毕")
             
                 
         

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ofd:Res xmlns:ofd="http://www.ofdspec.org/2016" BaseLoc="Res"><ofd:Fonts><ofd:Font ID="36" FontName="SWTNEQ+KaiTi" FamilyName="SWTNEQ+KaiTi+19964" Serif="true" FixedWidth="true"><ofd:FontFile>font_36.otf</ofd:FontFile>
+</ofd:Font>
+<ofd:Font ID="49" FontName="SWEYPR+KaiTi" FamilyName="SWEYPR+KaiTi+3660" Serif="true" FixedWidth="true"><ofd:FontFile>font_49.otf</ofd:FontFile>
+</ofd:Font>
+<ofd:Font ID="97" FontName="SWWBRM+SimSun" FamilyName="SWWBRM+SimSun+6860" Serif="true"><ofd:FontFile>font_97.otf</ofd:FontFile>
+</ofd:Font>
+<ofd:Font ID="100" FontName="SWFFTR+SimSun" FamilyName="SWFFTR+SimSun+16956" Serif="true"><ofd:FontFile>font_100.otf</ofd:FontFile>
+</ofd:Font>
+<ofd:Font ID="108" FontName="SWPFQQ+CourierNewPSMT" FamilyName="SWPFQQ+CourierNewPSMT+12420" Serif="true" FixedWidth="true"><ofd:FontFile>font_108.otf</ofd:FontFile>
+</ofd:Font>
+<ofd:Font ID="113" FontName="SWGMYO+CourierNewPSMT" FamilyName="SWGMYO+CourierNewPSMT+5476" Serif="true" FixedWidth="true"><ofd:FontFile>font_113.otf</ofd:FontFile>
+</ofd:Font>
+</ofd:Fonts>
+<ofd:MultiMedias><ofd:MultiMedia ID="95" Type="Image"><ofd:MediaFile>95.jpeg</ofd:MediaFile>
+</ofd:MultiMedia>
+<ofd:MultiMedia ID="135" Type="Image"><ofd:MediaFile>135.png</ofd:MediaFile>
+</ofd:MultiMedia>
+</ofd:MultiMedias>
+</ofd:Res>

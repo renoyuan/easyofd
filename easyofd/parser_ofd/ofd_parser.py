@@ -14,6 +14,7 @@ sys.path.insert(0,"..")
 import traceback
 import base64
 import re
+import cv2
 from typing import Any
 
 from loguru import logger
@@ -34,6 +35,60 @@ class OFDParser(object):
         self.file_tree = None
         self.jbig2dec_path = r"C:/msys64/mingw64/bin/jbig2dec.exe"
       
+    def img2data(self,imglist):
+        """
+        imglist to ofd data
+        
+        """
+        OP = 200/25.4
+        doc_list = []
+        img_info = {}
+        page_size = []
+        font_info = {}
+        page_info_d = {}
+        
+        
+       
+        for idx, img_numpy in enumerate(imglist):
+            h,w,_=img_numpy.shape
+            _, img_encode = cv2.imencode('.jpg', img_numpy)
+            img_bytes = img_encode.tobytes()
+            imgb64 = str(base64.b64encode(img_bytes),encoding="utf-8")
+            img_info[str(idx)] = {
+                "format":  "jpg",
+                "wrap_pos":  "",
+                "type":  "IMG",
+                "suffix":  "jpg",
+                "fileName":  f"{idx}.jpg",
+                "imgb64":  imgb64,
+                
+            }
+            text_list = []
+            img_list = []
+            img_d = {}
+            img_d["CTM"] = "" # 平移矩阵换
+            img_d["ID"] = str(idx) # 图片id
+            img_d["ResourceID"] = str(idx) # 图片id
+            img_d["pos"] = [0,0,w/OP,h/OP] # 平移矩阵换
+            page_size = [0,0,w/OP,h/OP]
+            # print(page_size)
+            img_list.append(img_d)
+            
+            content_d = {
+        "text_list":text_list,
+        "img_list":img_list,
+                     }
+            page_info_d[idx]=content_d
+        doc_list.append({
+            "pdf_name": "demo.pdf",
+            "doc_no":"0",
+            "images":img_info,
+            "page_size":page_size,
+            "fonts":font_info,
+            "page_info":page_info_d        
+                        })
+        
+        return doc_list
     
     # 获得xml 对象
     def get_xml_obj(self, label):
