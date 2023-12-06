@@ -140,10 +140,12 @@ class ContentFileParser(FileParserBase):
         """
         text_list = []
         img_list = []
+        line_list = []
         
         content_d = {
         "text_list":text_list,
         "img_list":img_list,
+        "line_list":line_list,
                      }
         
         text:list = [] # 正文
@@ -185,7 +187,26 @@ class ContentFileParser(FileParserBase):
                 cell_d ["Y"] = row.get("ofd:TextCode",{}).get("@Y","") # Y 文本之与文本框距离
 
                 text_list.append(cell_d)
-            
+        
+        line:list = [] # 路径线条
+        line_key = "ofd:PathObject" 
+        self.recursion_ext(self.xml_obj,line,line_key)
+        
+        if line:
+            # print(line)
+            for _i in line:
+                line_d = {}
+                # print("line",_i)
+                line_d["ID"] = _i.get("@ID","") # 图片id
+                line_d["pos"] = [float(pos_i) for pos_i in _i['@Boundary'].split(" ")] # 平移矩阵换
+                line_d["LineWidth"] = _i.get("@LineWidth","") # 图片id
+                line_d["AbbreviatedData"] = _i.get("ofd:AbbreviatedData","") # 路径指令
+                line_d["FillColor"] = _i.get("ofd:FillColor",{}).get('@Value',"0 0 0").split(" ") # 颜色
+                line_d["StrokeColor"] = _i.get("ofd:StrokeColor",{}).get('@Value',"0 0 0") # 颜色
+
+              
+                line_list.append(line_d)
+        
         img:list = [] # 图片
         img_key = "ofd:ImageObject"
         self.recursion_ext(self.xml_obj,img,img_key)

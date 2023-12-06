@@ -14,6 +14,7 @@ import xmltodict
 import zipfile
 
 __all__ = ["OFDTemplate","DocumentTemplate","DocumentResTemplate","PulicResTemplate","ContentTemplate","OFDStructure"]
+
 class TemplateBase(object):
     """模板基类"""
     key_map = {}
@@ -69,7 +70,6 @@ class OFDTemplate(TemplateBase):
         }
     }
 
-        
 class DocumentTemplate(TemplateBase):
     """DOC 内唯一 表示DOC内部结构"""
     key_map = {"Page":"ofd:Page"}
@@ -94,8 +94,6 @@ class DocumentTemplate(TemplateBase):
     }
 }
     
-
-
 class DocumentResTemplate(TemplateBase):
     """DOC 内唯一 表示MultyMedia 资源信息 如 图片 """
     key_map = {"MultiMedia":"ofd:MultiMedia"}
@@ -114,7 +112,6 @@ class DocumentResTemplate(TemplateBase):
         }
     }
 }   
-
 
 class PulicResTemplate(TemplateBase):
     """DOC 内唯一 公共配置资源信息 如 Font  Color 等"""
@@ -145,10 +142,7 @@ class PulicResTemplate(TemplateBase):
         }
     }
 }
-
-
-                    
-        
+  
 class ContentTemplate(TemplateBase):
     """正文部分"""
     key_map = {"ImageObject":"ofd:ImageObject",
@@ -229,9 +223,7 @@ class ContentTemplate(TemplateBase):
                     }],
                 }            
         }}}
-
-                    
-                    
+                                        
 class OFDStructure(object):
     """OFD structure"""
     def __init__(self,name,ofd=OFDTemplate(),document=DocumentTemplate(),document_res=DocumentResTemplate(),pulic_res=PulicResTemplate(),content_res:list=[ContentTemplate()],res_static:dict={}):
@@ -291,7 +283,6 @@ class OFDStructure(object):
             if os.path.exists("test.ofd"):
                os.remove("test.ofd") 
             return content
-
 
 if  __name__ == "__main__":
     

@@ -120,7 +120,145 @@ class DrawPDF():
                 
         return pos_list
         
-                       
+    def draw_chars(self,canvas,text_list,fonts,page_size):
+        """写入字符"""
+        c = canvas
+        for line_dict in text_list:
+            # TODO 写入前对于正文内容整体序列化一次 方便 查看最后输入值 对于最终 格式先
+            text = line_dict.get("text")
+            font_info = fonts.get(line_dict.get("font"),{})
+            if font_info:
+                font_name = font_info.get("FontName","")
+            else:
+                font_name = self.init_font
+                
+            # TODO 判断是否通用已有字体 否则匹配相近字体使用
+            if font_name not in self.font_tool.FONTS:
+                font_name = self.font_tool.FONTS[0]
+            
+            font=font_name
+            # if font not in FONT: #  KeyError: 'SWDRSO+KaiTi-KaiTi-0'
+                
+            c.setFont(font, line_dict["size"]*self.OP)
+            # 原点在页面的左下角 
+            color = line_dict.get("color",[0,0,0])
+            c.setFillColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
+            c.setStrokeColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
+            
+            DeltaX = line_dict.get("DeltaX","")
+            DeltaY = line_dict.get("DeltaY","")
+            X = line_dict.get("X","")
+            Y = line_dict.get("Y","")
+            CTM = line_dict.get("CTM","") # 因为ofd 的傻逼 增加这个字符缩放
+            resizeX =1
+            resizeY =1
+            if CTM :
+                resizeX = float(CTM.split(" ")[0])
+                resizeY = float(CTM.split(" ")[3])
+        
+            x_list = self.cmp_offset(line_dict.get("pos")[0],X,DeltaX,text,resizeX)
+            y_list = self.cmp_offset(line_dict.get("pos")[1],Y,DeltaY,text,resizeY)
+            
+
+            # if line_dict.get("Glyphs_d") and  FontFilePath.get(line_dict["font"])  and font_f not in FONTS:
+            if False: # 对于自定义字体 写入字形 drawPath 性能差暂时作废
+                Glyphs = [int(i) for i in line_dict.get("Glyphs_d").get("Glyphs").split(" ")]
+                for idx,Glyph_id in enumerate(Glyphs):
+                    _cahr_x= float(x_list[idx])*self.OP
+                    _cahr_y= (float(page_size[3])-(float(y_list[idx])))*self.OP
+                    imageFile = draw_Glyph( FontFilePath.get(line_dict["font"]), Glyph_id,text[idx])
+                    
+                    # font_img_info.append((FontFilePath.get(line_dict["font"]), Glyph_id,text[idx],_cahr_x,_cahr_y,-line_dict["size"]*Op*2,line_dict["size"]*Op*2))
+                    c.drawImage(imageFile,_cahr_x,_cahr_y,-line_dict["size"]*self.OP*2,line_dict["size"]*self.OP*2  )
+                    
+            else:
+                if len(text) > len(x_list) or len(text) > len(y_list) :
+                    text = re.sub("[^\u4e00-\u9fa5]","",text)  
+                try:
+                    # 按行写入  最后一个字符y  算出来大于 y轴  最后一个字符x  算出来大于 x轴 
+                    if y_list[-1]*self.OP > page_size[3]*self.OP or x_list[-1]*self.OP >page_size[2]*self.OP or x_list[-1]<0 or y_list[-1]<0 :
+                        # print("line wtite")
+                        x_p = abs(float(X) )*self.OP
+                        y_p = abs(float(page_size[3])-(float(Y)))*self.OP
+                        c.drawString(x_p,  y_p, text, mode=0) # mode=3 文字不可见 0可見
+                    
+                        # text_write.append((x_p,  y_p, text))
+                    # 按字符写入
+                    else:
+                        for cahr_id, _cahr_ in enumerate(text) :
+                            # print("char wtite")
+                            _cahr_x= float(x_list[cahr_id])*self.OP
+                            _cahr_y= (float(page_size[3])-(float(y_list[cahr_id])))*self.OP                                        
+                            c.drawString( _cahr_x,  _cahr_y, _cahr_, mode=0) # mode=3 文字不可见 0可見
+                        
+                            # text_write.append((_cahr_x,  _cahr_y, _cahr_))
+                    
+                except Exception as e:
+                    logger.error(f"{e}")
+                    traceback.print_exc()     
+    
+    def draw_img(self,canvas,img_list,images,page_size):
+        """写入图片"""
+        c = canvas
+        for img_d in img_list:
+            image = images.get(img_d["ResourceID"])
+            
+            if not image or image.get("suffix").upper() not in self.SupportImgType:
+                continue
+            
+            imgbyte = base64.b64decode(image.get('imgb64'))
+            img = PILImage.open(BytesIO(imgbyte))
+            imgReade  = ImageReader(img)
+            CTM = img_d.get('CTM')
+            x_offset = 0
+            y_offset = 0
+            wrap_pos = image.get("wrap_pos")
+            x = (img_d.get('pos')[0]+x_offset)*self.OP
+            y = (page_size[3] - (img_d.get('pos')[1]+y_offset))*self.OP
+            if wrap_pos:
+                x = x+(wrap_pos[0]*self.OP)
+                y = y-(wrap_pos[1]*self.OP)
+            w =   img_d.get('pos')[2]*self.OP
+            h =  -img_d.get('pos')[3]*self.OP
+            c.drawImage(imgReade,x,y ,w, h, 'auto')
+                    
+    def draw_line(self,canvas,line_list,page_size):
+        """绘制线条"""
+        # print("绘制",line_list)
+        for line in line_list:
+            Abbr = line.get("AbbreviatedData").split(" ")  # AbbreviatedData 
+            color = line.get("FillColor",[0,0,0])
+            
+            
+            pos = line.get("pos")
+            if Abbr[0]=="M" and Abbr[3] == "L": # 转成坐标
+                # print("有的样式")
+                # print(pos)
+                # print(Abbr)
+                # print(page_size)
+                # print(self.OP)
+                # print(color)
+                x1,y1,x2,y2 = line.get('pos')[0]+float(Abbr[1]),line.get('pos')[1]+float(Abbr[2]),line.get('pos')[0]+float(Abbr[4]),line.get('pos')[1]+float(Abbr[5])
+                x1,y1,x2,y2 = x1*self.OP,(page_size[3] -y1)*self.OP,x2*self.OP,(page_size[3] -y2)*self.OP
+                # print(x1,y1,x2,y2)
+            else:
+                # print("没有的样式")
+                # print(Abbr)
+                continue
+            # canvas.setFillColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
+            # print(*(int(color[0])/255,int(color[1])/255, int(color[2])/255))
+            # print(*(int(color[0]),int(color[1]), int(color[2])))
+            canvas.setStrokeColorRGB(*(int(color[0])/255,int(color[1])/255, int(color[2])/255))
+            LineWidth = float(line.get("LineWidth","0.25")) * self.OP
+
+            # 设置线条宽度
+            canvas.setLineWidth(LineWidth)  # 单位为点，2 表示 2 点
+
+            # 绘制一条线 x1 y1 x2 y2
+            canvas.line(x1,y1,x2,y2)
+            
+
+
     def draw_pdf(self):
        
         c = canvas.Canvas(self.pdf_io)
@@ -141,110 +279,119 @@ class DrawPDF():
             for page_id,page in doc.get("page_info").items():     
                 text_list = page.get("text_list")
                 img_list = page.get("img_list")
+                line_list = page.get("line_list")
                 # print("img_list",img_list)
               
                 c.setPageSize((page_size[2]*self.OP, page_size[3]*self.OP))
 
                 # 写入图片
-                for img_d in img_list:
-                    image = images.get(img_d["ResourceID"])
+                self.draw_img(c,img_list,images,page_size)
+                
+                # for img_d in img_list:
+                #     image = images.get(img_d["ResourceID"])
                     
-                    if not image or image.get("suffix").upper() not in self.SupportImgType:
-                        continue
+                #     if not image or image.get("suffix").upper() not in self.SupportImgType:
+                #         continue
                     
-                    imgbyte = base64.b64decode(image.get('imgb64'))
-                    img = PILImage.open(BytesIO(imgbyte))
-                    imgReade  = ImageReader(img)
-                    CTM = img_d.get('CTM')
-                    x_offset = 0
-                    y_offset = 0
-                    wrap_pos = image.get("wrap_pos")
-                    x = (img_d.get('pos')[0]+x_offset)*self.OP
-                    y = (page_size[3] - (img_d.get('pos')[1]+y_offset))*self.OP
-                    if wrap_pos:
-                        x = x+(wrap_pos[0]*self.OP)
-                        y = y-(wrap_pos[1]*self.OP)
-                    w =   img_d.get('pos')[2]*self.OP
-                    h =  -img_d.get('pos')[3]*self.OP
-                    c.drawImage(imgReade,x,y ,w, h, 'auto')
+                #     imgbyte = base64.b64decode(image.get('imgb64'))
+                #     img = PILImage.open(BytesIO(imgbyte))
+                #     imgReade  = ImageReader(img)
+                #     CTM = img_d.get('CTM')
+                #     x_offset = 0
+                #     y_offset = 0
+                #     wrap_pos = image.get("wrap_pos")
+                #     x = (img_d.get('pos')[0]+x_offset)*self.OP
+                #     y = (page_size[3] - (img_d.get('pos')[1]+y_offset))*self.OP
+                #     if wrap_pos:
+                #         x = x+(wrap_pos[0]*self.OP)
+                #         y = y-(wrap_pos[1]*self.OP)
+                #     w =   img_d.get('pos')[2]*self.OP
+                #     h =  -img_d.get('pos')[3]*self.OP
+                #     c.drawImage(imgReade,x,y ,w, h, 'auto')
 
                 # 写入文本
                 # text_list_cp =  copy.deepcopy(text_list)
                 # text_list_new = self.text_seria(text_list_cp)
-                for line_dict in text_list:
-                    # TODO 写入前对于正文内容整体序列化一次 方便 查看最后输入值 对于最终 格式先
-                    text = line_dict.get("text")
-                    font_info = fonts.get(line_dict.get("font"),{})
-                    if font_info:
-                        font_name = font_info.get("FontName","")
-                    else:
-                        font_name = self.init_font
-                        
-                    # TODO 判断是否通用已有字体 否则匹配相近字体使用
-                    if font_name not in self.font_tool.FONTS:
-                        font_name = self.font_tool.FONTS[0]
-                    
-                    font=font_name
-                    # if font not in FONT: #  KeyError: 'SWDRSO+KaiTi-KaiTi-0'
-                        
-                    c.setFont(font, line_dict["size"]*self.OP)
-                    # 原点在页面的左下角 
-                    color = line_dict.get("color",[0,0,0])
-                    c.setFillColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
-                    c.setStrokeColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
-                    
-                    DeltaX = line_dict.get("DeltaX","")
-                    DeltaY = line_dict.get("DeltaY","")
-                    X = line_dict.get("X","")
-                    Y = line_dict.get("Y","")
-                    CTM = line_dict.get("CTM","") # 因为ofd 的傻逼 增加这个字符缩放
-                    resizeX =1
-                    resizeY =1
-                    if CTM :
-                        resizeX = float(CTM.split(" ")[0])
-                        resizeY = float(CTM.split(" ")[3])
+                self.draw_chars(c,text_list,fonts,page_size)
                 
-                    x_list = self.cmp_offset(line_dict.get("pos")[0],X,DeltaX,text,resizeX)
-                    y_list = self.cmp_offset(line_dict.get("pos")[1],Y,DeltaY,text,resizeY)
+                
+                # for line_dict in text_list:
+                #     # TODO 写入前对于正文内容整体序列化一次 方便 查看最后输入值 对于最终 格式先
+                #     text = line_dict.get("text")
+                #     font_info = fonts.get(line_dict.get("font"),{})
+                #     if font_info:
+                #         font_name = font_info.get("FontName","")
+                #     else:
+                #         font_name = self.init_font
+                        
+                #     # TODO 判断是否通用已有字体 否则匹配相近字体使用
+                #     if font_name not in self.font_tool.FONTS:
+                #         font_name = self.font_tool.FONTS[0]
+                    
+                #     font=font_name
+                #     # if font not in FONT: #  KeyError: 'SWDRSO+KaiTi-KaiTi-0'
+                        
+                #     c.setFont(font, line_dict["size"]*self.OP)
+                #     # 原点在页面的左下角 
+                #     color = line_dict.get("color",[0,0,0])
+                #     c.setFillColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
+                #     c.setStrokeColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
+                    
+                #     DeltaX = line_dict.get("DeltaX","")
+                #     DeltaY = line_dict.get("DeltaY","")
+                #     X = line_dict.get("X","")
+                #     Y = line_dict.get("Y","")
+                #     CTM = line_dict.get("CTM","") # 因为ofd 的傻逼 增加这个字符缩放
+                #     resizeX =1
+                #     resizeY =1
+                #     if CTM :
+                #         resizeX = float(CTM.split(" ")[0])
+                #         resizeY = float(CTM.split(" ")[3])
+                
+                #     x_list = self.cmp_offset(line_dict.get("pos")[0],X,DeltaX,text,resizeX)
+                #     y_list = self.cmp_offset(line_dict.get("pos")[1],Y,DeltaY,text,resizeY)
                     
 
-                    # if line_dict.get("Glyphs_d") and  FontFilePath.get(line_dict["font"])  and font_f not in FONTS:
-                    if False: # 对于自定义字体 写入字形 drawPath 性能差暂时作废
-                        Glyphs = [int(i) for i in line_dict.get("Glyphs_d").get("Glyphs").split(" ")]
-                        for idx,Glyph_id in enumerate(Glyphs):
-                            _cahr_x= float(x_list[idx])*self.OP
-                            _cahr_y= (float(page_size[3])-(float(y_list[idx])))*self.OP
-                            imageFile = draw_Glyph( FontFilePath.get(line_dict["font"]), Glyph_id,text[idx])
+                #     # if line_dict.get("Glyphs_d") and  FontFilePath.get(line_dict["font"])  and font_f not in FONTS:
+                #     if False: # 对于自定义字体 写入字形 drawPath 性能差暂时作废
+                #         Glyphs = [int(i) for i in line_dict.get("Glyphs_d").get("Glyphs").split(" ")]
+                #         for idx,Glyph_id in enumerate(Glyphs):
+                #             _cahr_x= float(x_list[idx])*self.OP
+                #             _cahr_y= (float(page_size[3])-(float(y_list[idx])))*self.OP
+                #             imageFile = draw_Glyph( FontFilePath.get(line_dict["font"]), Glyph_id,text[idx])
                             
-                            # font_img_info.append((FontFilePath.get(line_dict["font"]), Glyph_id,text[idx],_cahr_x,_cahr_y,-line_dict["size"]*Op*2,line_dict["size"]*Op*2))
-                            c.drawImage(imageFile,_cahr_x,_cahr_y,-line_dict["size"]*self.OP*2,line_dict["size"]*self.OP*2  )
+                #             # font_img_info.append((FontFilePath.get(line_dict["font"]), Glyph_id,text[idx],_cahr_x,_cahr_y,-line_dict["size"]*Op*2,line_dict["size"]*Op*2))
+                #             c.drawImage(imageFile,_cahr_x,_cahr_y,-line_dict["size"]*self.OP*2,line_dict["size"]*self.OP*2  )
                             
-                    else:
-                        if len(text) > len(x_list) or len(text) > len(y_list) :
-                            text = re.sub("[^\u4e00-\u9fa5]","",text)  
-                        try:
-                            # 按行写入  最后一个字符y  算出来大于 y轴  最后一个字符x  算出来大于 x轴 
-                            if y_list[-1]*self.OP > page_size[3]*self.OP or x_list[-1]*self.OP >page_size[2]*self.OP or x_list[-1]<0 or y_list[-1]<0 :
-                                # print("line wtite")
-                                x_p = abs(float(X) )*self.OP
-                                y_p = abs(float(page_size[3])-(float(Y)))*self.OP
-                                c.drawString(x_p,  y_p, text, mode=0) # mode=3 文字不可见 0可見
+                #     else:
+                #         if len(text) > len(x_list) or len(text) > len(y_list) :
+                #             text = re.sub("[^\u4e00-\u9fa5]","",text)  
+                #         try:
+                #             # 按行写入  最后一个字符y  算出来大于 y轴  最后一个字符x  算出来大于 x轴 
+                #             if y_list[-1]*self.OP > page_size[3]*self.OP or x_list[-1]*self.OP >page_size[2]*self.OP or x_list[-1]<0 or y_list[-1]<0 :
+                #                 # print("line wtite")
+                #                 x_p = abs(float(X) )*self.OP
+                #                 y_p = abs(float(page_size[3])-(float(Y)))*self.OP
+                #                 c.drawString(x_p,  y_p, text, mode=0) # mode=3 文字不可见 0可見
                            
-                                # text_write.append((x_p,  y_p, text))
-                            # 按字符写入
-                            else:
-                                for cahr_id, _cahr_ in enumerate(text) :
-                                    # print("char wtite")
-                                    _cahr_x= float(x_list[cahr_id])*self.OP
-                                    _cahr_y= (float(page_size[3])-(float(y_list[cahr_id])))*self.OP                                        
-                                    c.drawString( _cahr_x,  _cahr_y, _cahr_, mode=0) # mode=3 文字不可见 0可見
+                #                 # text_write.append((x_p,  y_p, text))
+                #             # 按字符写入
+                #             else:
+                #                 for cahr_id, _cahr_ in enumerate(text) :
+                #                     # print("char wtite")
+                #                     _cahr_x= float(x_list[cahr_id])*self.OP
+                #                     _cahr_y= (float(page_size[3])-(float(y_list[cahr_id])))*self.OP                                        
+                #                     c.drawString( _cahr_x,  _cahr_y, _cahr_, mode=0) # mode=3 文字不可见 0可見
                                 
-                                    # text_write.append((_cahr_x,  _cahr_y, _cahr_))
+                #                     # text_write.append((_cahr_x,  _cahr_y, _cahr_))
                             
-                        except Exception as e:
-                            logger.error(f"{e}")
-                            traceback.print_exc()
-            
+                #         except Exception as e:
+                #             logger.error(f"{e}")
+                #             traceback.print_exc()
+
+                # 绘制线条
+                self.draw_line(c,line_list,page_size)
+                
                 if page_id != len(doc.get("page_info"))-1  and doc_id != len(self.data): 
                     c.showPage()  
             # json.dump(text_write,open("text_write.json","w",encoding="utf-8"),ensure_ascii=False)

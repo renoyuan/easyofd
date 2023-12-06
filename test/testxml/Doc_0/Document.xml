@@ -1,10 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ofd:Document xmlns:ofd="http://www.ofdspec.org/2016"><ofd:Pages><ofd:Page ID="1" BaseLoc="/Doc_0/Pages/Page_0/Content.xml"></ofd:Page>
-</ofd:Pages>
-<ofd:CommonData><ofd:MaxUnitID>140</ofd:MaxUnitID>
-<ofd:PageArea><ofd:PhysicalBox>0.000000 0.000000 209.999985 140.000000</ofd:PhysicalBox>
-</ofd:PageArea>
-<ofd:PublicRes>PublicRes.xml</ofd:PublicRes>
-</ofd:CommonData>
-<ofd:Annotations>Annotations.xml</ofd:Annotations>
-</ofd:Document>
+<ofd:Document xmlns:ofd="http://www.ofdspec.org/2016"><ofd:CommonData><ofd:MaxUnitID>101</ofd:MaxUnitID><ofd:TemplatePage ID="2" BaseLoc="Tpls/Tpl_0/Content.xml"/><ofd:PageArea><ofd:PhysicalBox>0 0 210 140</ofd:PhysicalBox></ofd:PageArea><ofd:DocumentRes>DocumentRes.xml</ofd:DocumentRes><ofd:PublicRes>PublicRes.xml</ofd:PublicRes></ofd:CommonData><ofd:Pages><ofd:Page ID="1" BaseLoc="Pages/Page_0/Content.xml"/></ofd:Pages><ofd:Annotations>Annots/Annotations.xml</ofd:Annotations><ofd:Attachments>Attachs/Attachments.xml</ofd:Attachments><ofd:CustomTags>Tags/CustomTags.xml</ofd:CustomTags></ofd:Document>

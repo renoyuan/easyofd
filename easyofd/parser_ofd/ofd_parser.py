@@ -228,6 +228,8 @@ class OFDParser(object):
                     page_info_d[pg_no]["text_list"].sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
                     page_info_d[pg_no]["img_list"].extend(tpl_info["img_list"])
                     page_info_d[pg_no]["img_list"].sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
+                    page_info_d[pg_no]["line_list"].extend(tpl_info["line_list"])
+                    page_info_d[pg_no]["line_list"].sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
                 else:
                     page_info_d[tpl_no] = tpl_info
                     page_info_d[tpl_no].sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))

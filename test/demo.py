@@ -42,7 +42,8 @@ def test_ofd2():
     ofd2pdf
     ofd2img
     """
-    with open(r"0e7ff724-1011-4544-8464-ea6c025f6ade.ofd","rb") as f:
+    # with open(r"0e7ff724-1011-4544-8464-ea6c025f6ade.ofd","rb") as f:
+    with open(r"增值税电子专票5.ofd","rb") as f:
         ofdb64 = str(base64.b64encode(f.read()),"utf-8")
     ofd = OFD()
     ofd.read(ofdb64,save_xml=True, xml_name="testxml") # 读取ofd
@@ -51,7 +52,7 @@ def test_ofd2():
     img_np = ofd.to_jpg() # 转图片
     ofd.del_data()
     
-    with open(r"test.pdf","wb") as f:
+    with open(r"增值税电子专票5.pdf","wb") as f:
         f.write(pdf_bytes)
         
     for idx, img in enumerate(img_np):
