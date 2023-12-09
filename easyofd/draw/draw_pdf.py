@@ -229,36 +229,99 @@ class DrawPDF():
             Abbr = line.get("AbbreviatedData").split(" ")  # AbbreviatedData 
             color = line.get("FillColor",[0,0,0])
             
+            def match_mode(Abbr:list):
+                """
+                解析AbbreviatedData
+                匹配各种线条模式 
+                S 定义起始 坐标 x, y
+                M 移动到指定坐标 x, y
+                L 从当前点移动到指定点 x, y
+                Q x1 y1 x2 y2 二次贝塞尔曲线
+                B x1 y1 x2 y2 x3 y3 三次贝塞尔曲线
+                A 到 x,y 的圆弧 并移动到 x,y  rx 长轴 ry 短轴 angle 旋转角度 large为1表示 大于180 的弧 为0时表示小于180的弧 swcpp 为1 表示顺时针旋转 0 表示逆时针旋转  
+                C 当前点和SubPath自动闭合
+                """
+                relu_list = []
+                mode = ""
+                modes = ["S","M","L","Q","B","A","C"]
+                mode_dict = {}
+                for idx, i in enumerate(Abbr):
+                    if i in modes:
+                        mode = i
+                        if  mode_dict:
+                            relu_list.append(mode_dict)
+                        mode_dict = {"mode":i,"points":[]}
+                                     
+                    else:
+                        mode_dict["points"].append(i)
+                    
+                    if idx + 1 == len(Abbr):
+                        relu_list.append(mode_dict)
+                return relu_list
             
+            relu_list = match_mode(Abbr)
+            # TODO 组合 relu_list 1 M L 直线 2 M B*n 三次贝塞尔线 3 M Q*n 二次贝塞尔线
+            def assemble(relu_list: list):
+                start_point = {}
+                acticon = []
+                for i in relu_list:
+                    if i.get("mode") == "M":
+                        start_point = i
+                    elif i.get("mode") in ['B', "Q", 'L']:
+                        acticon.append({"start_point": start_point,
+                                        "end_point":i
+                        })
+                return acticon
+            
+            def convert_coord(p_list,direction,page_size,pos):
+                """坐标转换ofd2pdf"""
+                new_p_l = []
+                for p in p_list:
+                    if direction == "x":
+                        
+                        new_p = (float(pos[0]) + float(p)) * self.OP
+                    else:
+                        new_p = (float(page_size[3]) - float(pos[1]) - float(p)) * self.OP
+                    new_p_l.append(new_p)
+                return new_p_l
+            
+            # print(relu_list)
+            
+            acticons = assemble(relu_list)
             pos = line.get("pos")
-            if Abbr[0]=="M" and Abbr[3] == "L": # 转成坐标
-                # print("有的样式")
-                # print(pos)
-                # print(Abbr)
-                # print(page_size)
-                # print(self.OP)
-                # print(color)
-                x1,y1,x2,y2 = line.get('pos')[0]+float(Abbr[1]),line.get('pos')[1]+float(Abbr[2]),line.get('pos')[0]+float(Abbr[4]),line.get('pos')[1]+float(Abbr[5])
-                x1,y1,x2,y2 = x1*self.OP,(page_size[3] -y1)*self.OP,x2*self.OP,(page_size[3] -y2)*self.OP
-                # print(x1,y1,x2,y2)
-            else:
-                # print("没有的样式")
-                # print(Abbr)
-                continue
-            # canvas.setFillColorRGB(int(color[0])/255,int(color[1])/255, int(color[2])/255)
-            # print(*(int(color[0])/255,int(color[1])/255, int(color[2])/255))
-            # print(*(int(color[0]),int(color[1]), int(color[2])))
-            canvas.setStrokeColorRGB(*(int(color[0])/255,int(color[1])/255, int(color[2])/255))
+            canvas.setStrokeColorRGB(*(int(color[0])/255,int(color[1])/255, int(color[2])/255)) # 颜色
             LineWidth = float(line.get("LineWidth","0.25")) * self.OP
 
             # 设置线条宽度
             canvas.setLineWidth(LineWidth)  # 单位为点，2 表示 2 点
+                    
+            for acticon in acticons:
+                if acticon.get("end_point").get("mode") == 'L':  # 直线
+                    x1, y1, x2, y2 = * acticon.get("start_point").get("points"), *acticon.get("end_point").get("points")
+                    x1,x2 = convert_coord([x1,x2],"x",page_size,pos)
+                    y1,y2 = convert_coord([y1,y2],"y",page_size,pos)                    
+                   
 
-            # 绘制一条线 x1 y1 x2 y2
-            canvas.line(x1,y1,x2,y2)
+                    # 绘制一条线 x1 y1 x2 y2
+                    canvas.line(x1,y1,x2,y2)
+                    
+                elif acticon.get("end_point").get("mode") == 'B':  # 三次贝塞尔线
+                    continue
+                    x1, y1, x2, y2, x3, y3, x4, y4 = * acticon.get("start_point").get("points"), *acticon.get("end_point").get("points")
+                    x1,x2,x3,x4 = convert_coord([x1,x2,x3,x4],"x",page_size,pos)
+                    y1,y2,y3,y4 = convert_coord([y1,y2,y3,y4],"y",page_size,pos)       
+                    print(x1, y1, x2, y2, x3, y3, x4, y4)
+
+                    # 绘制三次贝塞尔线
+                    canvas.bezier(x1, y1, x2, y2, x3, y3, x4, y4)
+                    
+                    
+                elif acticon.get("end_point").get("mode") == 'Q':  # 二次贝塞尔线
+                    pass
+                else:
+                    continue
+           
             
-
-
     def draw_pdf(self):
        
         c = canvas.Canvas(self.pdf_io)
