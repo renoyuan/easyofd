@@ -1,9 +1,9 @@
 # easyofd
-#### 关于这个库：
+### 关于这个库：
 
 鉴于目前python解析ofd没有啥好用的库所以决定自己整一个。
 
-已实现功能 ：
+### 已实现功能 ：
 
 1 解析ofd 
 
@@ -11,11 +11,15 @@
 
 3 ofd转图片
 
-4 pdf转ofd-暂不支持电子解析
+4 pdf转ofd  -暂不使用电子解析版本
 
 5 添加gui 工具实现上述功能
 
 6 jpg2ofd jpg2pfd
+
+
+
+
 
 关于 jb2格式图片解析 
 使用了第三方库 jbig2dec 去读取jb2格式图片 参考下面链接安装使用jbig2dec 
@@ -37,19 +41,33 @@ https://github.com/rillian/jbig2dec
 pip install easyofd
 ```
 
-ofd2pdf demo
 
-test\demo.py
 
-ps:
+### 使用 
 
-1 本库尚不完善使用需要谨慎，欢迎提各种Issue.
+
+
+参考 test\demo.py 文件 目前所有功能在这个里面都有体现
+
+
+
+### ps:
+
+0 代码使用有问题，可以先看 test\demo.py 文件
+
+1 对于使用有任何疑问，欢迎提各种Issue.
 
 2 目前ofd 文件使用尚未普及，作者接触的文件也不多，遇到无法解析的文件，可以发我邮箱(renoyuan@foxmail.com)，有时间会去优化版本.
 
+3 本库对你有所帮助可以star 支持一下作者，或者fork。
 
-版本规划:
 
-1.0 计划重点在ofd 解析模块的完善 及ofd文档格式的转换 ofd2pdf ofd2img 等
 
-2.0 计划完成ofdd文件绘制 以及其他文档转ofd pdf2ofd txt2ofd 等 
+### 版本规划:
+
+1.0 计划提高解析的通用性，如果有解析失败的文件可以提供给作者优化这个工具库
+
+1.1 pdf 转ofd 的电子解析版本优化，目前存在一些生成ofd电子版本 wps 无法正常解析的情况（图片版本不存在） ，有熟悉wps的同学希望也能提供一些建议
+
+1.2 完善gui
+

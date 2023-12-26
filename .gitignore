@@ -133,8 +133,9 @@ dmypy.json
 test/*.ofd
 test/*.pdf
 test/*.json
-test\增值税电子专票5
-
+增值税电子专票5
+*.ofd
+*.pdf
 .vscode
 .vscode/*
 test\testxml

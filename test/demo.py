@@ -13,8 +13,8 @@ project_dir = os.path.join(os.path.dirname(os.getcwd()),"easyofd")
 pkg_dir = os.path.dirname(os.getcwd())
 print(project_dir)
 print(pkg_dir)
-sys.path.insert(0,project_dir)
-sys.path.insert(0,pkg_dir)
+# sys.path.insert(0,project_dir)
+# sys.path.insert(0,pkg_dir)
 import numpy as np
 import cv2
 from easyofd.ofd import OFD
@@ -23,7 +23,8 @@ from easyofd.ofd import OFD
 # 
 def test_img2():
     """
-    jpg2ofd jpg2pfd
+    jpg2ofd 
+    jpg2pfd
     """
     img_path = os.path.join(".",r"test\Doc_0\Res") # 多页排序问题
     imgs_p = os.listdir(img_path)
@@ -45,9 +46,9 @@ def test_ofd2():
     # with open(r"0e7ff724-1011-4544-8464-ea6c025f6ade.ofd","rb") as f:
     with open(r"增值税电子专票5.ofd","rb") as f:
         ofdb64 = str(base64.b64encode(f.read()),"utf-8")
-    ofd = OFD()
-    ofd.read(ofdb64,save_xml=True, xml_name="testxml") # 读取ofd
-    # print(ofd.data)
+    ofd = OFD() # 初始化OFD 工具类
+    ofd.read(ofdb64,save_xml=False, xml_name="testxml") # 读取ofdb64
+    # print(ofd.data) # ofd.data 为程序解析结果
     pdf_bytes = ofd.to_pdf() # 转pdf
     img_np = ofd.to_jpg() # 转图片
     ofd.del_data()

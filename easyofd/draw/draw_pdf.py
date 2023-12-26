@@ -290,9 +290,14 @@ class DrawPDF():
             acticons = assemble(relu_list)
             pos = line.get("pos")
             canvas.setStrokeColorRGB(*(int(color[0])/255,int(color[1])/255, int(color[2])/255)) # 颜色
-            LineWidth = float(line.get("LineWidth","0.25")) * self.OP
-
+            
             # 设置线条宽度
+            try:
+                LineWidth = float(line.get("LineWidth","0.25")) * self.OP
+            except EXCEPTION as e:
+                logger.info(f"{e}")
+                LineWidth = 0.25 * self.OP
+            
             canvas.setLineWidth(LineWidth)  # 单位为点，2 表示 2 点
                     
             for acticon in acticons:
