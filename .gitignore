@@ -136,6 +136,7 @@ test/*.json
 增值税电子专票5
 *.ofd
 *.pdf
+增值税电子专票5.ofd
 .vscode
 .vscode/*
 test\testxml
