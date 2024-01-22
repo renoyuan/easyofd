@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
  
 setuptools.setup(
     name="easyofd", 
-    version="0.1.1.1",    
+    version="0.1.1.2",
     author="renoyuan",    
     author_email="renoyuan@foxmail.com",    
     description="easy operate OFD",
