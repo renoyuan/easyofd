@@ -235,6 +235,7 @@ class OFDParser(object):
                     page_info_d[tpl_no].sort(key=lambda pos_text:  (float(pos_text.get("pos")[1]),float(pos_text.get("pos")[0])))
 
         page_ID = 0 # 没遇到过doc多个的情况
+        # print("page_info",len(page_info))
         doc_list.append({
             "pdf_name": self.file_tree["pdf_name"],
             "doc_no":page_ID,

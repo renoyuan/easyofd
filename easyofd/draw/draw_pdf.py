@@ -328,7 +328,7 @@ class DrawPDF():
         c = canvas.Canvas(self.pdf_io)
         c.setAuthor(self.author)
 
-        for doc_id, doc in enumerate(self.data, start=1):
+        for doc_id, doc in enumerate(self.data, start=0):
             fonts = doc.get("fonts")
             images = doc.get("images")
             page_size = doc.get("page_size")
@@ -339,7 +339,8 @@ class DrawPDF():
                 font_b64 = font_v.get("font_b64")
                 if font_b64:
                     self.font_tool.register_font(os.path.split(file_name)[1], font_v.get("@FontName"),font_b64)
-            # text_write = [] 
+            # text_write = []
+            # print("doc.get(page_info)", len(doc.get("page_info")))
             for page_id,page in doc.get("page_info").items():     
                 text_list = page.get("text_list")
                 img_list = page.get("img_list")
@@ -356,8 +357,11 @@ class DrawPDF():
 
                 # 绘制线条
                 self.draw_line(c, line_list, page_size)
-                
-                if page_id != len(doc.get("page_info"))-1  and doc_id != len(self.data): 
+                # print("去写入")
+                # print(doc_id,len(self.data))
+                # 页码判断逻辑
+                if page_id != len(doc.get("page_info"))-1  and doc_id != len(self.data):
+                    # print("写入")
                     c.showPage()  
             # json.dump(text_write,open("text_write.json","w",encoding="utf-8"),ensure_ascii=False)
         c.save()
