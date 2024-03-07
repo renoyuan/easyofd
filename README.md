@@ -7,15 +7,15 @@
 
 1 解析ofd 
 
-2 ofd转pdf 
+2 ofd转pdf  转图片
 
-3 ofd转图片
+3 pdf转ofd   转图片 -暂不使用电子解析版本
 
-4 pdf转ofd  -暂不使用电子解析版本
+4 jpg2ofd jpg2pfd
 
 5 添加gui 工具实现上述功能
 
-6 jpg2ofd jpg2pfd
+
 
 
 
@@ -29,7 +29,7 @@ https://github.com/rillian/jbig2dec
 
 ​	
 
-:hand:[实现参考文档](https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=3AF6682D939116B6F5EED53D01A9DB5D )
+:hand:[参考文档实现](https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=3AF6682D939116B6F5EED53D01A9DB5D )
 
 项目链接： https://github.com/renoyuan/easyofd
 
@@ -69,5 +69,4 @@ pip install easyofd
 
 1.1 pdf 转ofd 的电子解析版本优化，目前存在一些生成ofd电子版本 wps 无法正常解析的情况（图片版本不存在） ，有熟悉wps的同学希望也能提供一些建议
 
-1.2 完善gui
 
