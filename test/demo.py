@@ -44,7 +44,7 @@ def test_ofd2():
     ofd2img
     """
     # with open(r"0e7ff724-1011-4544-8464-ea6c025f6ade.ofd","rb") as f:
-    with open(r"E:\download\behncke1978.ofd","rb") as f:
+    with open(r"D:\test.ofd\test.ofd","rb") as f:
         ofdb64 = str(base64.b64encode(f.read()),"utf-8")
     ofd = OFD() # 初始化OFD 工具类
     ofd.read(ofdb64,save_xml=True, xml_name="testxml") # 读取ofdb64
@@ -53,7 +53,7 @@ def test_ofd2():
     img_np = ofd.to_jpg() # 转图片
     ofd.del_data()
     
-    with open(r"behncke1978.pdf","wb") as f:
+    with open(r"test.pdf","wb") as f:
         f.write(pdf_bytes)
         
     for idx, img in enumerate(img_np):

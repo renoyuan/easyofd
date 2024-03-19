@@ -16,7 +16,7 @@ import base64
 import re
 import cv2
 from typing import Any
-
+from PIL import Image
 from loguru import logger
 from .file_deal import FileRead
 from .file_parser import OFDFileParser, DocumentFileParser, ContentFileParser,DocumentResFileParser,PublicResFileParser
@@ -131,7 +131,31 @@ class OFDParser(object):
                 img_d["imgb64"] =  str(base64.b64encode(data),encoding="utf-8") 
                
             os.remove(new_fileName)
-        
+    def bmp2jpg(self, img_d:dict):
+
+        fileName = img_d["fileName"]
+        new_fileName = img_d['fileName'].replace(".bmp", ".jpg")
+        with open(fileName, "wb") as f:
+            f.write(base64.b64decode(img_d["imgb64"]))
+
+        # 打开 BMP 图像
+        bmp_image = Image.open(fileName)
+
+        # 将 BMP 图像保存为 JPG 格式
+        bmp_image.convert("RGB").save(new_fileName, "JPEG")
+
+        # 关闭图像
+        bmp_image.close()
+        if os.path.exists(new_fileName):
+            logger.info(f"jbig2dec处理成功{fileName}>>{new_fileName}")
+            img_d["fileName"] = new_fileName
+            img_d["suffix"] = "jpg"
+            img_d["format"] = "jpg"
+            with open(new_fileName, "rb") as f:
+                data = f.read()
+                img_d["imgb64"] = str(base64.b64encode(data), encoding="utf-8")
+            os.remove(new_fileName)
+
     def parser(self, ):
         """
         解析流程
@@ -186,6 +210,8 @@ class OFDParser(object):
                 img_v["imgb64"] = self.get_xml_obj(img_v.get("fileName"))
                 if img_v["suffix"] == 'jb2': # todo ib2 转png C:/msys64/mingw64/bin/jbig2dec.exe -o F:\code\easyofd\test\image_80.png F:\code\easyofd\test\image_80.jb2
                     self.jb22png(img_v)
+                if img_v["suffix"] == 'bmp':
+                    self.bmp2jpg(img_v)
         
         # 正文信息 会有多页 情况
         page_name:list = doc_root_info.get("page")
