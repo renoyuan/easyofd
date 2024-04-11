@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ofd:Res xmlns:ofd="http://www.ofdspec.org/2016" BaseLoc="Res"><ofd:Fonts><ofd:Font ID="4" FontName="SimSun"><ofd:FontFile>font_4_4.ttf</ofd:FontFile></ofd:Font><ofd:Font ID="6" FontName="SimSun"><ofd:FontFile>font_4_4.ttf</ofd:FontFile></ofd:Font><ofd:Font ID="19" FontName="MS-Mincho" FixedWidth="true"><ofd:FontFile>font_19_19.ttf</ofd:FontFile></ofd:Font></ofd:Fonts></ofd:Res>
