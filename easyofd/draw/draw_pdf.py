@@ -147,11 +147,13 @@ class DrawPDF():
             
             DeltaX = line_dict.get("DeltaX","")
             DeltaY = line_dict.get("DeltaY","")
+            # print("DeltaX",DeltaX)
             X = line_dict.get("X","")
             Y = line_dict.get("Y","")
-            CTM = line_dict.get("CTM","") # 因为ofd 的傻逼 增加这个字符缩放
+            CTM = line_dict.get("CTM","") # 因为ofd 增加这个字符缩放
             resizeX =1
             resizeY =1
+            # CTM =None # 有的数据不使用这个CTM
             if CTM :
                 resizeX = float(CTM.split(" ")[0])
                 resizeY = float(CTM.split(" ")[3])
@@ -159,7 +161,10 @@ class DrawPDF():
             x_list = self.cmp_offset(line_dict.get("pos")[0], X, DeltaX, text, resizeX)
             y_list = self.cmp_offset(line_dict.get("pos")[1], Y, DeltaY, text, resizeY)
             
-
+            # print("x_list",x_list)
+            # print("y_list",y_list)
+            # print("Y",page_size[3])
+            # print("x",page_size[2])
             # if line_dict.get("Glyphs_d") and  FontFilePath.get(line_dict["font"])  and font_f not in FONTS:
             if False:  # 对于自定义字体 写入字形 drawPath 性能差暂时作废
                 Glyphs = [int(i) for i in line_dict.get("Glyphs_d").get("Glyphs").split(" ")]
@@ -170,7 +175,6 @@ class DrawPDF():
                     
                     # font_img_info.append((FontFilePath.get(line_dict["font"]), Glyph_id,text[idx],_cahr_x,_cahr_y,-line_dict["size"]*Op*2,line_dict["size"]*Op*2))
                     c.drawImage(imageFile,_cahr_x,_cahr_y,-line_dict["size"]*self.OP*2,line_dict["size"]*self.OP*2  )
-                    
             else:
                 if len(text) > len(x_list) or len(text) > len(y_list):
                     text = re.sub("[^\u4e00-\u9fa5]", "", text)
@@ -187,8 +191,10 @@ class DrawPDF():
                     else:
                         for cahr_id, _cahr_ in enumerate(text):
                             # print("char wtite")
+                            c.setFont(font, line_dict["size"] * self.OP *resizeX)
                             _cahr_x = float(x_list[cahr_id])*self.OP
                             _cahr_y = (float(page_size[3])-(float(y_list[cahr_id])))*self.OP
+                            print(_cahr_x,  _cahr_y, _cahr_)
                             c.drawString(_cahr_x,  _cahr_y, _cahr_, mode=0)  # mode=3 文字不可见 0可見
                         
                             # text_write.append((_cahr_x,  _cahr_y, _cahr_))

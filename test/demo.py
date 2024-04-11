@@ -44,7 +44,7 @@ def test_ofd2():
     ofd2img
     """
     # with open(r"0e7ff724-1011-4544-8464-ea6c025f6ade.ofd","rb") as f:
-    with open(r"D:\test.ofd\test.ofd","rb") as f:
+    with open(r"F:\code\easyofd\test\测试.ofd","rb") as f:
         ofdb64 = str(base64.b64encode(f.read()),"utf-8")
     ofd = OFD() # 初始化OFD 工具类
     ofd.read(ofdb64,save_xml=True, xml_name="testxml") # 读取ofdb64
