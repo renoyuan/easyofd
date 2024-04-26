@@ -23,10 +23,10 @@
 使用了第三方库 jbig2dec 去读取jb2格式图片 参考下面链接安装使用jbig2dec 
 https://github.com/rillian/jbig2dec 
 
-:hand: 有疑问或者建议需求等等，优先看看文档和demo代码，没有的请在github上提交ieeues，不要直接发邮件，不要直接发邮件。i
-:hand: 有疑问或者建议需求等等，优先看看文档和demo代码，没有的请在github上提交ieeues，不要直接发邮件，不要直接发邮件。
+:hand: 有疑问或者建议需求等等，优先看看文档和demo代码，没有的请在github上提交issues，不要直接发邮件，不要直接发邮件。i
+:hand: 有疑问或者建议需求等等，优先看看文档和demo代码，没有的请在github上提交issues，不要直接发邮件，不要直接发邮件。
 
-:hand: 有疑问或者建议需求等等，优先看看文档和demo代码，没有的请在github上提交ieeues，不要直接发邮件，不要直接发邮件。
+:hand: 有疑问或者建议需求等等，优先看看文档和demo代码，没有的请在github上提交issues，不要直接发邮件，不要直接发邮件。
 
 ​	
 
