@@ -26,7 +26,7 @@ def test_img2():
     jpg2ofd 
     jpg2pfd
     """
-    img_path = os.path.join(".",r"test\Doc_0\Res") # 多页排序问题
+    img_path = os.path.join(".", r"test\Doc_0\Res") # 多页排序问题
     imgs_p = os.listdir(img_path)
     imgs = []
     for img_p in imgs_p:
@@ -53,7 +53,7 @@ def test_ofd2():
     img_np = ofd.to_jpg() # 转图片
     ofd.del_data()
     
-    with open(r"test.pdf","wb") as f:
+    with open(r"test1.pdf", "wb") as f:
         f.write(pdf_bytes)
         
     for idx, img in enumerate(img_np):
@@ -65,21 +65,20 @@ def test_pdf2():
     pdf2ofd
     pdf2img
     """
-    with open(r"F:\code\easyofd\test\test.pdf","rb") as f:
+    with open(r"F:\code\easyofd\test\test.pdf", "rb") as f:
         pdfb64 = f.read()
     ofd = OFD()
-    ofd_bytes = ofd.pdf2ofd(pdfb64) # 转ofd
-    img_np =ofd.pdf2img(pdfb64)
+    ofd_bytes = ofd.pdf2ofd(pdfb64, optional_text=True)  # 转ofd # optional_text 生成可操作文本 True
+    img_np = ofd.pdf2img(pdfb64)
     ofd.del_data()
-    with open(r"E:\download\behncke1978.ofd","wb") as f:
+    with open(r"test.ofd", "wb") as f:
         f.write(ofd_bytes)
     for idx, img in enumerate(img_np):
         im = Image.fromarray(img)
         im.save(f"test_img{idx}.jpg")
-        
+
+
 if __name__ == "__main__":
-    
-    
     if sys.argv[1] =="ofd2":
         test_ofd2()
     elif sys.argv[1] =="pdf2":

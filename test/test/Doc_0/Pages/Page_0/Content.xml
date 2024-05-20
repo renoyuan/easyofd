@@ -1,12 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ofd:Page xmlns:ofd="http://blog.yuanhaiying.cn/">
-	<ofd:Area>
-		<ofd:PhysicalBox>0 0 2204 1467</ofd:PhysicalBox>
-	</ofd:Area>
+<ofd:Page xmlns:ofd="http://blog.yuanhaiying.cn">
 	<ofd:Content>
-		<ofd:Layer ID="2" Type="Body">
-			<ofd:ImageObject ID="0" CTM="2204 0 0 1467 0 0" Boundary="0 0 2204 1467"
-				ResourceID="91000"></ofd:ImageObject>
+		<ofd:Layer ID="7" Type="Foreground">
+			<ofd:TextObject ID="8" Font="3" size="20.049694061279297" Boundary="24.501564529418946 2.8832411613464353 25.508944900512695 2.5463111457824708">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 9 2.5508944900512693">电子发票（普通发票）</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="9" Font="3" size="9.354179382324219" Boundary="55.62864324951172 4.025677968978882 5.7640900268554685 1.1879805393218994">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 4 1.1528180053710937">发票号码：</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="10" Font="3" size="9.354179382324219" Boundary="55.62864324951172 6.185642784118652 5.7640900268554685 1.1879807815551757">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 4 1.1528180053710937">开票日期：</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="11" Font="3" size="8.490446090698242" Boundary="2.148655912399292 11.804225219726563 1.0172535572052002 1.142981590270996">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.0172535572052002">购</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="12" Font="3" size="8.490446090698242" Boundary="2.148655912399292 13.064202575683593 1.0172535572052002 1.142981590270996">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.0172535572052002">买</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="13" Font="3" size="8.490446090698242" Boundary="2.148655912399292 14.324183807373046 1.0172535572052002 1.142981590270996">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.0172535572052002">方</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="14" Font="3" size="8.490446090698242" Boundary="2.148655912399292 15.5841650390625 1.0172535572052002 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.0172535572052002">信</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="15" Font="3" size="8.490446090698242" Boundary="2.148655912399292 16.84414239501953 1.0172535572052002 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.0172535572052002">息</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="16" Font="3" size="8.490446090698242" Boundary="4.128623962402344 15.944158569335936 15.771432678222656 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 15 0.985714542388916">统一社会信用代码/纳税人识别号：</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="17" Font="3" size="8.490446090698242" Boundary="38.32807135009765 11.804225219726563 1.0172518615722657 1.142981590270996">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.0172518615722657">销</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="18" Font="3" size="8.490446090698242" Boundary="38.32807135009765 13.064202575683593 1.0172518615722657 1.142981590270996">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.0172518615722657">售</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="19" Font="3" size="8.490446090698242" Boundary="38.32807135009765 14.324183807373046 1.0172518615722657 1.142981590270996">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.0172518615722657">方</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="20" Font="3" size="8.490446090698242" Boundary="38.32807135009765 15.5841650390625 1.0172518615722657 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.0172518615722657">信</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="21" Font="3" size="8.490446090698242" Boundary="38.32807135009765 16.84414239501953 1.0172518615722657 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.0172518615722657">息</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="22" Font="3" size="8.490446090698242" Boundary="40.30803964233398 15.944158569335936 15.77142105102539 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 15 0.9857138156890869">统一社会信用代码/纳税人识别号：</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="23" Font="3" size="8.999855041503906" Boundary="4.149472980499268 13.35220050048828 3.428944770812988 1.142981590270996">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 2 1.142981590270996">名称：</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="24" Font="3" size="8.999855041503906" Boundary="40.32888720703125 13.35220050048828 3.428945739746094 1.142981590270996">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 2 1.142981913248698">名称：</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="25" Font="3" size="8.999855041503906" Boundary="5.769447257995605 19.184104217529296 4.571925392150879 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 3 1.1429813480377198">项目名称</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="26" Font="3" size="8.999855041503906" Boundary="15.165295257568358 19.184104217529296 4.571926361083984 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 3 1.142981590270996">规格型号</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="27" Font="3" size="8.999855041503906" Boundary="24.129149276733397 19.184104217529296 3.4289476776123045 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 2 1.1429825592041014">单 位</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="28" Font="3" size="8.999855041503906" Boundary="33.48899850463867 19.184104217529296 3.428945739746094 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 2 1.142981913248698">数 量</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="29" Font="3" size="8.999855041503906" Boundary="42.488852264404294 19.184104217529296 3.428945739746094 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 2 1.142981913248698">单 价</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="30" Font="3" size="8.999855041503906" Boundary="51.668710540771485 19.184104217529296 3.42893798828125 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 2 1.1429793294270834">金 额</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="31" Font="3" size="8.999855041503906" Boundary="56.70862771606445 19.184104217529296 6.290898956298828 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 5 1.048483159383138">税率/征收率</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="32" Font="3" size="8.999855041503906" Boundary="70.02841546630859 19.184104217529296 3.42893798828125 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 2 1.1429793294270834">税 额</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="33" Font="3" size="8.999855041503906" Boundary="7.389421051025391 33.22387902832031 1.142981590270996 1.1429806213378906">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.142981590270996">合</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="34" Font="3" size="8.999855041503906" Boundary="13.14932819366455 33.22387902832031 1.142981590270996 1.1429806213378906">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.142981590270996">计</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="35" Font="3" size="8.999855041503906" Boundary="6.095889541625977 35.5638447265625 9.143850784301758 1.1429806213378906">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 7 1.1429813480377198">价税合计（大写）</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="36" Font="3" size="8.999855041503906" Boundary="51.668710540771485 35.5638447265625 4.571926361083984 1.1429806213378906">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 3 1.142981590270996">（小写）</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="37" Font="3" size="8.999855041503906" Boundary="2.169504930496216 39.34378067016601 1.142981590270996 1.1429806213378906">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.142981590270996">备</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="38" Font="3" size="8.999855041503906" Boundary="2.169504930496216 41.50374572753906 1.142981590270996 1.1429806213378906">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.142981590270996">注</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="39" Font="3" size="8.999855041503906" Boundary="7.0294270362854006 46.72366354370117 4.571924907684326 1.1429806213378906">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 3 1.1429812269210815">开票人：</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="40" Font="4" size="8.999855041503906" Boundary="61.19901254272461 4.037389463424683 11.429779083251953 1.1429818325042724">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 19 0.5714889541625976">23442000000010967536</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="41" Font="4" size="8.999855041503906" Boundary="61.19901254272461 6.23335256576538 8.000872100830078 1.142981590270996">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 10 0.7273520091663707">2023年02月07日</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="42" Font="4" size="8.999855041503906" Boundary="7.1998841705322265 13.320163696289063 21.71664924621582 1.142981590270996">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 18 1.1429815392745168">中国移动通信集团广东有限公司河源分公司</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="43" Font="5" size="11.999712944030762" Boundary="19.439687454223634 15.677949043273925 16.45894691467285 1.7263645858764647">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 17 0.9143859397040472">91441600707924573M</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="44" Font="4" size="8.999855041503906" Boundary="43.19930502319336 13.320163696289063 9.14385659790039 1.142981590270996">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 7 1.1429820747375488">和平县启航通讯店</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="45" Font="5" size="11.999712944030762" Boundary="55.61910507202148 15.677949043273925 16.458937225341796 1.7263645858764647">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 17 0.9143854014078775">92441624MA55G8UD71</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="46" Font="5" size="9.999335289001465" Boundary="50.94147973632813 33.04752545166016 4.317620178222656 1.438574981689453">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 4.317620178222656">¥</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="47" Font="4" size="7.999241352081299" Boundary="50.94147973632813 33.04752545166016 4.317620178222656 1.438574981689453">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 6 0.6168028826032366">7816.09</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="48" Font="5" size="9.999335289001465" Boundary="70.67708129882813 33.04752545166016 3.301720947265625 1.438574981689453">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 3.301720947265625">¥</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="49" Font="4" size="7.999241352081299" Boundary="70.67708129882813 33.04752545166016 3.301720947265625 1.438574981689453">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 4 0.660344189453125">78.16</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="50" Font="4" size="8.999855041503906" Boundary="22.66059162902832 35.32214242553711 13.715788772583007 1.1429806213378906">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 11 1.1429823977152507">柒仟捌佰玖拾肆圆贰角伍分</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="51" Font="5" size="10.999948501586914" Boundary="55.98500134277344 35.22948916625977 5.727700775146484 1.6200484008789062">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 5.727700775146484">¥</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="52" Font="4" size="10.999948501586914" Boundary="55.98500134277344 35.22948916625977 5.727700775146484 1.6200484008789062">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 6 0.8182429678780692">7894.25</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="53" Font="4" size="8.999855041503906" Boundary="3.9989235458374024 37.633051757812495 6.857888572692871 1.1429806213378906">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 11 0.5714907143910726">HY03DD220025</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="54" Font="4" size="8.999855041503906" Boundary="11.520713455200195 46.76218057250976 3.428944770812988 1.1429806213378906">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 2 1.142981590270996">黄金风</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="55" Font="4" size="8.999855041503906" Boundary="1.6199739141464233 20.47914920043945 9.143851632118224 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 8 1.0159835146798026">*现代服务*服务费</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="56" Font="4" size="8.999855041503906" Boundary="59.36754681396484 20.517274780273436 1.1429806213378906 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 1 0.5714903106689453">1%</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="57" Font="4" size="8.999855041503906" Boundary="25.168093612670898 20.517274780273436 1.1429825592041016 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 1.1429825592041016">项</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="58" Font="4" size="8.999855041503906" Boundary="51.07867678833008 20.517274780273436 4.000422485351562 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 6 0.5714889264787946">7816.09</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="59" Font="4" size="8.999855041503906" Boundary="71.12135650634765 20.517274780273436 2.8574457397460935 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 4 0.5714891479492187">78.16</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="60" Font="4" size="7.999808311462402" Boundary="37.77145416259766 20.62642121887207 8.127817840576173 1.0159748077392579">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 15 0.5079886150360108">7816.08910891089</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="61" Font="4" size="8.999855041503906" Boundary="36.32791436767578 20.517274780273436 0.5714922485351562 1.1429825592041016">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 0 0.5714922485351562">1</ofd:TextCode>
+			</ofd:TextObject>
+			<ofd:TextObject ID="62" Font="3" size="8.99991226196289" Boundary="74.32426953125 10.63514638519287 1.143 8.000859504699706">
+				<ofd:TextCode X="0" Y="0" DeltaX="g 8 0.127">下载次数：1   </ofd:TextCode>
+			</ofd:TextObject>
 		</ofd:Layer>
 	</ofd:Content>
 </ofd:Page>

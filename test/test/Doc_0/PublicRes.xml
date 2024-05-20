@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ofd:Res xmlns:ofd="http://blog.yuanhaiying.cn/" BaseLoc="Res">
+<ofd:Res xmlns:ofd="http://blog.yuanhaiying.cn" BaseLoc="Res">
 	<ofd:ColorSpaces>
-		<ofd:ColorSpace ID="4" Type="RGB"></ofd:ColorSpace>
+		<ofd:ColorSpace ID="2" Type="RGB" BitsPerComponent="8"></ofd:ColorSpace>
 	</ofd:ColorSpaces>
 	<ofd:Fonts>
-		<ofd:Font ID="69" FontName="STSong" FamilyName="SimSun" Serif="true" FixedWidth="true" Charset="prc"></ofd:Font>
+		<ofd:Font ID="3" FontName="KaiTi" FamilyName="KaiTi" FixedWidth="false" Serif="false" Bold="false" Charset="prc">
+			<res_uuid>1c3266df-1699-11ef-81b0-cc6b1e41e7ec</res_uuid>
+		</ofd:Font>
+		<ofd:Font ID="4" FontName="SimSun" FamilyName="SimSun" FixedWidth="false" Serif="false" Bold="false" Charset="prc">
+			<res_uuid>1c3329a5-1699-11ef-8603-cc6b1e41e7ec</res_uuid>
+		</ofd:Font>
+		<ofd:Font ID="5" FontName="CourierNewPSMT" FamilyName="CourierNewPSMT" FixedWidth="false" Serif="false" Bold="false" Charset="prc">
+			<res_uuid>1c3329a6-1699-11ef-bb33-cc6b1e41e7ec</res_uuid>
+		</ofd:Font>
 	</ofd:Fonts>
 </ofd:Res>
