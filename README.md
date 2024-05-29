@@ -26,7 +26,7 @@ https://github.com/rillian/jbig2dec
 
 :hand: 有疑问或者建议需求等等，优先看看文档和demo代码，没有的请提交issues，不要直接发邮件，不要直接发邮件。
 
-:hand: 有啥问题在 github 上提 issues，有空的时候会尽力解答以及优化。邮箱只接受问题文件不做回复
+:hand: 有啥问题在 github 上提 issues，有空的时候会尽力解答以及优化。邮箱只接受问题文件不做回复。
 
 ​	
 

@@ -80,14 +80,14 @@ class FontTool(object):
             file_name = os.path.split(file_name)
             # logger.error(f"file_name:{file_name}")
             # logger.info(f"file_name:{file_name}")
-            if isinstance(file_name,(tuple,list)):
+            if isinstance(file_name, (tuple, list)):
                     file_name = file_name[1]
             if not FontName:
                 FontName =  file_name.split(".")[0]
             try:
-                with open(file_name,"wb") as f: 
+                with open(file_name, "wb") as f:
                     f.write(base64.b64decode(font_b64))
-                
+
                 pdfmetrics.registerFont(TTFont(FontName, file_name))
                 self.FONTS.append(FontName)
                 

@@ -62,12 +62,16 @@ class OFDFileParser(FileParserBase):
         doc_root:list = []
         doc_root_key = "ofd:DocRoot" 
         # print(self.xml_obj,doc_root)
-        self.recursion_ext(self.xml_obj,doc_root,doc_root_key)
-        
+        self.recursion_ext(self.xml_obj, doc_root, doc_root_key)
         info["doc_root"] = doc_root
-        
+
+        signatures: list = []
+        signatures_key = "ofd:Signatures"
+        self.recursion_ext(self.xml_obj, signatures, signatures_key)
+        info["signatures"] = signatures
+
         # ofd:Creator 
-        creator:list = []
+        creator: list = []
         creator_key = "ofd:Creator" 
         self.recursion_ext(self.xml_obj,creator,creator_key)
         info["creator"] = creator
@@ -76,7 +80,7 @@ class OFDFileParser(FileParserBase):
         reation_date:list = []
         creation_date_key = "ofd:CreationDate" 
         self.recursion_ext(self.xml_obj,reation_date,creation_date_key)
-        info["creator"] = reation_date
+        info["creationDate"] = reation_date
         
         return info
 
@@ -85,6 +89,13 @@ class DocumentFileParser(FileParserBase):
     Document 为doc内的根节点 包含：
     1 文件的路径 2 doc的size 
     """
+    def loc2page_no(self,loc,idx):
+        pg_no = re.search(r"\d+", loc)
+        if pg_no:
+            pg_no = int(pg_no.group())
+        else:
+            pg_no = idx
+        return pg_no
     def __call__(self):
         document_info = {}
         
@@ -108,12 +119,19 @@ class DocumentFileParser(FileParserBase):
         
         # ofd:Page 正文
         page:list = []
+        page_id_map = {}
         apage_key = "ofd:Page" 
         self.recursion_ext(self.xml_obj,page,apage_key)
         if page :
-            page = [i.get("@BaseLoc") if isinstance(i,dict) else i for i in page  ] 
+            page_id_map = {
+                i.get("@ID"): self.loc2page_no(i.get("@BaseLoc"), idx)
+                for idx, i in enumerate(page)
+                           }
+            page = [i.get("@BaseLoc") if isinstance(i, dict) else i for i in page  ]
+
         document_info["page"] = page
-        
+        document_info["page_id_map"] = page_id_map
+
         tpls:list = []
         template_page_key = "ofd:TemplatePage"
         self.recursion_ext(self.xml_obj,tpls,template_page_key)
@@ -272,7 +290,58 @@ class AnnotationFileParser(FileParserBase):
     Parser Annotation
     签名信息 暂不用
     """
-    pass 
-    
+    pass
+
+class SignaturesFileParser(FileParserBase):
+    """
+    Parser Signatures
+    签章信息-总
+    """
+
+    def __call__(self):
+        info = {}
+        signature_res: list = []
+        signature_res_key = "ofd:Signature"
+        self.recursion_ext(self.xml_obj, signature_res, signature_res_key)
+
+        if signature_res:
+            for i in signature_res:
+                info[i.get("@ID")] = {
+                    "BaseLoc": i.get("@BaseLoc"),
+                    "Type": i.get("@Type"),
+                    "ID": i.get("@ID"),
+
+                }
+        return info
+
+class SignatureFileParser(FileParserBase):
+    """
+    Parser Signature
+    签章信息
+    """
+
+    def __call__(self, prefix=""):
+        info = {}
+        StampAnnot_res: list = []
+        StampAnnot_res_key = "ofd:StampAnnot"
+
+        self.recursion_ext(self.xml_obj, StampAnnot_res, StampAnnot_res_key)
+
+        SignedValue_res: list = []
+        SignedValue_res_key = "ofd:SignedValue"
+        self.recursion_ext(self.xml_obj, SignedValue_res, SignedValue_res_key)
+
+        # print("SignedValue_res", SignedValue_res)
+        # print("prefix", prefix)
+        if StampAnnot_res:
+            for i in StampAnnot_res:
+                info = {
+                    "PageRef": i.get("@PageRef"),  # page id
+                    "Boundary": i.get("@Boundary"),
+                    "ID": i.get("@ID"),
+                    "SignedValue": f"{prefix}/{SignedValue_res[0]}" if SignedValue_res else f"{prefix}/SignedValue.dat",
+                }
+
+        return info
 if __name__ == "__main__":
     FileParserBase("")()

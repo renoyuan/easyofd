@@ -26,6 +26,7 @@ from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib import fonts as reportlab_fonts
 
+from .find_seal_img import SealExtract
 from easyofd.draw.font_tools import FontTool
 from loguru import logger
 
@@ -40,6 +41,7 @@ class DrawPDF():
         self.data = data
         self.author = "renoyuan"
         self.OP = 200/25.4
+        # self.OP = 1
         self.pdf_uuid_name = self.data[0]["pdf_name"]
         self.pdf_io = BytesIO() 
         self.SupportImgType = ("JPG", "IPEG", "PNG")
@@ -194,7 +196,7 @@ class DrawPDF():
                             c.setFont(font, line_dict["size"] * self.OP *resizeX)
                             _cahr_x = float(x_list[cahr_id])*self.OP
                             _cahr_y = (float(page_size[3])-(float(y_list[cahr_id])))*self.OP
-                            print(_cahr_x,  _cahr_y, _cahr_)
+                            # print(_cahr_x,  _cahr_y, _cahr_)
                             c.drawString(_cahr_x,  _cahr_y, _cahr_, mode=0)  # mode=3 文字不可见 0可見
                         
                             # text_write.append((_cahr_x,  _cahr_y, _cahr_))
@@ -227,7 +229,51 @@ class DrawPDF():
             w = img_d.get('pos')[2]*self.OP
             h = -img_d.get('pos')[3]*self.OP
             c.drawImage(imgReade,x,y ,w, h, 'auto')
-                    
+
+    def draw_signature(self, canvas, signatures_page_list, page_size):
+        """
+        写入签章
+            {
+            "sing_page_no": sing_page_no,
+            "PageRef": PageRef,
+            "Boundary": Boundary,
+            "SignedValue": self.file_tree(SignedValue),
+                            }
+        """
+        c = canvas
+        try:
+            if signatures_page_list:
+                # print("signatures_page_list",signatures_page_list)
+                for signature_info in signatures_page_list:
+                    image = SealExtract()(b64=signature_info.get("SignedValue"))
+                    if not image:
+                        logger.info(f"提取不到签章图片")
+                        continue
+                    else:
+                        image_pil = image[0]
+
+                    pos = [float(i) for i in signature_info.get("Boundary").split(" ")]
+
+
+
+                    imgReade = ImageReader(image_pil)
+
+
+                    x = pos[0] * self.OP
+                    y = (page_size[3] -pos[1]) * self.OP
+
+                    w = pos[2] * self.OP
+                    h = -pos[3] * self.OP
+                    c.drawImage(imgReade, x, y, w, h, 'auto')
+                    print(f"签章写入成功")
+            else:
+                # 无签章
+                pass
+        except Exception as e:
+            print(f"签章写入失败 {e}")
+            traceback.print_exc()
+
+
     def draw_line(self,canvas,line_list,page_size):
         """绘制线条"""
         # print("绘制",line_list)
@@ -338,7 +384,9 @@ class DrawPDF():
             fonts = doc.get("fonts")
             images = doc.get("images")
             page_size = doc.get("page_size")
-            
+            signatures_page_id = doc.get("signatures_page_id")  # 签证信息
+
+
             # 注册字体
             for font_id, font_v in fonts.items():
                 file_name = font_v.get("FontFile")
@@ -347,7 +395,8 @@ class DrawPDF():
                     self.font_tool.register_font(os.path.split(file_name)[1], font_v.get("@FontName"),font_b64)
             # text_write = []
             # print("doc.get(page_info)", len(doc.get("page_info")))
-            for page_id,page in doc.get("page_info").items():     
+            for page_id, page in doc.get("page_info").items():
+                logger.info(f"page_id {page_id}")
                 text_list = page.get("text_list")
                 img_list = page.get("img_list")
                 line_list = page.get("line_list")
@@ -358,18 +407,28 @@ class DrawPDF():
                 # 写入图片
                 self.draw_img(c, img_list, images, page_size)
 
+
+
                 # 写入文本
                 self.draw_chars(c, text_list, fonts, page_size)
 
                 # 绘制线条
                 self.draw_line(c, line_list, page_size)
+
+                # 绘制签章
+                self.draw_signature(c, signatures_page_id.get(page_id), page_size)
+
+
+
+
                 # print("去写入")
                 # print(doc_id,len(self.data))
                 # 页码判断逻辑
-                if page_id != len(doc.get("page_info"))-1  and doc_id != len(self.data):
+                if page_id != len(doc.get("page_info"))-1 and doc_id != len(self.data):
                     # print("写入")
                     c.showPage()  
             # json.dump(text_write,open("text_write.json","w",encoding="utf-8"),ensure_ascii=False)
+
         c.save()
         
     def __call__(self):

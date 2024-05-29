@@ -1,12 +1,12 @@
 
 import setuptools 
- 
+from easyofd import __version__
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
  
 setuptools.setup(
     name="easyofd", 
-    version="0.1.1.5",
+    version=__version__,
     author="renoyuan",    
     author_email="renoyuan@foxmail.com",    
     description="easy operate OFD",
@@ -25,7 +25,8 @@ setuptools.setup(
         "loguru>=0.7.2",
         "fontTools>=4.43.1",
         "PyMuPDF>=1.23.4",
-        "opencv-python>=4.6.0.66"
+        "opencv-python>=4.6.0.66",
+        "pyasn1>=0.6.0"
                      ],
     python_requires='>=3.8',   
 )

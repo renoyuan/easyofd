@@ -39,7 +39,7 @@ class FileRead(object):
         :return: unzip_path
         """
         with open(self.zip_path,"wb") as f:
-                f.write(self.ofdbyte)
+            f.write(self.ofdbyte)
         self.unzip_path = self.zip_path.split('.')[0]
         with zipfile.ZipFile(self.zip_path, 'r') as f:
             for file in f.namelist():
@@ -58,7 +58,7 @@ class FileRead(object):
             for file in files:
                 
                 abs_path = os.path.join(root,file)
-                
+                # 资源文件 则 b64 xml 则  xml——obj
                 self.file_tree[abs_path] = str(base64.b64encode(open(f"{abs_path}","rb").read()),"utf-8")  \
                     if "xml" not in file else xmltodict.parse(open(f"{abs_path}" , "r", encoding="utf-8").read())
         self.file_tree["root_doc"] = os.path.join(self.unzip_path,"OFD.xml") if os.path.join(self.unzip_path,"OFD.xml") in self.file_tree else ""

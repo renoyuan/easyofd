@@ -19,7 +19,8 @@ from typing import Any
 from PIL import Image
 from loguru import logger
 from .file_deal import FileRead
-from .file_parser import OFDFileParser, DocumentFileParser, ContentFileParser,DocumentResFileParser,PublicResFileParser
+from .file_parser import (OFDFileParser, DocumentFileParser, ContentFileParser,DocumentResFileParser,PublicResFileParser,
+                          SignaturesFileParser,SignatureFileParser)
 
 
 
@@ -46,11 +47,10 @@ class OFDParser(object):
         page_size = []
         font_info = {}
         page_info_d = {}
-        
-        
-       
+
+
         for idx, img_numpy in enumerate(imglist):
-            h,w,_=img_numpy.shape
+            h, w, _ = img_numpy.shape
             _, img_encode = cv2.imencode('.jpg', img_numpy)
             img_bytes = img_encode.tobytes()
             imgb64 = str(base64.b64encode(img_bytes),encoding="utf-8")
@@ -66,7 +66,7 @@ class OFDParser(object):
             text_list = []
             img_list = []
             img_d = {}
-            img_d["CTM"] = "" # 平移矩阵换
+            img_d["CTM"] = "" # 平移矩阵换 平移 缩放 旋转
             img_d["ID"] = str(idx) # 图片id
             img_d["ResourceID"] = str(idx) # 图片id
             img_d["pos"] = [0,0,w/OP,h/OP] # 平移矩阵换
@@ -95,9 +95,11 @@ class OFDParser(object):
         assert label
         for abs_p in self.file_tree:
             # 统一符号，避免win linux 路径冲突
+
             abs_p_compare = abs_p.replace("\\","-").replace("/","-")  
             label_compare = label.replace("\\","-").replace("/","-") 
             if label_compare in abs_p_compare:
+                # logger.info(f"{label} {abs_p}")
                 return self.file_tree[abs_p]
     
     def jb22png(self, img_d:dict):
@@ -166,11 +168,14 @@ class OFDParser(object):
         ofd_xml_obj = self.get_xml_obj(self.file_tree["root_doc"])  # OFD.xml xml 对象 
 
         if ofd_xml_obj:
-            doc_root_name = OFDFileParser(ofd_xml_obj)().get("doc_root")
+            ofd_obj_res = OFDFileParser(ofd_xml_obj)()
+            doc_root_name = ofd_obj_res.get("doc_root")
+            signatures = ofd_obj_res.get("signatures")
         else:
             # 考虑根节点丢失情况
             doc_root_name = ["Doc_0/Document.xml"]
-        
+            signatures = ["Doc_0/Signs/Signatures.xml"]
+
         doc_root_xml_obj = self.get_xml_obj(doc_root_name[0])
         doc_root_info = DocumentFileParser(doc_root_xml_obj)()
         doc_size = doc_root_info.get("size")
@@ -180,10 +185,14 @@ class OFDParser(object):
                 page_size = [float(pos_i) for pos_i in doc_size.split(" ") if re.match("[\d\.]",pos_i)] 
             except:
                 traceback.print_exc()
-        
+
+
+
+
+
         # 字体信息
         font_info = {}
-        public_res_name:list = doc_root_info.get("public_res")
+        public_res_name: list = doc_root_info.get("public_res")
         if public_res_name: 
             public_xml_obj = self.get_xml_obj(public_res_name[0])
             font_info = PublicResFileParser(public_xml_obj)()
@@ -212,17 +221,65 @@ class OFDParser(object):
                     self.jb22png(img_v)
                 if img_v["suffix"] == 'bmp':
                     self.bmp2jpg(img_v)
-        
+
+        page_id_map: list = doc_root_info.get("page_id_map")
+        signatures_page_id = {}
+
+        # 签章信息
+        if signatures:
+            signatures_xml_obj = self.get_xml_obj(signatures[0])
+            signatures_info = SignaturesFileParser(signatures_xml_obj)()
+            if signatures_info:  # 获取签章具体信息
+                for _, signatures_cell in signatures_info.items():
+                    # print(signatures_info)
+                    BaseLoc = signatures_cell.get("BaseLoc")
+                    signature_xml_obj = self.get_xml_obj(BaseLoc)
+                    # print(BaseLoc)
+                    prefix = BaseLoc.split("/")[0]
+                    signatures_info = SignatureFileParser(signature_xml_obj)(prefix=prefix)
+                    # print(signatures_info)
+
+                    PageRef = signatures_info.get("PageRef")
+                    Boundary = signatures_info.get("Boundary")
+                    SignedValue = signatures_info.get("SignedValue")
+                    sing_page_no = page_id_map.get(PageRef)
+                    # print("self.file_tree",self.file_tree.keys)
+                    # print(page_id_map,PageRef)
+                    # print(SignedValue, self.get_xml_obj(SignedValue))
+                    with open("b64.txt","w") as f:
+                        f.write(self.get_xml_obj(SignedValue))
+                    if signatures_page_id.get(sing_page_no):
+                        signatures_page_id[sing_page_no].append(
+                            {
+                                "sing_page_no": sing_page_no,
+                                "PageRef": PageRef,
+                                "Boundary": Boundary,
+                                "SignedValue": self.get_xml_obj(SignedValue),
+                            }
+                        )
+                    else:
+                        signatures_page_id[sing_page_no] = [
+                            {
+                                "sing_page_no": sing_page_no,
+                                "PageRef": PageRef,
+                                "Boundary": Boundary,
+                                "SignedValue": self.get_xml_obj(SignedValue),
+                            }
+                        ]
+
         # 正文信息 会有多页 情况
-        page_name:list = doc_root_info.get("page")
-        
+        page_name: list = doc_root_info.get("page")
+
+
         page_info_d = {}
         if page_name:
             for index,_page in enumerate(page_name):
                 page_xml_obj = self.get_xml_obj(_page)
                 # 重新获取页面size
                 try:
-                    page_size_new = [float(pos_i) for pos_i in page_xml_obj.get('ofd:Page',{}).get("ofd:Area",{}).get("ofd:PhysicalBox","").split(" ") if re.match("[\d\.]",pos_i)] 
+                    page_size_new = [float(pos_i) for pos_i in
+                                     page_xml_obj.get('ofd:Page', {}).get("ofd:Area", {}).get("ofd:PhysicalBox", "").split(" ")
+                                     if re.match("[\d\.]",pos_i)]
                     if page_size_new and len(page_size_new)>=2:
                         page_size = page_size_new
                 except Exception as e:
@@ -264,11 +321,13 @@ class OFDParser(object):
         # print("page_info",len(page_info))
         doc_list.append({
             "pdf_name": self.file_tree["pdf_name"],
-            "doc_no":page_ID,
-            "images":img_info,
-            "page_size":page_size,
-            "fonts":font_info,
-            "page_info":page_info_d        
+            "doc_no": page_ID,
+            "images": img_info,
+            "signatures_page_id": signatures_page_id,
+            "page_id_map": page_id_map,
+            "page_size": page_size,
+            "fonts": font_info,
+            "page_info": page_info_d
                         })
         return doc_list
                
@@ -277,8 +336,8 @@ class OFDParser(object):
         输出ofd解析结果
         
         """
-        save_xml=kwds.get("save_xml",False)
-        xml_name=kwds.get("xml_name")
+        save_xml = kwds.get("save_xml", False)
+        xml_name = kwds.get("xml_name")
         self.file_tree = FileRead(self.ofdb64)(save_xml=save_xml,xml_name=xml_name)
         # logger.info(self.file_tree)
         return self.parser()

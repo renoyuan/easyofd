@@ -21,16 +21,16 @@ from easyofd.ofd import OFD
 
 
 # 
-def test_img2():
+def test_img2(dir_path):
     """
     jpg2ofd 
     jpg2pfd
     """
-    img_path = os.path.join(".", r"test\Doc_0\Res") # 多页排序问题
-    imgs_p = os.listdir(img_path)
+    # img_path = os.path.join(".", r"test\Doc_0\Res") # 多页排序问题
+    imgs_p = os.listdir(dir_path)
     imgs = []
     for img_p in imgs_p:
-        imgs.append(cv2.imread(os.path.join(img_path,img_p)))
+        imgs.append(cv2.imread(os.path.join(dir_path,img_p)))
     ofdbytes = ofd = OFD().jpg2ofd(imgs)
     pdfbytes = ofd = OFD().jpg2pfd(imgs)
     with open(r"img2test.pdf","wb") as f:
@@ -38,55 +38,59 @@ def test_img2():
     with open(r"img2test.ofd","wb") as f:
         f.write(ofdbytes)
         
-def test_ofd2():
+def test_ofd2(file_path):
     """
     ofd2pdf
     ofd2img
     """
     # with open(r"0e7ff724-1011-4544-8464-ea6c025f6ade.ofd","rb") as f:
-    with open(r"F:\code\easyofd\test\测试.ofd","rb") as f:
-        ofdb64 = str(base64.b64encode(f.read()),"utf-8")
-    ofd = OFD() # 初始化OFD 工具类
-    ofd.read(ofdb64,save_xml=True, xml_name="testxml") # 读取ofdb64
+
+    file_prefix = os.path.splitext(os.path.split(file_path)[1])[0]
+    with open(file_path, "rb") as f:
+        ofdb64 = str(base64.b64encode(f.read()), "utf-8")
+    ofd = OFD()  # 初始化OFD 工具类
+    ofd.read(ofdb64,save_xml=True, xml_name=f"{file_prefix}_xml") # 读取ofdb64
     # print("ofd.data", ofd.data) # ofd.data 为程序解析结果
     pdf_bytes = ofd.to_pdf() # 转pdf
     img_np = ofd.to_jpg() # 转图片
     ofd.del_data()
     
-    with open(r"test1.pdf", "wb") as f:
+    with open(f"{file_prefix}.pdf", "wb") as f:
         f.write(pdf_bytes)
         
     for idx, img in enumerate(img_np):
         im = Image.fromarray(img)
-        im.save(f"test_img{idx}.jpg")
+        im.save(f"{file_prefix}_{idx}.jpg")
         
-def test_pdf2():
+def test_pdf2(file_path):
     """
     pdf2ofd
     pdf2img
     """
-    with open(r"F:\code\easyofd\test\test.pdf", "rb") as f:
+    file_prefix = os.path.splitext(os.path.split(file_path)[1])[0]
+    with open(file_path, "rb") as f:
         pdfb64 = f.read()
     ofd = OFD()
     ofd_bytes = ofd.pdf2ofd(pdfb64, optional_text=True)  # 转ofd # optional_text 生成可操作文本 True
     img_np = ofd.pdf2img(pdfb64)
     ofd.del_data()
-    with open(r"test.ofd", "wb") as f:
+    with open(f"{file_prefix}.ofd", "wb") as f:
         f.write(ofd_bytes)
     for idx, img in enumerate(img_np):
         im = Image.fromarray(img)
-        im.save(f"test_img{idx}.jpg")
+        im.save(f"{file_prefix}_{idx}.jpg")
 
 
 if __name__ == "__main__":
+    file_path = r"1111.ofd"
     if sys.argv[1] =="ofd2":
-        test_ofd2()
+        test_ofd2(file_path)
     elif sys.argv[1] =="pdf2":
-        test_pdf2()
+        test_pdf2(file_path)
     elif sys.argv[1] =="img2":
-        test_img2()
+        test_img2(file_path)
     else:
-        test_ofd2()
+        test_ofd2(file_path)
 
     # data = ofd.data
     # json.dump(data,open("data.json","w",encoding="utf-8"),ensure_ascii=False,indent=4)

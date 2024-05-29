@@ -26,16 +26,15 @@ class OFD(object):
     def __init__(self,):
         self.data = None 
         
-    def read(self,ofd_f,fomat="b64",save_xml=False, xml_name="testxml"):
+    def read(self, ofd_f, fomat="b64", save_xml=False, xml_name="testxml"):
         """_summary_
-
         Args:
             file (_type_): _description_
             fomat (str, optional): _description_. Defaults to "path".
             fomat in ("path","b64","binary")
         """
         if fomat == "path":
-            with open(ofd_f,"rb") as f:
+            with open(ofd_f, "rb") as f:
                 ofd_f = str(base64.b64encode(f.read()),encoding="utf-8") 
         elif fomat == "b64":
             pass
@@ -54,19 +53,21 @@ class OFD(object):
         """
         assert self.data,f"data is None"
 
-    def pdf2ofd(self,pdfbyte):
+    def pdf2ofd(self, pdfbyte, optional_text=False):
         """pdf转ofd"""
-        ofd_byte = OFDWrite()(pdfbyte)
+        assert pdfbyte, f"pdfbyte is None"
+        logger.info(f"pdf2ofd")
+        ofd_byte = OFDWrite()(pdfbyte, optional_text=optional_text)
         return ofd_byte
     
     def to_pdf(self,):
         """return ofdbytes"""
 
-        assert self.data,f"data is None"
+        assert self.data, f"data is None"
         logger.info(f"to_pdf")
         return DrawPDF(self.data)()
     
-    def pdf2img(self,pdfbytes):
+    def pdf2img(self, pdfbytes):
         
         image_list = []
       
@@ -89,11 +90,10 @@ class OFD(object):
         """
         imglist: cv2 image list
         """
-        
-        ofd_byte = OFDWrite()(None,CV2_img_list=imglist)
+        ofd_byte = OFDWrite()(cv2_img_list=imglist)
         return ofd_byte
     
-    def jpg2pfd(self,imglist:list ):
+    def jpg2pfd(self,imglist:list):
         """
         imglist: cv2 image list
         1 构建data 

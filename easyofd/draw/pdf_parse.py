@@ -1,13 +1,7 @@
-# -*- coding: utf-8 -*-
-
-"""
-# @Time    : 2022/11/14 0014 16:11
-# @Author  : Silva
-# @File    : pdf_parse_nice.py
-"""
-
 import os
 import re
+import io
+
 import json
 import time
 import copy
@@ -16,6 +10,7 @@ import random
 from uuid import uuid1
 from decimal import Decimal
 from collections import OrderedDict
+
 # 第三方包
 import fitz
 from PIL import Image
@@ -34,7 +29,131 @@ class MyEncoder(json.JSONEncoder):
 class DPFParser(object):
     def __init__(self, ):
         pass
-    def to_img(self,buffer_pdf):
+
+    def extract_text_with_details(self, pdf_bytes):
+        """
+        提取PDF每页的文本及其位置、字体信息。
+
+        :param pdf_path: PDF文件路径
+        :return: 包含每页文本及其详细信息的列表
+        [[
+
+        ]]
+        """
+        details_list = []
+        pdf_stream = io.BytesIO(pdf_bytes)
+
+        # 使用fitz.open直接打开BytesIO对象
+
+        with fitz.open(stream=pdf_stream, filetype="pdf") as doc:
+            res_uuid_map = {
+                "img":{},
+                "font":{},
+                "other":{}
+            } # 全局资源标识
+            for page_num in range(len(doc)):
+
+
+                page_details_list = []  # 页面内信息
+                page = doc.load_page(page_num)
+                rect = page.rect
+                width = rect.width
+                height = rect.height
+                if res_uuid_map["other"].get("page_size"):
+                    res_uuid_map["other"]["page_size"][page_num] = [width,height]
+                else :
+                    res_uuid_map["other"]["page_size"] = {page_num: [width, height]}
+                blocks = page.get_text("dict").get("blocks")  # 获取文本块信息
+                image_list = page.get_images(full=True)  # 获取页面上所有图片的详细信息
+                # print(blocks)
+                # 获取页面内文本信息
+                for block in blocks:
+                    block_text = block.get("text", "")
+                    block_rect = block["bbox"]  # 文本块的边界框，格式为[x0, y0, x1, y1]
+
+                    # 遍历块中的每一行
+                    for line in block.get("lines", []):
+                        line_text = line.get("spans", [{}])[0].get("text", "")  # 单行文本
+                        line_rect = line["bbox"]  # 行的边界框
+
+                        # 遍历行中的每一个跨度（span），获取字体信息
+                        for span in line.get("spans", []):
+                            span_text = span.get("text", "")
+                            font_size = span.get("size")  # 字体大小
+                            font_name = span.get("font")  # 字体名称
+                            res_uuid = None
+                            if font_name not in res_uuid_map["font"].values():
+                                res_uuid = str(uuid1())
+                                res_uuid_map["font"][res_uuid] = font_name
+                            else:
+                                keys = list(res_uuid_map["font"].keys())
+                                vs = list(res_uuid_map["font"].values())
+                                idx = vs.index(font_name)
+                                res_uuid =keys[idx]
+                            font_color = span.get("color")  # 字体颜色，默认可能没有
+                            span_rect = (
+                            line_rect[0], line_rect[1], line_rect[2], line_rect[3])  # 使用行的边界框作为参考，具体到单个字符或词可能需要更复杂的处理
+
+                            # 打印或存储信息
+                            print(
+                                f"Page: {page_num }, Text: '{span_text}', Font: {font_name}, Size: {font_size}, "
+                                f"Color: {font_color}, Rect: {span_rect} ,res_uuid {res_uuid}")
+
+                            # 存储信息到details_list中（根据需要调整存储格式）
+                            page_details_list.append({
+                                "page": page_num,
+                                "text": span_text,
+                                "font": font_name,
+                                "res_uuid": res_uuid,
+                                "size": font_size,
+                                "color": font_color,
+                                "bbox": list(span_rect),
+                                "type": "text"
+                            })
+
+                for image_index, img_info in enumerate(image_list):
+                    # 解析图片信息
+                    xref = img_info[0]
+                    base_image = doc.extract_image(xref)
+
+                    image_data = base_image["image"]  # 图片数据
+                    res_uuid = str(uuid1())
+
+                    img_io = io.BytesIO(image_data)
+                    res_uuid_map["img"][res_uuid] = img_io
+                    image_type = base_image["ext"]  # 图片类型
+                    smask = base_image["smask"]  # 图片类型
+                    xres = base_image["xres"]  # 图片类型
+                    yres = base_image["yres"]  # 图片类型
+                    width = base_image["width"]  # 图片宽度
+                    height = base_image["height"]  # 图片高度
+
+
+
+                    # 计算坐标（左下角和右上角）
+                    x0, y0, x1, y1 = xres, yres,xres+width,yres+height
+                    print(
+                        f"Page: {page_num}, image_type: '{image_type}',x0{x0}, y0{y0}, x1{x1}, y1{y1}  ")
+                    page_details_list.append({
+                        "page": page_num,
+                        "index": image_index,
+                        "x0": x0,
+                        "y0": y0,
+                        "x1": x1,
+                        "y1": y1,
+                        "bbox": [x0,y0,width,height],
+                        "width": width,
+                        "height": height,
+                        "res_uuid": res_uuid,
+                        "image_type": image_type,
+                        "type": "img"
+                    })
+
+                details_list.append(page_details_list)
+        # print("details_list",details_list)
+        return details_list, res_uuid_map
+    def to_img(self, buffer_pdf):
+        """转图片"""
         pix_list = []
         pdfDoc = fitz.open(stream=buffer_pdf)
         for pg in range(pdfDoc.page_count):
