@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ofd:Res xmlns:ofd="http://blog.yuanhaiying.cn" BaseLoc="Res">
+	<ofd:MultiMedias>
+		<ofd:MultiMedia ID="38" Type="Image">
+			<ofd:MediaFile>Image_0.jpg</ofd:MediaFile>
+			<res_uuid>0</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="39" Type="Image">
+			<ofd:MediaFile>Image_1.jpg</ofd:MediaFile>
+			<res_uuid>1</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="40" Type="Image">
+			<ofd:MediaFile>Image_2.jpg</ofd:MediaFile>
+			<res_uuid>2</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="41" Type="Image">
+			<ofd:MediaFile>Image_3.jpg</ofd:MediaFile>
+			<res_uuid>3</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="42" Type="Image">
+			<ofd:MediaFile>Image_4.jpg</ofd:MediaFile>
+			<res_uuid>4</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="43" Type="Image">
+			<ofd:MediaFile>Image_5.jpg</ofd:MediaFile>
+			<res_uuid>5</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="44" Type="Image">
+			<ofd:MediaFile>Image_6.jpg</ofd:MediaFile>
+			<res_uuid>6</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="45" Type="Image">
+			<ofd:MediaFile>Image_7.jpg</ofd:MediaFile>
+			<res_uuid>7</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="46" Type="Image">
+			<ofd:MediaFile>Image_8.jpg</ofd:MediaFile>
+			<res_uuid>8</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="47" Type="Image">
+			<ofd:MediaFile>Image_9.jpg</ofd:MediaFile>
+			<res_uuid>9</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="48" Type="Image">
+			<ofd:MediaFile>Image_10.jpg</ofd:MediaFile>
+			<res_uuid>10</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="49" Type="Image">
+			<ofd:MediaFile>Image_11.jpg</ofd:MediaFile>
+			<res_uuid>11</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="50" Type="Image">
+			<ofd:MediaFile>Image_12.jpg</ofd:MediaFile>
+			<res_uuid>12</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="51" Type="Image">
+			<ofd:MediaFile>Image_13.jpg</ofd:MediaFile>
+			<res_uuid>13</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="52" Type="Image">
+			<ofd:MediaFile>Image_14.jpg</ofd:MediaFile>
+			<res_uuid>14</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="53" Type="Image">
+			<ofd:MediaFile>Image_15.jpg</ofd:MediaFile>
+			<res_uuid>15</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="54" Type="Image">
+			<ofd:MediaFile>Image_16.jpg</ofd:MediaFile>
+			<res_uuid>16</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="55" Type="Image">
+			<ofd:MediaFile>Image_17.jpg</ofd:MediaFile>
+			<res_uuid>17</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="56" Type="Image">
+			<ofd:MediaFile>Image_18.jpg</ofd:MediaFile>
+			<res_uuid>18</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="57" Type="Image">
+			<ofd:MediaFile>Image_19.jpg</ofd:MediaFile>
+			<res_uuid>19</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="58" Type="Image">
+			<ofd:MediaFile>Image_20.jpg</ofd:MediaFile>
+			<res_uuid>20</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="59" Type="Image">
+			<ofd:MediaFile>Image_21.jpg</ofd:MediaFile>
+			<res_uuid>21</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="60" Type="Image">
+			<ofd:MediaFile>Image_22.jpg</ofd:MediaFile>
+			<res_uuid>22</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="61" Type="Image">
+			<ofd:MediaFile>Image_23.jpg</ofd:MediaFile>
+			<res_uuid>23</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="62" Type="Image">
+			<ofd:MediaFile>Image_24.jpg</ofd:MediaFile>
+			<res_uuid>24</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="63" Type="Image">
+			<ofd:MediaFile>Image_25.jpg</ofd:MediaFile>
+			<res_uuid>25</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="64" Type="Image">
+			<ofd:MediaFile>Image_26.jpg</ofd:MediaFile>
+			<res_uuid>26</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="65" Type="Image">
+			<ofd:MediaFile>Image_27.jpg</ofd:MediaFile>
+			<res_uuid>27</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="66" Type="Image">
+			<ofd:MediaFile>Image_28.jpg</ofd:MediaFile>
+			<res_uuid>28</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="67" Type="Image">
+			<ofd:MediaFile>Image_29.jpg</ofd:MediaFile>
+			<res_uuid>29</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="68" Type="Image">
+			<ofd:MediaFile>Image_30.jpg</ofd:MediaFile>
+			<res_uuid>30</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="69" Type="Image">
+			<ofd:MediaFile>Image_31.jpg</ofd:MediaFile>
+			<res_uuid>31</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="70" Type="Image">
+			<ofd:MediaFile>Image_32.jpg</ofd:MediaFile>
+			<res_uuid>32</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="71" Type="Image">
+			<ofd:MediaFile>Image_33.jpg</ofd:MediaFile>
+			<res_uuid>33</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="72" Type="Image">
+			<ofd:MediaFile>Image_34.jpg</ofd:MediaFile>
+			<res_uuid>34</res_uuid>
+		</ofd:MultiMedia>
+		<ofd:MultiMedia ID="73" Type="Image">
+			<ofd:MediaFile>Image_35.jpg</ofd:MediaFile>
+			<res_uuid>35</res_uuid>
+		</ofd:MultiMedia>
+	</ofd:MultiMedias>
+</ofd:Res>

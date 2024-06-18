@@ -71,7 +71,7 @@ def test_pdf2(file_path):
     with open(file_path, "rb") as f:
         pdfb64 = f.read()
     ofd = OFD()
-    ofd_bytes = ofd.pdf2ofd(pdfb64, optional_text=True)  # 转ofd # optional_text 生成可操作文本 True
+    ofd_bytes = ofd.pdf2ofd(pdfb64, optional_text=False)  # 转ofd # optional_text 生成可操作文本 True 输入也需要可编辑pdf
     img_np = ofd.pdf2img(pdfb64)
     ofd.del_data()
     with open(f"{file_prefix}.ofd", "wb") as f:
@@ -83,6 +83,7 @@ def test_pdf2(file_path):
 
 if __name__ == "__main__":
     file_path = r"1111.ofd"
+    file_path = r"E:\download\MyPython\ceshi.pdf"
     if sys.argv[1] =="ofd2":
         test_ofd2(file_path)
     elif sys.argv[1] =="pdf2":

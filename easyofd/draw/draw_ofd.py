@@ -34,7 +34,7 @@ class OFDWrite(object):
         ofd_entrance = OFDTemplate(CreationDate=CreationDate, id_obj=id_obj)
         return ofd_entrance
 
-    def build_document(self, img_len, id_obj: CurId=None):
+    def build_document(self, img_len, id_obj: CurId=None,PhysicalBox="0 0 140 90"):
         """
         build_document
         """
@@ -47,7 +47,7 @@ class OFDWrite(object):
                 "@BaseLoc": f"Pages/Page_{idx}/Content.xml"
             }
             )
-        document = DocumentTemplate(Page=pages, id_obj=id_obj)
+        document = DocumentTemplate(Page=pages, id_obj=id_obj,PhysicalBox=PhysicalBox)
         return document
 
     def build_document_res(self, img_len: int = 0, id_obj: CurId = None, pfd_res_uuid_map: [dict|None]=None):
@@ -59,9 +59,10 @@ class OFDWrite(object):
         if img_len and not pfd_res_uuid_map:
             for num in range(img_len):
                 MultiMedia.append({
-                    "@ID": f"9100{num}",
+                    "@ID": 0,
                     "@Type": "Image",
-                    "ofd:MediaFile": f"Image_{num}.jpg"
+                    "ofd:MediaFile": f"Image_{num}.jpg",
+                     "res_uuid": f"{num}",
                 })
         elif pfd_res_uuid_map and (pfd_img := pfd_res_uuid_map.get("img")):
             for res_uuid in pfd_img.keys():
@@ -84,7 +85,7 @@ class OFDWrite(object):
         build_public_res
         """
         fonts = []
-        if pfd_font := pfd_res_uuid_map.get("font"):
+        if pfd_res_uuid_map and (pfd_font := pfd_res_uuid_map.get("font")):
             for res_uuid, font in pfd_font.items():
                 fonts.append({
                     "@ID": 0,
@@ -111,14 +112,15 @@ class OFDWrite(object):
         content_res_list = []
         if pil_img_list:
             for idx, pil_img in enumerate(pil_img_list):
-                print(pil_img)
+                # print(pil_img)
                 print(idx, pil_img[1], pil_img[2])
                 PhysicalBox = f"0 0 {pil_img[1]} {pil_img[2]}"
                 ImageObject = [{
-                                    "@ID": f"110{idx}",
+                                    "@ID": 0,
                                     "@CTM": f"{pil_img[1]} 0 0 {pil_img[2]} 0 0",
                                     "@Boundary": f"0 0 {pil_img[1]} {pil_img[2]}",
-                                    "@ResourceID": f"9100{idx}"
+                                    "res_uuid": f"{idx}",  # 资源标识
+                                    "@ResourceID": f""
                                 }]
 
                 conten = ContentTemplate(PhysicalBox=PhysicalBox, ImageObject=ImageObject,
@@ -208,34 +210,38 @@ class OFDWrite(object):
         2 转化为 ofd
         """
         pdf_obj = DPFParser()
-        if optional_text:  # 生成可编译ofd:
+        if optional_text:  # 生成可编辑ofd:
             pdf_info_list, pfd_res_uuid_map = pdf_obj.extract_text_with_details(pdf_bytes) # 解析pdf
             logger.debug(f"pdf_info_list: {pdf_info_list} \n pfd_res_uuid_map {pfd_res_uuid_map}")
 
             page_pil_img_list = None
 
-        else:
+        else:  # 插入图片ofd
             if cv2_img_list:  # 读取 图片
                 page_pil_img_list = [(self.pil_2_bytes(Image.fromarray(cv2.cvtColor(_img,cv2.COLOR_BGR2RGB))),
                                  _img.shape[1], _img.shape[0]) for _img in cv2_img_list]
             else:  # 读取 pdf 转图片
                 img_list = pdf_obj.to_img(pdf_bytes)
                 page_pil_img_list = [(self.pil_2_bytes(Image.frombytes("RGB", [_img.width, _img.height],
-                                                          _img.samples)), _img.width, _img.height) for _img in img_list]
+                                                          _img.samples)), _img.width/self.OP, _img.height/self.OP) for _img in img_list]
 
         id_obj = CurId()
 
         if page_pil_img_list:  # img 内容转ofd
-            ofd_entrance = self.build_ofd_entrance(id_obj=id_obj)
-            document = self.build_document(len(page_pil_img_list), id_obj=id_obj)
-            public_res = self.build_public_res(id_obj=id_obj)
-            document_res = self.build_document_res(len(page_pil_img_list), id_obj=id_obj)
-
-            content_res_list = self.build_content_res(page_pil_img_list, id_obj=id_obj)
-
             res_static = {}  # 图片资源
+            pfd_res_uuid_map = {"img": {}}
+            PhysicalBox = f"0 0 {page_pil_img_list[0][1]} {page_pil_img_list[0][2]}"
             for idx, pil_img_tuple in enumerate(page_pil_img_list):
+                pfd_res_uuid_map["img"][f"{idx}"] = pil_img_tuple[0]
                 res_static[f"Image_{idx}.jpg"] = pil_img_tuple[0]
+            ofd_entrance = self.build_ofd_entrance(id_obj=id_obj)
+            document = self.build_document(len(page_pil_img_list), id_obj=id_obj,PhysicalBox=PhysicalBox)
+            public_res = self.build_public_res(id_obj=id_obj)
+            document_res = self.build_document_res(len(page_pil_img_list), id_obj=id_obj, pfd_res_uuid_map=pfd_res_uuid_map)
+
+            content_res_list = self.build_content_res(page_pil_img_list, id_obj=id_obj, pfd_res_uuid_map=pfd_res_uuid_map)
+
+
         else:
             #  生成的文档结构对象需要传入id实例
             ofd_entrance = self.build_ofd_entrance(id_obj=id_obj)

@@ -187,9 +187,11 @@ class OFDTemplate(TemplateBase):
     }
 
 class DocumentTemplate(TemplateBase):
-    """DOC 内唯一 表示DOC内部结构 Document.xml"""
+    """DOC 内唯一 表示DOC内部结构 Document.xml
+
+    """
     template_name = "Document"
-    key_map = {"Page": "ofd:Page"}
+    key_map = {"Page": "ofd:Page","PhysicalBox":"ofd:PhysicalBox"}
     id_keys = ["ofd:Page"]
     ofdjson ={
     "ofd:Document": {
@@ -197,7 +199,7 @@ class DocumentTemplate(TemplateBase):
         "ofd:CommonData": {
             "ofd:MaxUnitID": 0,
             "ofd:PageArea": {
-                "ofd:PhysicalBox": "0 0 210 140"
+                "ofd:PhysicalBox": "0 0 140 90"
             },
             "ofd:PublicRes": "PublicRes.xml",
             "ofd:DocumentRes": "DocumentRes.xml"

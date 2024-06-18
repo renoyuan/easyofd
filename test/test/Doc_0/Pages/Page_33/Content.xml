@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ofd:Page xmlns:ofd="http://blog.yuanhaiying.cn">
+	<ofd:Content>
+		<ofd:PageArea>
+			<ofd:PhysicalBox>0 0 100.838 142.494</ofd:PhysicalBox>
+		</ofd:PageArea>
+		<ofd:Layer ID="140" Type="Foreground">
+			<ofd:ImageObject ID="141" CTM="100.838 0 0 142.494 0 0" Boundary="0 0 100.838 142.494" ResourceID="71"></ofd:ImageObject>
+		</ofd:Layer>
+	</ofd:Content>
+</ofd:Page>
