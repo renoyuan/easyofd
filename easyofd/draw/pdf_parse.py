@@ -47,9 +47,9 @@ class DPFParser(object):
 
         with fitz.open(stream=pdf_stream, filetype="pdf") as doc:
             res_uuid_map = {
-                "img":{},
-                "font":{},
-                "other":{}
+                "img": {},
+                "font": {},
+                "other": {}
             } # 全局资源标识
             for page_num in range(len(doc)):
 

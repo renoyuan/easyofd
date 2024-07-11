@@ -1,19 +1,53 @@
 # easyofd
-### 关于这个库：
+
+
+## 关于这个库：
 
 鉴于目前python解析ofd没有啥好用的库所以决定自己整一个。
 
-### 已实现功能 ：
+若本库对你有所帮助可以star 支持一下开源作者，欢迎fork，欢迎issues。
+
+
+
+### 更新
+
+v0.3.1 解决了一些wps适配 问题。 新增加了pfd转ofd电子版的支持，ofd 转pdf 中签章的解析
+
+
+
+### 常见问题
+
+目前一些常见使用问题包括 easyofd库如何下载怎么使用， linux系统缺少字体包怎么处理等常见问题后续会放到下面链接遇到后可以先看这个：
+
+https://github.com/renoyuan/easyofd/wiki/FAQ
+
+
+
+### 版本规划:
+
+1 环境，后续可能会尝试减少一些第三包的依赖压缩环境体积 -- 主要是opencv 和numpy
+
+2 gui 工具 ，之前提供过一个开箱即用的gui工具 v0.1.0.1版本后就没有更新过了，有时间会更新下。
+
+3 功能上 对于pfd2ofd 和 ofd 生成 可能会  
+
+4 需求收集，若有其他相关easyofd 的需求和建议可以git 上给我提，有意思的需求我会考虑尝试。
+
+
+
+## 已实现功能 ：
 
 1 解析ofd 
 
 2 ofd转pdf  转图片
 
-3 pdf转ofd   转图片 -暂不使用电子解析版本
+3 pdf转ofd   转图片 
 
 4 jpg2ofd jpg2pfd
 
 5 添加gui 工具实现上述功能
+
+
 
 
 
@@ -34,7 +68,7 @@ https://github.com/rillian/jbig2dec
 
 项目链接： https://github.com/renoyuan/easyofd
 
-
+## 使用 
 
 ### 安装
 
@@ -64,10 +98,7 @@ pip install easyofd
 
 
 
-### 版本规划:
 
-
-因为ofd本质上就是国产的pdf所以对于pdf的解析也会考虑单独封装一个模块，这块还要考虑一下。
 
 
 
