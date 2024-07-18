@@ -13,7 +13,7 @@ from PIL import Image
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QDialog,QMessageBox
 from PyQt6 import QtCore, QtGui, QtWidgets
 from easyofd import OFD
-import cv2
+
 class Ui_MainWindow(object):
     def __init__(self):
         self.ofd = OFD()
@@ -172,10 +172,10 @@ class Ui_MainWindow(object):
                 _bytes = _bytes[0]
             f.write(_bytes)
             
-    def save_img(self,name,img_np):
+    def save_img(self, name, img_np):
         for inx,img in enumerate(img_np):
-            im = Image.fromarray(img)
-            im.save(name.format(inx))
+            # im = Image.fromarray(img)
+            img.save(name.format(inx))
             
     def run_convert(self,mode,input,output):
         inputs= os.listdir(input)
@@ -200,19 +200,17 @@ class Ui_MainWindow(object):
                     ofd_byte = self.ofd.pdf2ofd(pfdbyte)
                     self.save_file(os.path.join(output,os.path.splitext(file)[0]+".ofd"), ofd_byte)
             elif mode == "pdf2img":
-                if self.check_file(file,"pdf"):
-                    print(os.path.join(input,file))
+                if self.check_file(file, "pdf"):
+                    print(os.path.join(input, file))
                     pfdbyte = self.read_pfd(os.path.join(input,file))
                     img_nps = self.ofd.pdf2img(pfdbyte)
                     print(type(img_nps))
                     if img_nps:
-                        for idx,img_np in enumerate(img_nps):
-                            print(img_np)
-                            img= Image.fromarray(cv2.cvtColor(img_np,cv2.COLOR_BGR2RGB))
-                            img.save(os.path.join(output,os.path.splitext(file)[0]+f"_{idx}"+".jpg"))
+                        for idx, img in enumerate(img_nps):
+                            img.save(os.path.join(output, os.path.splitext(file)[0]+f"_{idx}"+".jpg"))
                            
             elif mode == "img2ofd":
-                pass
+               pass
             elif mode == "img2pdf":
                 pass
             self.ofd.del_data()
@@ -234,16 +232,15 @@ class Ui_MainWindow(object):
         print("onput path: " + output_path)
         
         if not os.path.exists(input_path) or not os.path.exists(output_path):
-            
-           
             self.showDialog(f"输入路径{input_path} \n或 输出路径{output_path}\n 不存在，请检查。 ")
+            return
             
       
         # ofd2pdf ofd2img pdf2ofd pdf2img
         mode = [self.radioButton.isChecked(),self.radioButton_2.isChecked(),self.radioButton_3.isChecked(),self.radioButton_4.isChecked(),self.radioButton_5.isChecked()]
         print(mode)
         if mode[0]:
-            # TODO ofd2pdf
+
             print("ofd2pdf")
             self.run_convert("ofd2pdf",input_path,output_path)
         elif mode[1]:
