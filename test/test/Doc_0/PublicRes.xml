@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ofd:Res xmlns:ofd="http://blog.yuanhaiying.cn" BaseLoc="Res">
-	<ofd:ColorSpaces>
-		<ofd:ColorSpace ID="37" Type="RGB" BitsPerComponent="8"></ofd:ColorSpace>
-	</ofd:ColorSpaces>
-	<ofd:Fonts>
-	</ofd:Fonts>
-</ofd:Res>

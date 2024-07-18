@@ -93,14 +93,18 @@ class OFDParser(object):
     # 获得xml 对象
     def get_xml_obj(self, label):
         assert label
+        # print(self.file_tree.keys())
         for abs_p in self.file_tree:
             # 统一符号，避免win linux 路径冲突
 
-            abs_p_compare = abs_p.replace("\\","-").replace("/","-")  
-            label_compare = label.replace("\\","-").replace("/","-") 
+            abs_p_compare = abs_p.replace("\\\\","-").replace("//","-").replace("\\","-").replace("/","-")
+            label_compare = label.replace("\\\\","-").replace("//","-").replace("\\","-").replace("/","-")
             if label_compare in abs_p_compare:
                 # logger.info(f"{label} {abs_p}")
                 return self.file_tree[abs_p]
+        logger.info("ofd file path is not")
+        return ""
+
     
     def jb22png(self, img_d:dict):
         """
@@ -238,7 +242,7 @@ class OFDParser(object):
                     prefix = BaseLoc.split("/")[0]
                     signatures_info = SignatureFileParser(signature_xml_obj)(prefix=prefix)
                     # print(signatures_info)
-
+                    print("signatures_info",signatures_info)
                     PageRef = signatures_info.get("PageRef")
                     Boundary = signatures_info.get("Boundary")
                     SignedValue = signatures_info.get("SignedValue")
@@ -246,8 +250,8 @@ class OFDParser(object):
                     # print("self.file_tree",self.file_tree.keys)
                     # print(page_id_map,PageRef)
                     # print(SignedValue, self.get_xml_obj(SignedValue))
-                    with open("b64.txt","w") as f:
-                        f.write(self.get_xml_obj(SignedValue))
+                    # with open("b64.txt","w") as f:
+                    #     f.write(self.get_xml_obj(SignedValue))
                     if signatures_page_id.get(sing_page_no):
                         signatures_page_id[sing_page_no].append(
                             {

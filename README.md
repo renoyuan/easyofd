@@ -29,7 +29,7 @@ https://github.com/renoyuan/easyofd/wiki/FAQ
 
 2 gui 工具 ，之前提供过一个开箱即用的gui工具 v0.1.0.1版本后就没有更新过了，有时间会更新下。
 
-3 功能上 对于pfd2ofd 和 ofd 生成 可能会  
+3 功能上 对于pfd2ofd 和 ofd 生成 可能会有一些优化
 
 4 需求收集，若有其他相关easyofd 的需求和建议可以git 上给我提，有意思的需求我会考虑尝试。
 

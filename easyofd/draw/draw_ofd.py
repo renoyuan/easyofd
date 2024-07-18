@@ -113,7 +113,7 @@ class OFDWrite(object):
         if pil_img_list:
             for idx, pil_img in enumerate(pil_img_list):
                 # print(pil_img)
-                print(idx, pil_img[1], pil_img[2])
+                # print(idx, pil_img[1], pil_img[2])
                 PhysicalBox = f"0 0 {pil_img[1]} {pil_img[2]}"
                 ImageObject = [{
                                     "@ID": 0,
@@ -126,7 +126,7 @@ class OFDWrite(object):
                 conten = ContentTemplate(PhysicalBox=PhysicalBox, ImageObject=ImageObject,
 
                                          CGTransform=[],PathObject=[],TextObject=[], id_obj=id_obj)
-                print(conten)
+                # print(conten)
                 content_res_list.append(conten)
         elif pdf_info_list:  # 写入读取后的pdf 结果 # todo 图片id 需要关联得提前定义或者有其他方式反向对齐
 
