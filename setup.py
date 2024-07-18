@@ -25,7 +25,6 @@ setuptools.setup(
         "loguru>=0.7.2",
         "fontTools>=4.43.1",
         "PyMuPDF>=1.23.4",
-        "opencv-python>=4.6.0.66",
         "pyasn1>=0.6.0"
                      ],
     python_requires='>=3.8',   

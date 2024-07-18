@@ -153,7 +153,7 @@ class DPFParser(object):
         # print("details_list",details_list)
         return details_list, res_uuid_map
     def to_img(self, buffer_pdf):
-        """转图片"""
+        """pdf2img"""
         pix_list = []
         pdfDoc = fitz.open(stream=buffer_pdf)
         for pg in range(pdfDoc.page_count):
@@ -166,6 +166,8 @@ class DPFParser(object):
             # zoom_x,zoom_y = (1,1)
             mat = fitz.Matrix(zoom_x, zoom_y).prerotate(rotate)
             pix = page.get_pixmap(matrix=mat, alpha=False)
+
+
             pix_list.append(pix)
         return pix_list
            

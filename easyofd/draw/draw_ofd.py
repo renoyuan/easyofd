@@ -10,7 +10,6 @@ from io import BytesIO
 from datetime import datetime
 
 import xmltodict
-import cv2
 from PIL import Image
 from loguru import logger
 
@@ -190,6 +189,7 @@ class OFDWrite(object):
         return content_res_list
 
     def pil_2_bytes(self, image):
+        """"""
         # 创建一个 BytesIO 对象
         img_bytesio = BytesIO()
 
@@ -203,24 +203,24 @@ class OFDWrite(object):
         img_bytesio.close()
         return img_bytes
     
-    def __call__(self, pdf_bytes, cv2_img_list=None, optional_text=False):
+    def __call__(self, pdf_bytes=None, pil_img_list=None, optional_text=False):
         """
+        input pdf | imgs if pdf  >optional_text or not
         0 解析pdf文件
         1 构建必要的ofd template
         2 转化为 ofd
         """
         pdf_obj = DPFParser()
-        if optional_text:  # 生成可编辑ofd:
-            pdf_info_list, pfd_res_uuid_map = pdf_obj.extract_text_with_details(pdf_bytes) # 解析pdf
-            logger.debug(f"pdf_info_list: {pdf_info_list} \n pfd_res_uuid_map {pfd_res_uuid_map}")
+        page_pil_img_list = None
 
-            page_pil_img_list = None
-
-        else:  # 插入图片ofd
-            if cv2_img_list:  # 读取 图片
-                page_pil_img_list = [(self.pil_2_bytes(Image.fromarray(cv2.cvtColor(_img,cv2.COLOR_BGR2RGB))),
-                                 _img.shape[1], _img.shape[0]) for _img in cv2_img_list]
-            else:  # 读取 pdf 转图片
+         # 插入图片ofd
+        if pil_img_list:  # 读取 图片
+            page_pil_img_list = [(self.pil_2_bytes(_img),_img.size[0]/self.OP,_img.size[1]/self.OP) for _img in pil_img_list]
+        else:  # 读取 pdf 转图片
+            if optional_text:  # 生成可编辑ofd:
+                pdf_info_list, pfd_res_uuid_map = pdf_obj.extract_text_with_details(pdf_bytes)  # 解析pdf
+                logger.debug(f"pdf_info_list: {pdf_info_list} \n pfd_res_uuid_map {pfd_res_uuid_map}")
+            else:
                 img_list = pdf_obj.to_img(pdf_bytes)
                 page_pil_img_list = [(self.pil_2_bytes(Image.frombytes("RGB", [_img.width, _img.height],
                                                           _img.samples)), _img.width/self.OP, _img.height/self.OP) for _img in img_list]
@@ -266,6 +266,7 @@ class OFDWrite(object):
 if  __name__ == "__main__":
     
     pdf_p = r"D:\renodoc\技术栈\GBT_33190-2016_电子文件存储与交换格式版式文档.pdf"
+    pdf_p = r"F:\code\easyofd\test"
     with open(pdf_p,"rb") as f:
         content = f.read()
     

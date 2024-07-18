@@ -11,8 +11,7 @@
 
 ### 更新
 
-v0.3.1 解决了一些wps适配 问题。 新增加了pfd转ofd电子版的支持，ofd 转pdf 中签章的解析
-
+v0.3.3 解决了一些bug ，去除了对opencv的依赖 环境体积减少50M左右，后续可能会尝试把一些依赖改为选装按需安装。
 
 
 ### 常见问题
@@ -27,11 +26,9 @@ https://github.com/renoyuan/easyofd/wiki/FAQ
 
 1 环境，后续可能会尝试减少一些第三包的依赖压缩环境体积 -- 主要是opencv 和numpy
 
-2 gui 工具 ，之前提供过一个开箱即用的gui工具 v0.1.0.1版本后就没有更新过了，有时间会更新下。
+2 功能上 对于pfd2ofd 和 ofd 生成 可能会有一些优化
 
-3 功能上 对于pfd2ofd 和 ofd 生成 可能会有一些优化
-
-4 需求收集，若有其他相关easyofd 的需求和建议可以git 上给我提，有意思的需求我会考虑尝试。
+3 需求收集，若有其他相关easyofd 的需求和建议可以git 上给我提，有意思的需求我会考虑尝试。
 
 
 
@@ -46,7 +43,6 @@ https://github.com/renoyuan/easyofd/wiki/FAQ
 4 jpg2ofd jpg2pfd
 
 5 添加gui 工具实现上述功能
-
 
 
 

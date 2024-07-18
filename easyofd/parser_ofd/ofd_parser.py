@@ -14,10 +14,11 @@ sys.path.insert(0,"..")
 import traceback
 import base64
 import re
-import cv2
-from typing import Any
+
+from typing import Any,List
 from PIL import Image
 from loguru import logger
+from .img_deal import DealImg
 from .file_deal import FileRead
 from .file_parser import (OFDFileParser, DocumentFileParser, ContentFileParser,DocumentResFileParser,PublicResFileParser,
                           SignaturesFileParser,SignatureFileParser)
@@ -32,11 +33,12 @@ class OFDParser(object):
     2 调用font 注册 字体
     """
     def __init__(self, ofdb64):
+        self.img_deal = DealImg()
         self.ofdb64 = ofdb64
         self.file_tree = None
         self.jbig2dec_path = r"C:/msys64/mingw64/bin/jbig2dec.exe"
       
-    def img2data(self,imglist):
+    def img2data(self,imglist:List[Image]):
         """
         imglist to ofd data
         
@@ -49,10 +51,9 @@ class OFDParser(object):
         page_info_d = {}
 
 
-        for idx, img_numpy in enumerate(imglist):
-            h, w, _ = img_numpy.shape
-            _, img_encode = cv2.imencode('.jpg', img_numpy)
-            img_bytes = img_encode.tobytes()
+        for idx, img_pil in enumerate(imglist):
+            w,h = img_pil.size
+            img_bytes = self.img_deal.pil2bytes(img_pil)
             imgb64 = str(base64.b64encode(img_bytes),encoding="utf-8")
             img_info[str(idx)] = {
                 "format":  "jpg",

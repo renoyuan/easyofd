@@ -15,8 +15,7 @@ print(project_dir)
 print(pkg_dir)
 sys.path.insert(0,project_dir)
 sys.path.insert(0,pkg_dir)
-import numpy as np
-import cv2
+
 from easyofd.ofd import OFD
 
 
@@ -30,12 +29,12 @@ def test_img2(dir_path):
     imgs_p = os.listdir(dir_path)
     imgs = []
     for img_p in imgs_p:
-        imgs.append(cv2.imread(os.path.join(dir_path,img_p)))
-    ofdbytes = ofd = OFD().jpg2ofd(imgs)
-    pdfbytes = ofd = OFD().jpg2pfd(imgs)
-    with open(r"img2test.pdf","wb") as f:
+        imgs.append(Image.open(os.path.join(dir_path, img_p))) # 传入改为pil
+    ofdbytes = OFD().jpg2ofd(imgs)
+    pdfbytes = OFD().jpg2pfd(imgs)
+    with open(r"img2test.pdf", "wb") as f:
         f.write(pdfbytes)
-    with open(r"img2test.ofd","wb") as f:
+    with open(r"img2test.ofd", "wb") as f:
         f.write(ofdbytes)
         
 def test_ofd2(file_path):
@@ -59,8 +58,8 @@ def test_ofd2(file_path):
         f.write(pdf_bytes)
         
     for idx, img in enumerate(img_np):
-        im = Image.fromarray(img)
-        im.save(f"{file_prefix}_{idx}.jpg")
+        # im = Image.fromarray(img)
+        img.save(f"{file_prefix}_{idx}.jpg")
         
 def test_pdf2(file_path):
     """
@@ -77,13 +76,13 @@ def test_pdf2(file_path):
     with open(f"{file_prefix}.ofd", "wb") as f:
         f.write(ofd_bytes)
     for idx, img in enumerate(img_np):
-        im = Image.fromarray(img)
-        im.save(f"{file_prefix}_{idx}.jpg")
+        img.save(f"{file_prefix}_{idx}.jpg")
 
 
 if __name__ == "__main__":
-    file_path = r"1.ofd"
-    # file_path = r"E:\download\MyPython\ceshi.pdf"
+    file_path = r"data/1.ofd"
+    # file_path = r"F:\code\easyofd\test\img"
+    file_path = r"E:\download\MyPython\ceshi.pdf"
     if sys.argv[1] =="ofd2":
         test_ofd2(file_path)
     elif sys.argv[1] =="pdf2":

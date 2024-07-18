@@ -14,8 +14,8 @@ sys.path.insert(0,"..")
 from typing import Any
 
 import fitz
-import cv2
-import numpy as np
+
+from PIL import Image
 from loguru import logger
 
 from easyofd.parser_ofd import OFDParser
@@ -79,23 +79,24 @@ class OFD(object):
             zoom_x, zoom_y = 1.6, 1.6
             mat = fitz.Matrix(zoom_x, zoom_y).prerotate(rotate)
             pix = page.get_pixmap(matrix=mat, alpha=False)
-            image = np.ndarray((pix.height, pix.width, 3), dtype=np.uint8, buffer=pix.samples)
+            pil_image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+            # image = np.ndarray((pix.height, pix.width, 3), dtype=np.uint8, buffer=pix.samples)
             # print(image.shape)
             # print(image[2])
-            image_list.append(image)
-        logger.info(f"to_jpg")
+            image_list.append(pil_image)
+        logger.info(f"pdf2img")
         return image_list
     
     def jpg2ofd(self,imglist:list):
         """
-        imglist: cv2 image list
+        imglist: pil image list
         """
-        ofd_byte = OFDWrite()(cv2_img_list=imglist)
+        ofd_byte = OFDWrite()(pil_img_list=imglist)
         return ofd_byte
     
     def jpg2pfd(self,imglist:list):
         """
-        imglist: cv2 image list
+        imglist: PIL image list
         1 构建data 
         2 DrawPDF(self.data)()
         """
@@ -105,25 +106,14 @@ class OFD(object):
      
     def to_jpg(self,format="jpg"):
         """
-        return numpy list
+        return pil list
         """
-        assert self.data,f"data is None"
+        assert self.data, f"data is None"
         image_list = []
         pdfbytes = self.to_pdf()
-        
-        doc = fitz.open(stream=pdfbytes, filetype="pdf")
-      
-        for page in doc:
-            rotate = int(0)
-            zoom_x, zoom_y = 1.6, 1.6
-            mat = fitz.Matrix(zoom_x, zoom_y).prerotate(rotate)
-            pix = page.get_pixmap(matrix=mat, alpha=False)
-            image = np.ndarray((pix.height, pix.width, 3), dtype=np.uint8, buffer=pix.samples)
-            # print(image.shape)
-            # print(image[2])
-            image_list.append(image)
-        logger.info(f"to_jpg")
+        image_list = self.pdf2img(pdfbytes)
         return image_list
+
     
         
     def del_data(self,):

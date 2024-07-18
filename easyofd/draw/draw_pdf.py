@@ -277,66 +277,70 @@ class DrawPDF():
     def draw_line(self,canvas,line_list,page_size):
         """绘制线条"""
         # print("绘制",line_list)
+
+        def match_mode(Abbr: list):
+            """
+            解析AbbreviatedData
+            匹配各种线条模式
+            S 定义起始 坐标 x, y
+            M 移动到指定坐标 x, y
+            L 从当前点移动到指定点 x, y
+            Q x1 y1 x2 y2 二次贝塞尔曲线
+            B x1 y1 x2 y2 x3 y3 三次贝塞尔曲线
+            A 到 x,y 的圆弧 并移动到 x,y  rx 长轴 ry 短轴 angle 旋转角度 large为1表示 大于180 的弧 为0时表示小于180的弧 swcpp 为1 表示顺时针旋转 0 表示逆时针旋转
+            C 当前点和SubPath自动闭合
+            """
+            relu_list = []
+            mode = ""
+            modes = ["S", "M", "L", "Q", "B", "A", "C"]
+            mode_dict = {}
+            for idx, i in enumerate(Abbr):
+                if i in modes:
+                    mode = i
+                    if mode_dict:
+                        relu_list.append(mode_dict)
+                    mode_dict = {"mode": i, "points": []}
+
+                else:
+                    mode_dict["points"].append(i)
+
+                if idx + 1 == len(Abbr):
+                    relu_list.append(mode_dict)
+            return relu_list
+
+
+        def assemble(relu_list: list):
+            start_point = {}
+            acticon = []
+            for i in relu_list:
+                if i.get("mode") == "M":
+                    start_point = i
+                elif i.get("mode") in ['B', "Q", 'L']:
+                    acticon.append({"start_point": start_point,
+                                    "end_point": i
+                                    })
+            return acticon
+
+        def convert_coord(p_list, direction, page_size, pos):
+            """坐标转换ofd2pdf"""
+            new_p_l = []
+            for p in p_list:
+                if direction == "x":
+
+                    new_p = (float(pos[0]) + float(p)) * self.OP
+                else:
+                    new_p = (float(page_size[3]) - float(pos[1]) - float(p)) * self.OP
+                new_p_l.append(new_p)
+            return new_p_l
+
         for line in line_list:
             Abbr = line.get("AbbreviatedData").split(" ")  # AbbreviatedData 
             color = line.get("FillColor",[0,0,0])
             
-            def match_mode(Abbr:list):
-                """
-                解析AbbreviatedData
-                匹配各种线条模式 
-                S 定义起始 坐标 x, y
-                M 移动到指定坐标 x, y
-                L 从当前点移动到指定点 x, y
-                Q x1 y1 x2 y2 二次贝塞尔曲线
-                B x1 y1 x2 y2 x3 y3 三次贝塞尔曲线
-                A 到 x,y 的圆弧 并移动到 x,y  rx 长轴 ry 短轴 angle 旋转角度 large为1表示 大于180 的弧 为0时表示小于180的弧 swcpp 为1 表示顺时针旋转 0 表示逆时针旋转  
-                C 当前点和SubPath自动闭合
-                """
-                relu_list = []
-                mode = ""
-                modes = ["S","M","L","Q","B","A","C"]
-                mode_dict = {}
-                for idx, i in enumerate(Abbr):
-                    if i in modes:
-                        mode = i
-                        if mode_dict:
-                            relu_list.append(mode_dict)
-                        mode_dict = {"mode": i, "points": []}
-                                     
-                    else:
-                        mode_dict["points"].append(i)
-                    
-                    if idx + 1 == len(Abbr):
-                        relu_list.append(mode_dict)
-                return relu_list
-            
+
             relu_list = match_mode(Abbr)
             # TODO 组合 relu_list 1 M L 直线 2 M B*n 三次贝塞尔线 3 M Q*n 二次贝塞尔线
-            def assemble(relu_list: list):
-                start_point = {}
-                acticon = []
-                for i in relu_list:
-                    if i.get("mode") == "M":
-                        start_point = i
-                    elif i.get("mode") in ['B', "Q", 'L']:
-                        acticon.append({"start_point": start_point,
-                                        "end_point":i
-                        })
-                return acticon
-            
-            def convert_coord(p_list,direction, page_size, pos):
-                """坐标转换ofd2pdf"""
-                new_p_l = []
-                for p in p_list:
-                    if direction == "x":
-                        
-                        new_p = (float(pos[0]) + float(p)) * self.OP
-                    else:
-                        new_p = (float(page_size[3]) - float(pos[1]) - float(p)) * self.OP
-                    new_p_l.append(new_p)
-                return new_p_l
-            
+
             # print(relu_list)
             
             acticons = assemble(relu_list)
@@ -405,20 +409,20 @@ class DrawPDF():
                 c.setPageSize((page_size[2]*self.OP, page_size[3]*self.OP))
 
                 # 写入图片
-                self.draw_img(c, img_list, images, page_size)
-
-
+                if img_list:
+                    self.draw_img(c, img_list, images, page_size)
 
                 # 写入文本
-                self.draw_chars(c, text_list, fonts, page_size)
+                if text_list:
+                    self.draw_chars(c, text_list, fonts, page_size)
 
                 # 绘制线条
-                self.draw_line(c, line_list, page_size)
+                if line_list:
+                    self.draw_line(c, line_list, page_size)
 
                 # 绘制签章
-                self.draw_signature(c, signatures_page_id.get(page_id), page_size)
-
-
+                if signatures_page_id:
+                    self.draw_signature(c, signatures_page_id.get(page_id), page_size)
 
 
                 # print("去写入")

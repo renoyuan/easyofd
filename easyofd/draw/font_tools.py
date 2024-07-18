@@ -13,14 +13,14 @@ import zipfile
 import os
 import shutil
 import logging
-from io import BytesIO,StringIO 
+from io import BytesIO, StringIO
 import string
 from uuid import uuid1
 import random
 import traceback
 import logging
 
-import numpy as np
+
 import tempfile
 import xmltodict
 from fontTools.ttLib import TTFont as ttLib_TTFont
