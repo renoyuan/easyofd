@@ -11,7 +11,7 @@
 
 ### 更新
 
-v0.3.4.99 从该版本开始会增加对低版本python版本的兼容(最低3.8.18) ， 带有99 标识的版本代表发布前对python 3.8 有做兼容性验证。
+v0.3.4.99 从该版本开始会增加对低版本python版本的兼容(最低3.8.18) ， 带有pro 标识的版本代表发布前对python 3.8 有做兼容性验证。
 
   
 
@@ -26,13 +26,24 @@ https://github.com/renoyuan/easyofd/wiki/FAQ
 
 
 
-### 版本规划:
+### 版本规划
 
 1 环境，后续可能会尝试减少一些第三包的依赖压缩环境体积 -- 主要是opencv 和numpy
 
 2 功能上 对于pfd2ofd 和 ofd 生成 可能会有一些优化
 
 3 需求收集，若有其他相关easyofd 的需求和建议可以git 上给我提，有意思的需求我会考虑尝试。
+
+
+
+### 关于提问-重要
+
+
+:hand: 有疑问或者建议需求等等，优先看看FAQ文档和demo代码，没有的请提交issues，不要直接发邮件，不要直接发邮件。
+
+:hand: 有啥问题在 github 上提 issues，有空的时候会尽力解答以及优化。邮箱只接受问题文件不做回复。
+
+
 
 
 
@@ -53,20 +64,9 @@ https://github.com/renoyuan/easyofd/wiki/FAQ
 
 
 
-关于 jb2格式图片解析 
-使用了第三方库 jbig2dec 去读取jb2格式图片 参考下面链接安装使用jbig2dec 
-https://github.com/rillian/jbig2dec 
 
 
-:hand: 有疑问或者建议需求等等，优先看看文档和demo代码，没有的请提交issues，不要直接发邮件，不要直接发邮件。
 
-:hand: 有啥问题在 github 上提 issues，有空的时候会尽力解答以及优化。邮箱只接受问题文件不做回复。
-
-​	
-
-:hand:[参考文档实现](https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=3AF6682D939116B6F5EED53D01A9DB5D )
-
-项目链接： https://github.com/renoyuan/easyofd
 
 ## 使用 
 
@@ -96,7 +96,9 @@ pip install easyofd
 
 3 本库对你有所帮助可以star 支持一下作者，或者fork。
 
+:hand:[参考文档实现](https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=3AF6682D939116B6F5EED53D01A9DB5D )
 
+项目链接： https://github.com/renoyuan/easyofd
 
 
 
