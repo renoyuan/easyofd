@@ -1,20 +1,23 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
-#PROJECT_NAME: F:\code\easyofd\test
-#CREATE_TIME: 2023-10-18 
-#E_MAIL: renoyuan@foxmail.com
-#AUTHOR: reno 
-#note:  use demo
-import sys,os
+# -*- coding: utf-8 -*-
+# PROJECT_NAME: F:\code\easyofd\test
+# CREATE_TIME: 2023-10-18
+# E_MAIL: renoyuan@foxmail.com
+# AUTHOR: reno
+# note:  use demo
 import base64
-import json
+import os
+import sys
+
 from PIL import Image
-project_dir = os.path.join(os.path.dirname(os.getcwd()),"easyofd")
+from PIL.Image import Image as ImageClass
+
+project_dir = os.path.join(os.path.dirname(os.getcwd()), "easyofd")
 pkg_dir = os.path.dirname(os.getcwd())
 print(project_dir)
 print(pkg_dir)
-sys.path.insert(0,project_dir)
-sys.path.insert(0,pkg_dir)
+sys.path.insert(0, project_dir)
+sys.path.insert(0, pkg_dir)
 
 from easyofd.ofd import OFD
 
@@ -29,14 +32,15 @@ def test_img2(dir_path):
     imgs_p = os.listdir(dir_path)
     imgs = []
     for img_p in imgs_p:
-        imgs.append(Image.open(os.path.join(dir_path, img_p))) # 传入改为pil
+        imgs.append(Image.open(os.path.join(dir_path, img_p)))  # 传入改为pil
     ofdbytes = OFD().jpg2ofd(imgs)
     pdfbytes = OFD().jpg2pfd(imgs)
     with open(r"img2test.pdf", "wb") as f:
         f.write(pdfbytes)
     with open(r"img2test.ofd", "wb") as f:
         f.write(ofdbytes)
-        
+
+
 def test_ofd2(file_path):
     """
     ofd2pdf
@@ -48,19 +52,20 @@ def test_ofd2(file_path):
     with open(file_path, "rb") as f:
         ofdb64 = str(base64.b64encode(f.read()), "utf-8")
     ofd = OFD()  # 初始化OFD 工具类
-    ofd.read(ofdb64,save_xml=True, xml_name=f"{file_prefix}_xml") # 读取ofdb64
+    ofd.read(ofdb64, save_xml=True, xml_name=f"{file_prefix}_xml")  # 读取ofdb64
     # print("ofd.data", ofd.data) # ofd.data 为程序解析结果
-    pdf_bytes = ofd.to_pdf() # 转pdf
-    img_np = ofd.to_jpg() # 转图片
+    pdf_bytes = ofd.to_pdf()  # 转pdf
+    img_np = ofd.to_jpg()  # 转图片
     ofd.del_data()
-    
+
     with open(f"{file_prefix}.pdf", "wb") as f:
         f.write(pdf_bytes)
-        
+
     for idx, img in enumerate(img_np):
         # im = Image.fromarray(img)
         img.save(f"{file_prefix}_{idx}.jpg")
-        
+
+
 def test_pdf2(file_path):
     """
     pdf2ofd
@@ -82,12 +87,12 @@ def test_pdf2(file_path):
 if __name__ == "__main__":
     file_path = r"data/1.ofd"
     # file_path = r"F:\code\easyofd\test\img"
-    file_path = r"E:\download\MyPython\ceshi.pdf"
-    if sys.argv[1] =="ofd2":
+    # file_path = r"data/2.ofd"
+    if sys.argv[1] == "ofd2":
         test_ofd2(file_path)
-    elif sys.argv[1] =="pdf2":
+    elif sys.argv[1] == "pdf2":
         test_pdf2(file_path)
-    elif sys.argv[1] =="img2":
+    elif sys.argv[1] == "img2":
         test_img2(file_path)
     else:
         test_ofd2(file_path)
@@ -95,9 +100,3 @@ if __name__ == "__main__":
     # data = ofd.data
     # json.dump(data,open("data.json","w",encoding="utf-8"),ensure_ascii=False,indent=4)
     # print(ofd.data)
-    
-    
-
-
-
-       

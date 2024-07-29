@@ -83,22 +83,19 @@ class FontTool(object):
             if isinstance(file_name, (tuple, list)):
                     file_name = file_name[1]
             if not FontName:
-                FontName =  file_name.split(".")[0]
+                FontName = file_name.split(".")[0]
             try:
                 with open(file_name, "wb") as f:
                     f.write(base64.b64decode(font_b64))
-
+                # print("FontName", FontName, "file_name", file_name)
                 pdfmetrics.registerFont(TTFont(FontName, file_name))
                 self.FONTS.append(FontName)
                 
             except Exception as e:
                 traceback.print_exc()
-                logger.error(f"register_font_error:\n{e}")
+                logger.error(f"register_font_error:\n{e} \n 包含不支持解析字体格式")
             
             finally:
                 
                 if os.path.exists(file_name):
                         os.remove(file_name)
-        
-    
-    
