@@ -169,7 +169,8 @@ class OFDParser(object):
         解析流程
         """
         # 默认只有 doc_0 一层有多层后面改
-        page_size = []
+        page_size_details = []
+        default_page_size = []
         doc_list = []
         ofd_xml_obj = self.get_xml_obj(self.file_tree["root_doc"])  # OFD.xml xml 对象 
 
@@ -188,7 +189,7 @@ class OFDParser(object):
 
         if doc_size:
             try:
-                page_size = [float(pos_i) for pos_i in doc_size.split(" ") if re.match("[\d\.]", pos_i)]
+                default_page_size = [float(pos_i) for pos_i in doc_size.split(" ") if re.match("[\d\.]", pos_i)]
             except:
                 traceback.print_exc()
 
@@ -277,15 +278,17 @@ class OFDParser(object):
                 page_xml_obj = self.get_xml_obj(_page)
                 # 重新获取页面size
                 try:
-                    page_size_new = [float(pos_i) for pos_i in
+                    page_size = [float(pos_i) for pos_i in
                                      page_xml_obj.get('ofd:Page', {}).get("ofd:Area", {}).get("ofd:PhysicalBox",
                                                                                               "").split(" ")
                                      if re.match("[\d\.]", pos_i)]
-                    if page_size_new and len(page_size_new) >= 2:
-                        page_size = page_size_new
+                    if page_size and len(page_size) >= 2:
+                        page_size_details.append(page_size)
+                    else:
+                        page_size_details.append([])
                 except Exception as e:
                     traceback.print_exc()
-
+                    page_size.append([])
                 page_info = ContentFileParser(page_xml_obj)()
                 pg_no = re.search(r"\d+", _page)
                 if pg_no:
@@ -325,12 +328,13 @@ class OFDParser(object):
         page_ID = 0  # 没遇到过doc多个的情况
         # print("page_info",len(page_info))
         doc_list.append({
+            "default_page_size": default_page_size,
+            "page_size": page_size_details,
             "pdf_name": self.file_tree["pdf_name"],
             "doc_no": page_ID,
             "images": img_info,
             "signatures_page_id": signatures_page_id,
             "page_id_map": page_id_map,
-            "page_size": page_size,
             "fonts": font_info,
             "page_info": page_info_d
         })

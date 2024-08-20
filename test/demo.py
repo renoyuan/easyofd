@@ -85,8 +85,8 @@ def test_pdf2(file_path):
 
 
 if __name__ == "__main__":
-    file_path = r"data/1.ofd"
-    # file_path = r"F:\code\easyofd\test\img"
+    file_path = r"D:\projectdoc\国寿安保\0813\113123交易单.pdf"
+    file_path = r"E:\download\测试文.ofd"
     # file_path = r"data/2.ofd"
     if sys.argv[1] == "ofd2":
         test_ofd2(file_path)

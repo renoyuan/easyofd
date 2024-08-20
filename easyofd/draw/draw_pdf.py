@@ -381,7 +381,9 @@ class DrawPDF():
             # print(1)
             fonts = doc.get("fonts")
             images = doc.get("images")
-            page_size = doc.get("page_size")
+            default_page_size = doc.get("default_page_size")
+            page_size_details = doc.get("page_size")
+            print("page_size_details", page_size_details)
             signatures_page_id = doc.get("signatures_page_id")  # 签证信息
 
             # 注册字体
@@ -393,7 +395,11 @@ class DrawPDF():
             # text_write = []
             # print("doc.get(page_info)", len(doc.get("page_info")))
             for page_id, page in doc.get("page_info").items():
-                # logger.info(f"page_id {page_id}")
+                if page_size_details[page_id]:
+                    page_size = page_size_details[page_id]
+                else:
+                    page_size = default_page_size
+                # logger.info(f"page_id {page_id} page_size {page_size}")
                 text_list = page.get("text_list")
                 img_list = page.get("img_list")
                 line_list = page.get("line_list")
