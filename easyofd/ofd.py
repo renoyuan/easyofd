@@ -81,6 +81,7 @@ class OFD(object):
         for page in doc:
             rotate = int(0)
             zoom_x, zoom_y = 1.6, 1.6
+            zoom_x, zoom_y = 2, 2
             mat = fitz.Matrix(zoom_x, zoom_y).prerotate(rotate)
             pix = page.get_pixmap(matrix=mat, alpha=False)
             pil_image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)

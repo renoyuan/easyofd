@@ -208,6 +208,10 @@ class DrawPDF():
                 continue
 
             imgbyte = base64.b64decode(image.get('imgb64'))
+            if not imgbyte:
+                logger.error(f"{image['fileName']} is null")
+                continue
+
             img = PILImage.open(BytesIO(imgbyte))
             imgReade = ImageReader(img)
             CTM = img_d.get('CTM')
