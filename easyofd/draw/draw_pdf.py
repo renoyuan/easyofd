@@ -63,7 +63,7 @@ class DrawPDF():
         c.save()
 
     # 单个字符偏移量计算
-    def cmp_offset(self, pos, offset, DeltaRule, text, resize=1) -> list:
+    def cmp_offset(self, pos, offset, DeltaRule, text, CTM_info, dire="X") -> list:
         """
         pos 文本框x|y 坐标 
         offset 第一个字符的X|Y 
@@ -71,8 +71,21 @@ class DrawPDF():
         resize 字符坐标缩放
         返回 x|y  字符位置list 
         """
+        if CTM_info and dire == "X":
+            resize = CTM_info.get("resizeX")
+            rotate = CTM_info.get("rotateX")
+            move= CTM_info.get("moveX")
+        elif CTM_info and dire == "Y":
+            resize = CTM_info.get("resizeY")
+            rotate = CTM_info.get("rotateY")
+            move = CTM_info.get("moveY")
+        else:
+            resize = 1
+            rotate = 0
+            move = 0
 
-        char_pos = float(pos if pos else 0) + float(offset if offset else 0) * resize
+
+        char_pos = float(pos if pos else 0) + (float(offset if offset else 0) + move) * resize
         pos_list = []
         pos_list.append(char_pos)  # 放入第一个字符
         offsets = [i for i in DeltaRule.split(" ")]
@@ -147,12 +160,21 @@ class DrawPDF():
             resizeX = 1
             resizeY = 1
             # CTM =None # 有的数据不使用这个CTM
-            if CTM:
-                resizeX = float(CTM.split(" ")[0])
-                resizeY = float(CTM.split(" ")[3])
+            if CTM and (CTMS:=CTM.split(" ")) and len(CTMS) == 6:
+                CTM_info = {
+                    "resizeX": float(CTMS[0]),
+                    "rotateX": float(CTMS[1]),
+                    "rotateY": float(CTMS[2]),
+                    "resizeY": float(CTMS[3]),
+                    "moveX": float(CTMS[4]),
+                    "moveY": float(CTMS[5]),
 
-            x_list = self.cmp_offset(line_dict.get("pos")[0], X, DeltaX, text, resizeX)
-            y_list = self.cmp_offset(line_dict.get("pos")[1], Y, DeltaY, text, resizeY)
+                }
+
+            else:
+                CTM_info ={}
+            x_list = self.cmp_offset(line_dict.get("pos")[0], X, DeltaX, text, CTM_info, dire="X")
+            y_list = self.cmp_offset(line_dict.get("pos")[1], Y, DeltaY, text, CTM_info, dire="Y")
 
             # print("x_list",x_list)
             # print("y_list",y_list)
@@ -417,6 +439,7 @@ class DrawPDF():
 
                 # 写入文本
                 if text_list:
+
                     self.draw_chars(c, text_list, fonts, page_size)
 
                 # 绘制线条

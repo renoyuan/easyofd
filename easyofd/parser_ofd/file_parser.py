@@ -218,7 +218,7 @@ class ContentFileParser(FileParserBase):
 
         if text:
             for row in text:
-                print("row", row.get('ofd:TextCode', {}))
+                # print("row", row.get('ofd:TextCode', {}))
                 if isinstance(row.get('ofd:TextCode', {}), list):
                     for _i in row.get('ofd:TextCode', {}):
                         if not _i.get('#text'):
