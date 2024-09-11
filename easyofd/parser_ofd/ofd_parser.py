@@ -105,7 +105,7 @@ class OFDParser(object):
             if label_compare in abs_p_compare:
                 # logger.info(f"{label} {abs_p}")
                 return self.file_tree[abs_p]
-        logger.info(f"{label} ofd file path is not")
+        # logger.info(f"{label} ofd file path is not")
         return ""
 
     def jb22png(self, img_d: dict):
@@ -228,8 +228,8 @@ class OFDParser(object):
         signatures_page_id = {}
 
         # 签章信息
-        if signatures:
-            signatures_xml_obj = self.get_xml_obj(signatures[0])
+        if signatures and (signatures_xml_obj := self.get_xml_obj(signatures[0])):
+            print("signatures_xml_obj", signatures,signatures_xml_obj)
             signatures_info = SignaturesFileParser(signatures_xml_obj)()
             if signatures_info:  # 获取签章具体信息
                 for _, signatures_cell in signatures_info.items():

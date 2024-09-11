@@ -15,7 +15,7 @@ import traceback
 import base64
 import re
 from typing import Any
-
+from .parameter_parser import ParameterParser
 logger = logging.getLogger("root")
 
 
@@ -24,6 +24,7 @@ class FileParserBase(object):
 
     def __init__(self, xml_obj):
         assert xml_obj
+        self.ofd_param = ParameterParser()
         self.xml_obj = xml_obj
         # print(xml_obj)
 
@@ -181,8 +182,9 @@ class ContentFileParser(FileParserBase):
         cell_d["text"] = str(TextObject.get('#text'))
         cell_d["font"] = row['@Font']  # 字体
         cell_d["size"] = float(row['@Size'])  # 字号
+        # print("row", row)
 
-        color = row.get("ofd:FillColor", {}).get("@Value", "0 0 0")
+        color =self.ofd_param("ofd:FillColor", row).get("@Value", "0 0 0")
 
         cell_d["color"] = tuple(color.split(" "))  # 颜色
         cell_d["DeltaY"] = TextObject.get("@DeltaY", "")  # y 轴偏移量 竖版文字表示方法之一
@@ -249,8 +251,8 @@ class ContentFileParser(FileParserBase):
                 line_d["pos"] = [float(pos_i) for pos_i in _i['@Boundary'].split(" ")]  # 平移矩阵换
                 line_d["LineWidth"] = _i.get("@LineWidth", "")  # 图片id
                 line_d["AbbreviatedData"] = _i.get("ofd:AbbreviatedData", "")  # 路径指令
-                line_d["FillColor"] = _i.get("ofd:FillColor", {}).get('@Value', "0 0 0").split(" ")  # 颜色
-                line_d["StrokeColor"] = _i.get("ofd:StrokeColor", {}).get('@Value', "0 0 0")  # 颜色
+                line_d["FillColor"] = self.ofd_param("ofd:FillColor", _i).get('@Value', "0 0 0").split(" ")  # 颜色
+                line_d["StrokeColor"] = self.ofd_param("ofd:StrokeColor", _i).get('@Value', "0 0 0")  # 颜色
 
                 line_list.append(line_d)
 
