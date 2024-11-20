@@ -49,6 +49,8 @@ https://github.com/renoyuan/easyofd/wiki/FAQ
 
 :hand: 有啥问题在 github 上提 issues，有空的时候会尽力解答以及优化。邮箱只接受问题文件不做回复。
 
+:hand: 解析错误的ofd文件请发我邮箱，github 不支持上传ofd文件。需要分析问题的，ofd文件很重要。 
+
 
 
 
