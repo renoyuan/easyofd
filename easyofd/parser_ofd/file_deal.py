@@ -59,8 +59,12 @@ class FileRead(object):
                 
                 abs_path = os.path.join(root,file)
                 # 资源文件 则 b64 xml 则  xml——obj
-                self.file_tree[abs_path] = str(base64.b64encode(open(f"{abs_path}","rb").read()),"utf-8")  \
+                # DocumentRes.xml 允许为空
+                try:
+                    self.file_tree[abs_path] = str(base64.b64encode(open(f"{abs_path}","rb").read()),"utf-8")  \
                     if "xml" not in file else xmltodict.parse(open(f"{abs_path}" , "r", encoding="utf-8").read())
+                except:
+                    self.file_tree[abs_path] = str(base64.b64encode(open(f"{abs_path}","rb").read()),"utf-8")
         self.file_tree["root_doc"] = os.path.join(self.unzip_path,"OFD.xml") if os.path.join(self.unzip_path,"OFD.xml") in self.file_tree else ""
   
         if os.path.exists(self.unzip_path):

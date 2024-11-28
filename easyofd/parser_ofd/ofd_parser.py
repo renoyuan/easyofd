@@ -98,8 +98,15 @@ class OFDParser(object):
         assert label
         # print(self.file_tree.keys())
         for abs_p in self.file_tree:
-            # 统一符号，避免win linux 路径冲突
+            # 路径可能为相对路径，如 ./Doc_0/Document.xml
+            label = os.path.normpath(label)
+            # 即使在 normpath 之后，也有可能以 ./ 或 ../ 开头
+            while label.startswith("./"):
+                label = label[2:]
+            while label.startswith("../"):
+                label = label[3:]
 
+            # 统一符号，避免win linux 路径冲突
             abs_p_compare = abs_p.replace("\\\\", "-").replace("//", "-").replace("\\", "-").replace("/", "-")
             label_compare = label.replace("\\\\", "-").replace("//", "-").replace("\\", "-").replace("/", "-")
             if label_compare in abs_p_compare:
@@ -120,6 +127,11 @@ class OFDParser(object):
         # todo ib2 转png C:/msys64/mingw64/bin/jbig2dec.exe -o F:\code\easyofd\test\image_80.png F:\code\easyofd\test\image_80.jb2
         fileName = img_d["fileName"]
         new_fileName = img_d['fileName'].replace(".jb2", ".png")
+        # 路径包含多层文件夹，需要创建文件夹
+        dirName = os.path.dirname(fileName)
+        if dirName and not os.path.exists(dirName):
+            os.makedirs(dirName)
+            
         with open(fileName, "wb") as f:
             f.write(base64.b64decode(img_d["imgb64"]))
         command = "{} -o {} {}"
@@ -143,6 +155,11 @@ class OFDParser(object):
 
         fileName = img_d["fileName"]
         new_fileName = img_d['fileName'].replace(".bmp", ".jpg")
+        # 路径包含多层文件夹，需要创建文件夹
+        dirName = os.path.dirname(fileName)
+        if dirName and not os.path.exists(dirName):
+            os.makedirs(dirName)
+        
         with open(fileName, "wb") as f:
             f.write(base64.b64decode(img_d["imgb64"]))
 
