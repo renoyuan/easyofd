@@ -421,7 +421,9 @@ class DrawPDF():
             # text_write = []
             # print("doc.get(page_info)", len(doc.get("page_info")))
             for page_id, page in doc.get("page_info").items():
-                if page_size_details[page_id]:
+                print(page_id)
+                print(page_size_details)
+                if len(page_size_details) > page_id and page_size_details[page_id]:
                     page_size = page_size_details[page_id]
                 else:
                     page_size = default_page_size

@@ -85,9 +85,7 @@ def test_pdf2(file_path):
 
 
 if __name__ == "__main__":
-    file_path = r"D:\projectdoc\国寿安保\0813\113123交易单.pdf"
-    file_path = r"E:\download\测试文.ofd"
-    file_path = rf"E:\download\新疆中泰(集团)有限责任公司下属子公司企业年金基金投资监督合规表-权益20%_建信养老.pdf"
+    file_path = rf"F:\ofdfile\20241204\6.2.004_3 路径中含有转义字符.ofd"
     # file_path = r"data/2.ofd"
     if sys.argv[1] == "ofd2":
         test_ofd2(file_path)

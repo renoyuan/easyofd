@@ -14,6 +14,7 @@ sys.path.insert(0, "..")
 import traceback
 import base64
 import re
+import io
 
 from typing import Any, List
 from PIL import Image
@@ -97,6 +98,7 @@ class OFDParser(object):
     def get_xml_obj(self, label):
         assert label
         # print(self.file_tree.keys())
+        label =label.lstrip('./')
         for abs_p in self.file_tree:
             # 统一符号，避免win linux 路径冲突
 
@@ -143,26 +145,75 @@ class OFDParser(object):
 
         fileName = img_d["fileName"]
         new_fileName = img_d['fileName'].replace(".bmp", ".jpg")
-        with open(fileName, "wb") as f:
-            f.write(base64.b64decode(img_d["imgb64"]))
+        b64_nmp = self.get_xml_obj(fileName)
+        image_data = base64.b64decode(b64_nmp)
+        image = Image.open(io.BytesIO(image_data))
+        rgb_image = image.convert("RGB")
+        output_buffer = io.BytesIO()
+        rgb_image.save(output_buffer, format="JPEG")
+        image.close()
+        jpeg_bytes = output_buffer.getvalue()
+        b64_jpeg = base64.b64encode(jpeg_bytes).decode('utf-8')
+        output_buffer.close()
 
-        # 打开 BMP 图像
-        bmp_image = Image.open(fileName)
-
-        # 将 BMP 图像保存为 JPG 格式
-        bmp_image.convert("RGB").save(new_fileName, "JPEG")
-
-        # 关闭图像
-        bmp_image.close()
-        if os.path.exists(new_fileName):
-            logger.info(f"jbig2dec处理成功{fileName}>>{new_fileName}")
+        if b64_jpeg:
+            logger.info(f"bmp2jpg处理成功{fileName}>>{new_fileName}")
             img_d["fileName"] = new_fileName
             img_d["suffix"] = "jpg"
             img_d["format"] = "jpg"
-            with open(new_fileName, "rb") as f:
-                data = f.read()
-                img_d["imgb64"] = str(base64.b64encode(data), encoding="utf-8")
-            os.remove(new_fileName)
+            img_d["imgb64"] = b64_jpeg
+
+    def tif2jpg(self, img_d: dict):
+        fileName = img_d["fileName"]
+        new_fileName = img_d['fileName'].replace(".tif", ".jpg")
+        tif_nmp = self.get_xml_obj(fileName)
+        image_data = base64.b64decode(tif_nmp)
+        image = Image.open(io.BytesIO(image_data))
+        if image.mode in ("RGBA", "LA") or (image.mode == "P" and "transparency" in image.info):
+            image = image.convert("RGB")
+
+            # 创建一个字节流来保存处理后的图像
+        output_buffer = io.BytesIO()
+
+        # 保存图像为 JPEG 格式到字节流中
+        image.save(output_buffer, format="JPEG", quality=95)
+
+        # 获取字节流中的内容并编码为 Base64 字符串
+        jpeg_bytes = output_buffer.getvalue()
+        b64_jpeg = base64.b64encode(jpeg_bytes).decode('utf-8')
+
+        # 关闭图像对象和字节流
+        image.close()
+        output_buffer.close()
+
+        if b64_jpeg:
+            logger.info(f"tif2jpg处理成功{fileName}>>{new_fileName}")
+            img_d["fileName"] = new_fileName
+            img_d["suffix"] = "jpg"
+            img_d["format"] = "jpg"
+            img_d["imgb64"] = b64_jpeg
+
+    def gif2jpg(self, img_d: dict):
+        fileName = img_d["fileName"]
+        new_fileName = img_d['fileName'].replace(".bmp", ".jpg")
+        b64_gif = self.get_xml_obj(fileName)
+        image_data = base64.b64decode(b64_gif)
+        image = Image.open(io.BytesIO(image_data))
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+        output_buffer = io.BytesIO()
+        image.save(output_buffer, format="JPEG", quality=95)
+        image.close()
+        jpeg_bytes = output_buffer.getvalue()
+        b64_jpeg = base64.b64encode(jpeg_bytes).decode('utf-8')
+        output_buffer.close()
+
+        if b64_jpeg:
+            logger.info(f"gif2jpg处理成功{fileName}>>{new_fileName}")
+            img_d["fileName"] = new_fileName
+            img_d["suffix"] = "jpg"
+            img_d["format"] = "jpg"
+            img_d["imgb64"] = b64_jpeg
 
     def parser(self, ):
         """
@@ -218,11 +269,15 @@ class OFDParser(object):
             # 找到图片b64
             for img_id, img_v in img_info.items():
                 img_v["imgb64"] = self.get_xml_obj(img_v.get("fileName"))
-                if img_v[
-                    "suffix"] == 'jb2':  # todo ib2 转png C:/msys64/mingw64/bin/jbig2dec.exe -o F:\code\easyofd\test\image_80.png F:\code\easyofd\test\image_80.jb2
+                # todo ib2 转png C:/msys64/mingw64/bin/jbig2dec.exe -o F:\code\easyofd\test\image_80.png F:\code\easyofd\test\image_80.jb2
+                if img_v["suffix"] == 'jb2':
                     self.jb22png(img_v)
-                if img_v["suffix"] == 'bmp':
+                elif img_v["suffix"] == 'bmp':
                     self.bmp2jpg(img_v)
+                elif img_v["suffix"] == 'tif':
+                    self.tif2jpg(img_v)
+                elif img_v["suffix"] == 'gif':
+                    self.gif2jpg(img_v)
 
         page_id_map: list = doc_root_info.get("page_id_map")
         signatures_page_id = {}

@@ -10,6 +10,9 @@
 
 
 ### 更新
+20241204 - v0.4.1.99 对文件内相对路径做了处理，新增了对tif 和gif 格式文件处理
+  目前ofd2pdf支持图片的格式有jpg jpeg png jb2 bmp tif gif 均转为jpg 展示
+
 20240911 - v0.4.0 新增参数校验器 parameter_parser.py 中的参数需要在后续版本中完善。
 20240909- v0.3.6 兼容更多text格式.
 
@@ -49,7 +52,7 @@ https://github.com/renoyuan/easyofd/wiki/FAQ
 
 :hand: 有啥问题在 github 上提 issues，有空的时候会尽力解答以及优化。邮箱只接受问题文件不做回复。
 
-
+:hand: 解析错误的ofd文件请发我邮箱，github 不支持上传ofd文件。需要分析问题的，ofd文件很重要。
 
 
 

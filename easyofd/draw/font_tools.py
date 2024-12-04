@@ -92,7 +92,7 @@ class FontTool(object):
                 self.FONTS.append(FontName)
                 
             except Exception as e:
-                traceback.print_exc()
+                # traceback.print_exc()
                 logger.error(f"register_font_error:\n{e} \n 包含不支持解析字体格式")
             
             finally:
