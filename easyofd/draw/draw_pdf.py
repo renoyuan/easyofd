@@ -36,7 +36,7 @@ class DrawPDF():
         # self.OP = 1
         self.pdf_uuid_name = self.data[0]["pdf_name"]
         self.pdf_io = BytesIO()
-        self.SupportImgType = ("JPG", "IPEG", "PNG")
+        self.SupportImgType = ("JPG", "JPEG", "PNG")
         self.init_font = "宋体"
         self.font_tool = FontTool()
 
