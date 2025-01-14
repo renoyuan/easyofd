@@ -289,7 +289,7 @@ class DrawPDF():
             print(f"签章写入失败 {e}")
             traceback.print_exc()
 
-    def draw_line(self, canvas, line_list, page_size):
+    def draw_line_old(self, canvas, line_list, page_size):
         """绘制线条"""
 
         # print("绘制",line_list)
@@ -397,6 +397,158 @@ class DrawPDF():
                     pass
                 else:
                     continue
+    def draw_line(self, canvas, line_list, page_size):
+        def match_mode(Abbr: list):
+            """
+            解析AbbreviatedData
+            匹配各种线条模式
+            S 定义起始 坐标 x, y
+            M 移动到指定坐标 x, y
+            L 从当前点移动到指定点 x, y
+            Q x1 y1 x2 y2 二次贝塞尔曲线 从当前点连接一条到点(x2,y2)的二次贝塞尔曲线，并将当前点移动到点(x2,y2)，此贝塞尔曲线使用点(x1,y1)作为其控制点。
+            B x1 y1 x2 y2 x3 y3 三次贝塞尔曲线 从当前点连接一条到点(x3,y3)的三次贝塞尔曲线，并将当前点移动到点(x3,y3)，此贝塞尔曲线使用点(x1,y1)和点(x2,y2)作为其控制点。
+            A Are 操作数为rx ry angle large sweep x y，从当前点连接一条到点(x,y)的圆弧，并将当前点移动到点(x,y)。
+            其中，rx表示椭圆的长轴长度，ry表示椭圆的短轴长度，angle表示椭圆在当前坐标系下旋转的角度，正值为顺时针，
+            负值为逆时针，large为 1 时表示对应度数大于 180° 的弧，为 0 时表示对应度数小于 180° 的弧，
+            sweep为 1 时表示由圆弧起始点到结束点是顺时针旋转，为 0 时表示由圆弧起始点到结束点是逆时针旋转。
+            C 无操作数，其作用是SubPath自动闭合，表示将当前点和SubPath的起始点用线段直接连接。
+            """
+            relu_list = []
+            mode = ""
+            modes = ["S", "M", "L", "Q", "B", "A", "C"]
+            mode_dict = {}
+            for idx, i in enumerate(Abbr):
+                if i in modes:
+                    mode = i
+                    if mode_dict:
+                        relu_list.append(mode_dict)
+                    mode_dict = {"mode": i, "points": []}
+
+                else:
+                    mode_dict["points"].append(i)
+
+                if idx + 1 == len(Abbr):
+                    relu_list.append(mode_dict)
+            return relu_list
+
+        def assemble(relu_list: list):
+            start_point = {}
+            acticon = []
+
+            for i in relu_list:
+                if i.get("mode") == "M":
+                    if not start_point:
+                        start_point = i
+                    acticon.append({
+                        "start_point": start_point,"end_point": i})
+
+                elif i.get("mode") in ['B', "Q", 'L']:
+                    acticon.append({"start_point": start_point,
+                                    "end_point": i
+                                    })
+                elif i.get("mode") == "C":
+                    acticon.append({"start_point": start_point,
+                                    "end_point": i
+                                    })
+                elif i.get("mode") == "A":
+                    acticon.append({"start_point": start_point,
+                                    "end_point": i
+                                    })
+                elif i.get("mode") == "S":
+                    start_point = i
+
+            return acticon
+
+        def convert_coord(p_list, direction, page_size, pos):
+            """坐标转换ofd2pdf"""
+            new_p_l = []
+            for p in p_list:
+                if direction == "x":
+
+                    new_p = (float(pos[0]) + float(p)) * self.OP
+                else:
+                    new_p = (float(page_size[3]) - float(pos[1]) - float(p)) * self.OP
+                new_p_l.append(new_p)
+            return new_p_l
+
+        for line in line_list:
+            path = canvas.beginPath()
+            Abbr = line.get("AbbreviatedData").split(" ")  # AbbreviatedData
+            color = line.get("FillColor", [0, 0, 0])
+
+            relu_list = match_mode(Abbr)
+            # TODO 组合 relu_list 1 M L 直线 2 M B*n 三次贝塞尔线 3 M Q*n 二次贝塞尔线
+
+            # print(relu_list)
+
+            acticons = assemble(relu_list)
+            pos = line.get("pos")
+            # print(color)
+            if len(color) < 3:
+                color = [0, 0, 0]
+            canvas.setStrokeColorRGB(*(int(color[0]) / 255, int(color[1]) / 255, int(color[2]) / 255))  # 颜色
+
+            # 设置线条宽度
+            try:
+                LineWidth = (float(line.get("LineWidth", "0.25").replace(" ", "")) if \
+                                 line.get("LineWidth", "0.25").replace(" ", "") else 0.25) * self.OP
+            except Exception as e:
+                logger.error(f"{e}")
+                LineWidth = 0.25 * self.OP
+
+            canvas.setLineWidth(LineWidth)  # 单位为点，2 表示 2 点
+            cur_point = []
+            for acticon in acticons:
+                if acticon.get("end_point").get("mode") == 'M':
+                    x, y = acticon.get("end_point").get("points")
+                    x = convert_coord([x], "x", page_size, pos)[0]
+                    y = convert_coord([y], "y", page_size, pos)[0]
+                    cur_point = [x, y]
+                    path.moveTo(x, y)
+
+                elif acticon.get("end_point").get("mode") == 'L':  # 直线
+                    x, y = acticon.get("end_point").get("points")
+                    x = convert_coord([x], "x", page_size, pos)[0]
+                    y = convert_coord([y], "y", page_size, pos)[0]
+                    path.lineTo(x, y)
+
+
+                elif acticon.get("end_point").get("mode") == 'B':  # 三次贝塞尔线
+                    pass
+
+                elif acticon.get("end_point").get("mode") == 'Q':  # 二次贝塞尔线
+                    pass
+
+                elif acticon.get("end_point").get("mode") == 'A':  # 圆弧线
+                    x1, y1 = acticon.get("start_point").get("points")
+                    rx, ry, startAng, large_arc_flag, sweep_flag, x2, y2 = acticon.get("end_point").get("points")
+                    rx_o = rx
+                    ry_o = ry
+
+                    x1,x2,rx = convert_coord([x1,x2,rx], "x", page_size, pos)
+                    y1,y2,ry = convert_coord([y1,y2,ry], "y", page_size, pos)
+
+                    cur_x,cur_y=cur_point
+
+                    # 绘制圆弧 有问题
+                    if rx_o==ry_o:
+                        # path.circle(cur_x,cur_y, 20) # 圆
+                        path.circle(rx,ry, 20) # 圆 # 莫名其妙的圆
+                    else:
+                        print(rx, ry, x2, y2, startAng, large_arc_flag, sweep_flag)
+                        path.ellipse(rx, ry,20, 20, ) # 椭圆
+                    # path.arc(rx, ry, x2, y2, startAng=int(startAng), extent=int(sweep_flag))
+                    # path.ellipse(rx, ry,x2, y2, ) # 椭圆
+                    # path.curveTo(rx, ry ,x2, y2, startAng=int(startAng), extent=int(sweep_flag))
+                    path.moveTo(x2, y2)
+                    cur_point = [x2,y2]
+
+                elif acticon.get("end_point").get("mode") == 'C':
+                    # canvas.drawPath(path)
+                    path.close()
+            canvas.drawPath(path)
+
+
 
     def draw_pdf(self):
 

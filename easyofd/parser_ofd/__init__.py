@@ -9,8 +9,9 @@ from reportlab.pdfbase.ttfonts import TTFont
 
 font_map = {"simsun.ttc":["宋体","SWPMEH+SimSun","SimSun","SWDKON+SimSun"],
             'simkai.ttf':["KaiTi","楷体","SWLCQE+KaiTi","SWHGME+KaiTi","BWSimKai"],
-            'STKAITI.TTF':["STKAITI"],
-            "COURI.TTF":["Courier New","CourierNewPSMT","CourierNew","SWCRMF+CourierNewPSMT","SWANVV+CourierNewPSMT"],
+            # 'STKAITI.TTF':["华文楷体 常规","STKAITI","华文楷体"],
+            "COURI.TTF":["CourierNewPSMT","CourierNew","SWCRMF+CourierNewPSMT","SWANVV+CourierNewPSMT"],
+            "courbd.TTF":["Courier New"],
             "simhei.ttf":["SimHei","hei","黑体"]
             }
 pdfmetrics.registerFont(UnicodeCIDFont('STSong-Light'))

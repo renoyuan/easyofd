@@ -86,6 +86,7 @@ def test_pdf2(file_path):
 
 if __name__ == "__main__":
     file_path = rf"F:\ofdfile\20241204\6.2.004_3 路径中含有转义字符.ofd"
+    file_path = rf"E:\download\test (1).ofd"
     # file_path = r"data/2.ofd"
     if sys.argv[1] == "ofd2":
         test_ofd2(file_path)
