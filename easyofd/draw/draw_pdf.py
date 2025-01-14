@@ -247,6 +247,7 @@ class DrawPDF():
                 y = y - (wrap_pos[1] * self.OP)
             w = img_d.get('pos')[2] * self.OP
             h = -img_d.get('pos')[3] * self.OP
+            print(x, y, w, h)
             c.drawImage(imgReade, x, y, w, h, 'auto')
 
     def draw_signature(self, canvas, signatures_page_list, page_size):
@@ -514,11 +515,20 @@ class DrawPDF():
 
 
                 elif acticon.get("end_point").get("mode") == 'B':  # 三次贝塞尔线
-                    pass
+                    x1, y1, x2, y2 ,x3,y3= acticon.get("end_point").get("points")
+                    x1, x2 = convert_coord([x1, x2,x3], "x", page_size, pos)
+                    y1, y2 = convert_coord([y1, y2,y3], "y", page_size, pos)
+                    cur_point = [x2, y2]
+                    path.curveTo(x1, y1, x2, y2, x3, y3)
+                    path.moveTo(x3, y3)
 
                 elif acticon.get("end_point").get("mode") == 'Q':  # 二次贝塞尔线
-                    pass
-
+                    x1, y1, x2, y2 = acticon.get("end_point").get("points")
+                    x1, x2 = convert_coord([x1, x2], "x", page_size, pos)
+                    y1, y2 = convert_coord([y1, y2], "y", page_size, pos)
+                    cur_point = [x2, y2]
+                    path.curveTo(x1, y1, x2, y2, x2, y2)
+                    path.moveTo(x2, y2)
                 elif acticon.get("end_point").get("mode") == 'A':  # 圆弧线
                     x1, y1 = acticon.get("start_point").get("points")
                     rx, ry, startAng, large_arc_flag, sweep_flag, x2, y2 = acticon.get("end_point").get("points")
