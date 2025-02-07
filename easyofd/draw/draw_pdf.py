@@ -463,13 +463,14 @@ class DrawPDF():
         def convert_coord(p_list, direction, page_size, pos):
             """坐标转换ofd2pdf"""
             new_p_l = []
+            # print("p_list", p_list)
             for p in p_list:
                 if direction == "x":
-
                     new_p = (float(pos[0]) + float(p)) * self.OP
                 else:
                     new_p = (float(page_size[3]) - float(pos[1]) - float(p)) * self.OP
                 new_p_l.append(new_p)
+            # print("new_p_l", new_p_l)
             return new_p_l
 
         for line in line_list:
@@ -515,9 +516,10 @@ class DrawPDF():
 
 
                 elif acticon.get("end_point").get("mode") == 'B':  # 三次贝塞尔线
-                    x1, y1, x2, y2 ,x3,y3= acticon.get("end_point").get("points")
-                    x1, x2 = convert_coord([x1, x2,x3], "x", page_size, pos)
-                    y1, y2 = convert_coord([y1, y2,y3], "y", page_size, pos)
+                    x1, y1, x2, y2, x3, y3 = acticon.get("end_point").get("points")
+                    # print(x1, y1, x2, y2, x3, y3)
+                    x1, x2,x3 = convert_coord([x1, x2,x3], "x", page_size, pos)
+                    y1, y2,y3 = convert_coord([y1, y2,y3], "y", page_size, pos)
                     cur_point = [x2, y2]
                     path.curveTo(x1, y1, x2, y2, x3, y3)
                     path.moveTo(x3, y3)
