@@ -289,6 +289,7 @@ class DocumentResFileParser(FileParserBase):
                 info[media.get("@ID")] = {
                     "format": media.get("@Format", ""),
                     "wrap_pos": media.get("@wrap_pos", ""),
+                    # "Boundary": media.get("@Boundary", ""),
                     "type": media.get("@Type", ""),
                     "suffix": os.path.splitext(name)[-1].replace(".", ""),  # 文件后缀名
                     "fileName": name,

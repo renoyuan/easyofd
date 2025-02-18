@@ -24,7 +24,7 @@ class SealExtract(object):
         if b64:
             binary_data = base64.b64decode(b64)
         elif path:
-
+            # print("seal_path",path)
             with open(path, 'rb') as file:
                 binary_data = file.read()
         else:
@@ -32,8 +32,11 @@ class SealExtract(object):
         # 尝试解码为通用的 ASN.1 结构
         try:
             decoded_data, _ = decode(binary_data)
-        except PyAsn1Error as e:
-            # print(f"Decoding failed: {e}")
+        except (PyAsn1Error,) as e:
+            logger.warning(f"Decoding failed: {e}")
+            decoded_data = None
+        except (AttributeError,) as e:
+            logger.warning(f"AttributeError failed: {e}")
             decoded_data = None
         finally:
            return  decoded_data

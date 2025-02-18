@@ -220,6 +220,32 @@ class DrawPDF():
                     logger.error(f"{e}")
                     traceback.print_exc()
 
+    def compute_ctm(self, CTM,x1, y1, img_width, img_height):
+        """待定方法"""
+        a,b,c,d,e,f = CTM.split(" ")
+        a, b, c, d, e, f = float(a), float(b), float(c), float(d),float(e), float(f)
+        # 定义变换矩阵的元素
+
+        # 计算原始矩形的宽和高
+        x2 = x1 + img_width
+        y2 = y1 + img_height
+        print(f"ori x1 {x1} y1 {y1} x2 {x2} y2 {y2} img_width {img_width} img_height {img_height}")
+        a = a/10
+        d = d/10
+        # 对左上角和右下角点进行变换
+        x1_new = a * x1 + c * y1 + (e )
+        y1_new = b * x1 + d * y1 + (f)
+        x2_new = a * x2 + c * y2 + (e)
+        y2_new = b * x2 + d * y2 + (f)
+        print(f"x1_new {x1_new} y1_new {y1_new} x2_new {x2_new} y2_new {y2_new}")
+        # 计算变换后矩形的宽和高
+        w_new = x2_new - x1_new
+        h_new = y2_new - y1_new
+
+        print(f"原始矩形宽度: {img_width}, 高度: {img_height}")
+        print(f"变换后矩形宽度: {w_new}, 高度: {h_new}")
+        return x1_new, y1_new, w_new, h_new
+
     def draw_img(self, canvas, img_list, images, page_size):
         """写入图片"""
         c = canvas
@@ -235,20 +261,61 @@ class DrawPDF():
                 continue
 
             img = PILImage.open(BytesIO(imgbyte))
+            img_width, img_height = img.size
+            # img_width = img_width / self.OP *25.4
+            # img_height = img_height / self.OP *25.4
+            info = img.info
+            # print( f"ing info dpi {info.get('dpi')}")
+            # print(img_width, img_height)
             imgReade = ImageReader(img)
             CTM = img_d.get('CTM')
-            x_offset = 0
-            y_offset = 0
+            # print("CTM", CTM)
+
             wrap_pos = image.get("wrap_pos")
-            x = (img_d.get('pos')[0] + x_offset) * self.OP
-            y = (page_size[3] - (img_d.get('pos')[1] + y_offset)) * self.OP
-            if wrap_pos:
-                x = x + (wrap_pos[0] * self.OP)
-                y = y - (wrap_pos[1] * self.OP)
-            w = img_d.get('pos')[2] * self.OP
-            h = -img_d.get('pos')[3] * self.OP
-            print(x, y, w, h)
-            c.drawImage(imgReade, x, y, w, h, 'auto')
+            # print("wrap_pos", wrap_pos)
+            pos = img_d.get('pos')
+            # print("pos", pos)
+            # CTM =None
+            if CTM and not wrap_pos and page_size == pos:
+                x1_new, y1_new, w_new, h_new = self.compute_ctm(CTM, 0, 0, img_width, img_height)
+                pdf_pos = [pos[0] * self.OP, pos[1] * self.OP, pos[2] * self.OP, pos[3] * self.OP]
+                print(f"pos: {pos} pdf_pos: {pdf_pos}")
+
+                x1_new = (pos[0] + x1_new) * self.OP
+                y1_new = (page_size[3] - y1_new) * self.OP
+                if w_new >pdf_pos[2]:
+                    w_new = pdf_pos[2]
+                if h_new >pdf_pos[3]:
+                    h_new = pdf_pos[3]
+                print(f"写入 {x1_new} {y1_new} {w_new} {-h_new}")
+                c.drawImage(imgReade, x1_new, y1_new, w_new, -h_new, 'auto')
+            else:
+                x_offset = 0
+                y_offset = 0
+
+                x = (pos[0] + x_offset) * self.OP
+                y = (page_size[3] - (pos[1] + y_offset)) * self.OP
+                if wrap_pos:
+                    x = x + (wrap_pos[0] * self.OP)
+                    y = y - (wrap_pos[1] * self.OP)
+                    w = img_d.get('pos')[2] * self.OP
+                    h = -img_d.get('pos')[3] * self.OP
+
+                    # print(x, y, w, h)
+                    c.drawImage(imgReade, x, y, w, h, 'auto')
+                elif pos:
+                    print(f"page_size == pos :{page_size == pos} ")
+                    x = pos[0] * self.OP
+                    y = (page_size[3] - pos[1]) * self.OP
+                    w = pos[2] * self.OP
+                    h = -pos[3] * self.OP
+
+                    # print(x, y, w, h)
+                    # print("pos",pos[0],pos[1],pos[2]* self.OP,pos[3]* self.OP)
+                    # print(x2_new, -y2_new, w_new, h_new,)
+
+                    c.drawImage(imgReade, x, y, w, h, 'auto')
+                    # c.drawImage(imgReade,x2_new, -y2_new, w_new, h_new, 'auto')
 
     def draw_signature(self, canvas, signatures_page_list, page_size):
         """
@@ -398,6 +465,7 @@ class DrawPDF():
                     pass
                 else:
                     continue
+
     def draw_line(self, canvas, line_list, page_size):
         def match_mode(Abbr: list):
             """
@@ -560,8 +628,6 @@ class DrawPDF():
                     path.close()
             canvas.drawPath(path)
 
-
-
     def draw_pdf(self):
 
         c = canvas.Canvas(self.pdf_io)
@@ -585,8 +651,7 @@ class DrawPDF():
             # text_write = []
             # print("doc.get(page_info)", len(doc.get("page_info")))
             for page_id, page in doc.get("page_info").items():
-                print(page_id)
-                print(page_size_details)
+                print(f"page_id: {page_id} page_size_details: {page_size_details}")
                 if len(page_size_details) > page_id and page_size_details[page_id]:
                     page_size = page_size_details[page_id]
                 else:
