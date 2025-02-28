@@ -134,14 +134,14 @@ class DrawPDF():
                 font_name = font_info.get("FontName", "")
             else:
                 font_name = self.init_font
+            # print(f"font_name:{font_name}")
 
             # TODO 判断是否通用已有字体 否则匹配相近字体使用
             if font_name not in self.font_tool.FONTS:
                 font_name = self.font_tool.FONTS[0]
 
-            font = font_name
-            # if font not in FONT: #  KeyError: 'SWDRSO+KaiTi-KaiTi-0'
-
+            font = self.font_tool.normalize_font_name(font_name)
+            # print(f"font_name:{font_name} font:{font}")
             c.setFont(font, line_dict["size"] * self.OP)
             # 原点在页面的左下角 
             color = line_dict.get("color", [0, 0, 0])
