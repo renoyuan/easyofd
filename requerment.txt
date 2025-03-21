@@ -1,6 +1,6 @@
-reportlab==3.6.11
-xmltodict==0.13.0
-loguru==0.7.2
-fontTools==4.43.1
-PyMuPDF==1.23.4
-pyasn1>=0.6.0
+reportlab==4.3.1
+xmltodict==0.14.2
+loguru==0.7.3
+fontTools==4.56.0
+PyMuPDF==1.25.4
+pyasn1==0.6.1
