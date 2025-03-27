@@ -84,7 +84,7 @@ class DrawPDF():
             rotate = 0
             move = 0
 
-
+        # print(f"resize is {resize}")
         char_pos = float(pos if pos else 0) + (float(offset if offset else 0) + move) * resize
         pos_list = []
         pos_list.append(char_pos)  # 放入第一个字符
@@ -100,12 +100,12 @@ class DrawPDF():
                         char_pos += float(offsets[(g_no + 2)])
                         pos_list.append(char_pos)
 
-                elif offset_i != "g":
+                elif offset_i and offset_i != "g" :
                     if g_no == None:
                         char_pos += float(offset_i) * resize
                         pos_list.append(char_pos)
                     elif (int(_no) > int(g_no + 2)) and g_no != None:
-
+                        # print(f"offset_i is {offset_i}")
                         char_pos += float(offset_i) * resize
                         pos_list.append(char_pos)
 
@@ -142,7 +142,13 @@ class DrawPDF():
 
             font = self.font_tool.normalize_font_name(font_name)
             # print(f"font_name:{font_name} font:{font}")
-            c.setFont(font, line_dict["size"] * self.OP)
+
+            try:
+                c.setFont(font, line_dict["size"] * self.OP)
+            except KeyError as key_error:
+                logger.error(f"{key_error}")
+                font = "Times-Roman"
+                c.setFont(font, line_dict["size"] * self.OP)
             # 原点在页面的左下角 
             color = line_dict.get("color", [0, 0, 0])
             if len(color) < 3:

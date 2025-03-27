@@ -247,13 +247,16 @@ class ContentFileParser(FileParserBase):
             for _i in line:
                 line_d = {}
                 # print("line",_i)
-                line_d["ID"] = _i.get("@ID", "")  # 图片id
-                line_d["pos"] = [float(pos_i) for pos_i in _i['@Boundary'].split(" ")]  # 平移矩阵换
-                line_d["LineWidth"] = _i.get("@LineWidth", "")  # 图片id
-                line_d["AbbreviatedData"] = _i.get("ofd:AbbreviatedData", "")  # 路径指令
-                line_d["FillColor"] = self.ofd_param("ofd:FillColor", _i).get('@Value', "0 0 0").split(" ")  # 颜色
-                line_d["StrokeColor"] = self.ofd_param("ofd:StrokeColor", _i).get('@Value', "0 0 0")  # 颜色
-
+                try:
+                    line_d["ID"] = _i.get("@ID", "")  # 图片id
+                    line_d["pos"] = [float(pos_i) for pos_i in _i['@Boundary'].split(" ")]  # 平移矩阵换
+                    line_d["LineWidth"] = _i.get("@LineWidth", "")  # 图片id
+                    line_d["AbbreviatedData"] = _i.get("ofd:AbbreviatedData", "")  # 路径指令
+                    line_d["FillColor"] = self.ofd_param("ofd:FillColor", _i).get('@Value', "0 0 0").split(" ")  # 颜色
+                    line_d["StrokeColor"] = self.ofd_param("ofd:StrokeColor", _i).get('@Value', "0 0 0")  # 颜色
+                except KeyError as e:
+                    logger.error(f"{e} \n line is {_i} \n")
+                    continue
                 line_list.append(line_d)
 
         img: list = []  # 图片
@@ -303,6 +306,22 @@ class PublicResFileParser(FileParserBase):
 
     """
 
+    def normalize_font_name(self, font_name):
+        """将字体名称规范化，例如 'Times New Roman Bold' -> 'TimesNewRoman-Bold'"""
+        # 替换空格为无，并将样式（Bold/Italic等）用连字符连接
+        if not isinstance(font_name,str):
+            return ""
+        normalized = font_name.replace(' ', '')
+        # 处理常见的样式后缀
+        for style in ['Bold', 'Italic', 'Regular', 'Light', 'Medium', ]:
+            if style in normalized:
+                normalized = normalized.replace(style, f'-{style}')
+
+        # todo 特殊字体名规范 后续存在需要完善
+        if normalized ==  "TimesNewRoman" :
+            normalized = normalized.replace("TimesNewRoman","Times-Roman")
+        return normalized
+
     def __call__(self):
         info = {}
         public_res: list = []
@@ -312,8 +331,10 @@ class PublicResFileParser(FileParserBase):
         if public_res:
             for i in public_res:
                 info[i.get("@ID")] = {
-                    "FontName": i.get("@FontName"),
-                    "FamilyName": i.get("@FamilyName"),
+                    "FontName": self.normalize_font_name(i.get("@FontName")),
+                    "FontNameORI": i.get("@FontName"),
+                    "FamilyName": self.normalize_font_name(i.get("@FamilyName")),
+                    "FamilyNameORI": i.get("@FamilyName"),
                     "Bold": i.get("@Bold"),
                     "Serif": i.get("@Serif"),
                     "FixedWidth": i.get("@FixedWidth"),

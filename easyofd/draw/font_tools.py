@@ -85,9 +85,13 @@ class FontTool(object):
         # 替换空格为无，并将样式（Bold/Italic等）用连字符连接
         normalized = font_name.replace(' ', '')
         # 处理常见的样式后缀
-        for style in ['Bold', 'Italic', 'Regular', 'Light', 'Medium']:
+        for style in ['Bold', 'Italic', 'Regular', 'Light', 'Medium', ]:
             if style in normalized:
                 normalized = normalized.replace(style, f'-{style}')
+
+        # todo 特殊字体名规范 后续存在需要完善
+        if normalized ==  "TimesNewRoman" :
+            normalized = normalized.replace("TimesNewRoman","Times-Roman")
         return normalized
 
     def _process_ttc_font(self, ttc_font):
