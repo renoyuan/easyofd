@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><ofd:Res xmlns:ofd="http://www.ofdspec.org/2016" BaseLoc="Res">
+  <ofd:MultiMedias>
+    <ofd:MultiMedia Format="PNG" ID="36" Type="Image">
+      <ofd:MediaFile>a7fdcab2f86e43a29bd356f977dcb0c45310652699351817052_ewm.png</ofd:MediaFile>
+    </ofd:MultiMedia>
+    <ofd:MultiMedia Format="PNG" ID="176" Type="Image">
+      <ofd:MediaFile>signature.png</ofd:MediaFile>
+    </ofd:MultiMedia>
+  </ofd:MultiMedias>
+</ofd:Res>

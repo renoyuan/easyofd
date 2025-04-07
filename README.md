@@ -7,7 +7,13 @@
 
 若本库对你有所帮助可以star 支持一下开源作者，欢迎fork，欢迎issues。
 
+提交issue前务必看此页：
 
+提交issue前务必看此页：
+
+提交issue前务必看此页：
+
+https://github.com/renoyuan/easyofd/wiki/%E5%85%B3%E4%BA%8EIsuues%E6%8F%90%E4%BA%A4
 
 ### 更新
 20250327 - v0.5.1

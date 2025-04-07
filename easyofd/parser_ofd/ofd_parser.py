@@ -9,6 +9,8 @@
 import os
 import sys
 
+from easyofd.parser_ofd.file_ofd_parser import OFDFileParser
+
 sys.path.insert(0, "..")
 
 import traceback
@@ -23,9 +25,15 @@ from loguru import logger
 
 from .img_deal import DealImg
 from .file_deal import FileRead
-from .file_parser import (OFDFileParser, DocumentFileParser, ContentFileParser, DocumentResFileParser,
-                          PublicResFileParser,
-                          SignaturesFileParser, SignatureFileParser)
+from .file_ofd_parser import OFDFileParser
+from .file_doc_parser import DocumentFileParser
+from .file_docres_parser import DocumentResFileParser
+from .file_content_parser import ContentFileParser
+from .file_annotation_parser import AnnotationFileParser
+from .file_publicres_parser import PublicResFileParser
+from .file_signature_parser import SignaturesFileParser,SignatureFileParser
+
+# todo 解析流程需要大改
 
 
 class OFDParser(object):
@@ -284,7 +292,7 @@ class OFDParser(object):
 
         # 签章信息
         if signatures and (signatures_xml_obj := self.get_xml_obj(signatures[0])):
-            print("signatures_xml_obj", signatures,signatures_xml_obj)
+            logger.debug(f"signatures_xml_obj is {signatures_xml_obj } signatures is {signatures} ")
             signatures_info = SignaturesFileParser(signatures_xml_obj)()
             if signatures_info:  # 获取签章具体信息
                 for _, signatures_cell in signatures_info.items():
@@ -295,7 +303,7 @@ class OFDParser(object):
                     prefix = BaseLoc.split("/")[0]
                     signatures_info = SignatureFileParser(signature_xml_obj)(prefix=prefix)
                     # print(signatures_info)
-                    print("signatures_info", signatures_info)
+                    logger.debug(f"signatures_info {signatures_info}")
                     PageRef = signatures_info.get("PageRef")
                     Boundary = signatures_info.get("Boundary")
                     SignedValue = signatures_info.get("SignedValue")
@@ -380,6 +388,7 @@ class OFDParser(object):
                     page_info_d[tpl_no].sort(
                         key=lambda pos_text: (float(pos_text.get("pos")[1]), float(pos_text.get("pos")[0])))
 
+        # todo 读取注释信息
         page_ID = 0  # 没遇到过doc多个的情况
         # print("page_info",len(page_info))
         doc_list.append({
@@ -391,14 +400,16 @@ class OFDParser(object):
             "signatures_page_id": signatures_page_id,
             "page_id_map": page_id_map,
             "fonts": font_info,
-            "page_info": page_info_d
+            "page_info": page_info_d,
+            "page_tpl_info": page_info_d,
+            "page_content_info": page_info_d,
+            "page_info": page_info_d,
         })
         return doc_list
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         """
         输出ofd解析结果
-        
         """
         save_xml = kwds.get("save_xml", False)
         xml_name = kwds.get("xml_name")

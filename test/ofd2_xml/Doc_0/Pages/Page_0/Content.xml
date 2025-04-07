@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?><ofd:Page xmlns:ofd="http://www.ofdspec.org/2016">
+  <ofd:Area>
+    <ofd:PhysicalBox>0 0 211.50 140</ofd:PhysicalBox>
+    <ofd:ApplicationBox>0 0 211.50 140</ofd:ApplicationBox>
+  </ofd:Area>
+  <ofd:Content>
+    <ofd:Layer ID="2" Type="Body">
+      <ofd:PathObject Boundary="4 30 6.60 0.30" ID="9" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0 0.15 L 6.60 0.15</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="4 30.30 0.30 22" ID="10" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 22</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="10.30 30.30 0.30 22" ID="11" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 22</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="10 30 95.30 0.30" ID="12" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0 0.15 L 95.30 0.15</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="105 30.30 0.30 22" ID="13" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 22</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="105 30 6.30 0.30" ID="14" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0 0.15 L 6.30 0.15</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="111 30.30 0.30 22" ID="15" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 22</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="111 30 95.30 0.30" ID="16" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0 0.15 L 95.30 0.15</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="206 30.30 0.30 22" ID="17" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 22</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="4 52 202.30 0.30" ID="18" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0 0.15 L 202.30 0.15</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="4 52.30 0.30 45" ID="19" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 45</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="206 52.30 0.30 45" ID="20" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 45</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="4 97 52.60 0.30" ID="21" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0 0.15 L 52.60 0.15</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="4 97.30 0.30 8" ID="22" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 8</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="56.30 97.30 0.30 8" ID="23" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 8</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="56 97 150.30 0.30" ID="24" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0 0.15 L 150.30 0.15</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="206 97.30 0.30 8" ID="25" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 8</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="4 105 6.60 0.30" ID="26" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0 0.15 L 6.60 0.15</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="4 105.30 0.30 20" ID="27" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 20</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="10.30 105.30 0.30 20" ID="28" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 20</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="10 105 196.30 0.30" ID="29" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0 0.15 L 196.30 0.15</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="10 125.30 196.30 0.30" ID="30" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0 0.15 L 196.30 0.15</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="206 105.30 0.30 20" ID="31" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0.15 0 L 0.15 20</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PathObject Boundary="4 125.30 6 0.30" ID="32" LineWidth="0.3">
+        <ofd:AbbreviatedData>M 0 0.15 L 6 0.15</ofd:AbbreviatedData>
+        <ofd:StrokeColor Value="128 0 0"/>
+      </ofd:PathObject>
+      <ofd:PageBlock ID="35">
+        <ofd:ImageObject Boundary="7 6 20 20" CTM="20.50 0 0 20.50 0 0" ID="37" ResourceID="36"/>
+      </ofd:PageBlock>
+      <ofd:PageBlock ID="38">
+        <ofd:TextObject Alpha="127" Boundary="207.50 30 20 20" CTM="0 1 -1 0 0.50 -2" Font="5" ID="39" Size="3.175">
+          <ofd:TextCode DeltaX="3.18 3.18 3.18 3.18 3.18" X="1.50" Y="0">下载次数：1</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:TextObject Boundary="60 8 100 9" Font="5" ID="40" Size="7.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="7 7 7 7 7 7 7 7 7" X="0" Y="7">电子发票（增值税专用发票）</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:PageBlock ID="41">
+        <ofd:PathObject Boundary="0 0 211.50 140" ID="42" LineWidth="0.3" Stroke="true">
+          <ofd:StrokeColor Value="128 0 0"/>
+          <ofd:AbbreviatedData>M 66 19 L 139 19</ofd:AbbreviatedData>
+        </ofd:PathObject>
+        <ofd:PathObject Boundary="0 0 211.50 140" ID="43" LineWidth="0.3" Stroke="true">
+          <ofd:StrokeColor Value="128 0 0"/>
+          <ofd:AbbreviatedData>M 66 20 L 139 20</ofd:AbbreviatedData>
+        </ofd:PathObject>
+      </ofd:PageBlock>
+      <ofd:TextObject Boundary="155 11.50 15 5" Font="5" ID="44" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3 3 3 3" X="0" Y="3">发票号码：</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="170.5 11.5 27 5" Font="3" ID="45" Size="3.0">
+        <ofd:TextCode DeltaX="1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35" X="0" Y="3"><![CDATA[25924000000001260164]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="155 17.50 15 5" Font="5" ID="46" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3 3 3 3" X="0" Y="3">开票日期：</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="170.5 17.5 19.8 5" Font="3" ID="47" Size="3.0">
+        <ofd:TextCode DeltaX="1.35 1.35 1.35 1.35 3.0 1.35 1.35 3.0 1.35 1.35" X="0" Y="3"><![CDATA[2025年04月01日]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:PageBlock ID="50">
+        <ofd:TextObject Boundary="5.50 32.50 3.90 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="51" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="" X="0.53" Y="3.02">购</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:PageBlock ID="52">
+        <ofd:TextObject Boundary="5.50 36 3.90 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="53" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="" X="0.53" Y="3.02">买</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:PageBlock ID="54">
+        <ofd:TextObject Boundary="5.50 39.50 3.90 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="55" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="" X="0.53" Y="3.02">方</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:PageBlock ID="56">
+        <ofd:TextObject Boundary="5.50 43 3.90 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="57" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="" X="0.53" Y="3.02">信</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:PageBlock ID="58">
+        <ofd:TextObject Boundary="5.50 46.50 3.90 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="59" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="" X="0.53" Y="3.02">息</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:TextObject Boundary="11.50 33.50 7.50 5" Font="5" ID="60" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3 3" X="0" Y="3">名称:</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="19.09 33.4 25.37 5.17" Font="3" ID="61" Size="3.1718">
+        <ofd:TextCode DeltaX="3.1718 3.1718 3.1718 3.1718 3.1718 3.1718 3.1718" X="0" Y="3.17"><![CDATA[威高集团有限公司]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:PageBlock ID="64">
+        <ofd:TextObject Boundary="11 44 67.50 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="65" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="3.18 3.18 3.18 3.18 3.18 3.18 3.18 3.18 1.59 3.18 3.18 3.18 3.18 3.18 3.18" X="0.53" Y="3.02">统一社会信用代码/纳税人识别号：</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:TextObject Boundary="53.62 43.3 76.2 6.23" Font="7" ID="66" Size="4.2333">
+        <ofd:TextCode DeltaX="g 18 2.54" X="0" Y="4.23"><![CDATA[913710007062495888]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:PageBlock ID="67">
+        <ofd:TextObject Boundary="106 32.50 3.90 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="68" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="" X="0.53" Y="3.02">销</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:PageBlock ID="69">
+        <ofd:TextObject Boundary="106 36 3.90 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="70" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="" X="0.53" Y="3.02">售</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:PageBlock ID="71">
+        <ofd:TextObject Boundary="106 39.50 3.90 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="72" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="" X="0.53" Y="3.02">方</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:PageBlock ID="73">
+        <ofd:TextObject Boundary="106 43 3.90 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="74" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="" X="0.53" Y="3.02">信</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:PageBlock ID="75">
+        <ofd:TextObject Boundary="106 46.50 3.90 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="76" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="" X="0.53" Y="3.02">息</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:TextObject Boundary="111.50 33.50 7.94 5.18" Font="5" ID="77" Size="3.175">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3.18 3.18" X="0" Y="3.18">名称:</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="119.09 33.4 41.23 5.17" Font="3" ID="78" Size="3.1718">
+        <ofd:TextCode DeltaX="3.1718 3.1718 3.1718 3.1718 3.1718 3.1718 3.1718 3.1718 3.1718 3.1718 3.1718 3.1718" X="0" Y="3.17"><![CDATA[青岛嘉仕汇酒店管理有限公司]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:PageBlock ID="81">
+        <ofd:TextObject Boundary="111.50 44 67.50 3.30" CTM="0.89 0 0 1 0 0" Font="5" ID="82" Size="3.175">
+          <ofd:FillColor Value="128 0 0"/>
+          <ofd:TextCode DeltaX="3.18 3.18 3.18 3.18 3.18 3.18 3.18 3.18 1.59 3.18 3.18 3.18 3.18 3.18 3.18" X="0.53" Y="3.02">统一社会信用代码/纳税人识别号：</ofd:TextCode>
+        </ofd:TextObject>
+      </ofd:PageBlock>
+      <ofd:TextObject Boundary="154.12 43.3 76.2 6.23" Font="7" ID="83" Size="4.2333">
+        <ofd:TextCode DeltaX="g 18 2.54" X="0" Y="4.23"><![CDATA[91370203MA3N3AR685]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="21 93 15 5" Font="5" ID="84" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3 1.50 1.50 1.50 1.50 1.50 1.50" X="0" Y="3">合      计</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="145.75 93 11.25 5" Font="3" ID="85" Size="3.0">
+        <ofd:TextCode DeltaX="3.0 1.35 1.35 1.35 1.5 1.35" X="0" Y="3"><![CDATA[¥357.55]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="195.1 93 9.9 5" Font="3" ID="86" Size="3.0">
+        <ofd:TextCode DeltaX="3.0 1.35 1.35 1.5 1.35" X="0" Y="3"><![CDATA[¥21.45]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="17 99.50 25.60 5" Font="5" ID="87" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3.20 3.20 3.20 3.20 3.20 3.20 3.20" X="0" Y="3">价税合计（大写）</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:PageBlock ID="88">
+        <ofd:PathObject Boundary="58 98.50 5 5" ID="89" LineWidth="0.225" Stroke="true">
+          <ofd:AbbreviatedData>M 4.53 2.49 B 4.53 1.37 3.62 0.45 2.49 0.45 B 1.36 0.45 0.45 1.37 0.45 2.49 B 0.45 3.62 1.36 4.54 2.49 4.54 B 3.62 4.54 4.53 3.62 4.53 2.49 M 1.04 1.04 L 3.92 3.92 M 1.04 3.92 L 3.92 1.04</ofd:AbbreviatedData>
+        </ofd:PathObject>
+      </ofd:PageBlock>
+      <ofd:TextObject Boundary="63.5 99.5 21 5" Font="3" ID="90" Size="3.0">
+        <ofd:TextCode DeltaX="3.0 3.0 3.0 3.0 3.0 3.0" X="0" Y="3"><![CDATA[叁佰柒拾玖圆整]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="144 99.50 12 5" Font="5" ID="91" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3 3 3" X="0" Y="3">（小写）</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="157.5 99.5 11.25 5" Font="3" ID="92" Size="3.0">
+        <ofd:TextCode DeltaX="3.0 1.35 1.35 1.35 1.5 1.35" X="0" Y="3"><![CDATA[¥379.00]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="5.50 110 3 5" Font="5" ID="93" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode X="0" Y="3">备</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="5.50 115 3 5" Font="5" ID="94" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode X="0" Y="3">注</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="12.5 106 118.8 5" Font="3" ID="95" Size="3.0">
+        <ofd:TextCode DeltaX="3.0 3.0 3.0 3.0 3.0 1.5 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 1.35 3.0 1.5 1.5 1.5 1.5 1.5 3.0 3.0 1.5 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.5 1.5 1.5 1.5" X="0" Y="3"><![CDATA[购买方地址:山东省威海市火炬高技术产业开发区初村镇威高路1号;    电话:5620755;    ]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="12.5 109.18 94.95 5" Font="3" ID="96" Size="3.0">
+        <ofd:TextCode DeltaX="3.0 3.0 3.0 3.0 3.0 3.0 1.5 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 1.5 1.5 1.5 1.5 1.5 3.0 3.0 3.0 3.0 1.5 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.5 1.5 1.5 1.5" X="0" Y="3"><![CDATA[购方开户银行:威海农行高区支行;    银行账号:15560201040009819;    ]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="12.5 112.35 95.4 5" Font="3" ID="97" Size="3.0">
+        <ofd:TextCode DeltaX="3.0 3.0 3.0 3.0 1.5 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 1.35 3.0 1.5 1.35 1.35 1.5 1.5 1.5 1.5 1.5 1.5 3.0 3.0 1.5 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.5 1.5 1.5" X="0" Y="3"><![CDATA[销方地址:山东省青岛市李沧区永平路4号[43];    电话:13964287909;   ]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="12.5 115.53 130.5 5" Font="3" ID="98" Size="3.0">
+        <ofd:TextCode DeltaX="3.0 3.0 3.0 3.0 3.0 3.0 1.5 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 3.0 1.5 1.5 1.5 1.5 1.5 3.0 3.0 3.0 3.0 1.5 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.35 1.5 1.5 1.5" X="0" Y="3"><![CDATA[销方开户银行:中国建设银行股份有限公司青岛伊春路支行;    银行账号:37150198646500000221;   ]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="20 130 15 5" Font="5" ID="101" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3 1.50 3 1.50 3" X="0" Y="3">开 票 人：</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="36.5 130 6 5" Font="3" ID="102" Size="3.0">
+        <ofd:TextCode DeltaX="3.0" X="0" Y="3"><![CDATA[王琦]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="16 53.50 16 5" Font="5" ID="103" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="4 4 4" X="0" Y="3">项目名称</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="43 53.50 14 5" Font="5" ID="104" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3.50 3.50 3.50" X="0" Y="3">规格型号</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="67.50 53.50 9 5" Font="5" ID="105" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3 1.50 1.50" X="0" Y="3">单  位</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="93 53.50 9 5" Font="5" ID="106" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3 1.50 1.50" X="0" Y="3">数  量</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="117.50 53.50 9 5" Font="5" ID="107" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3 1.50 1.50" X="0" Y="3">单  价</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="143.50 53.50 9 5" Font="5" ID="108" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3 1.50 1.50" X="0" Y="3">金  额</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="157 53.50 17.70 5" Font="5" ID="109" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3.20 3.20 1.70 3.20 3.20" X="0" Y="3">税率/征收率</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="194.50 53.50 9 5" Font="5" ID="110" Size="3.0">
+        <ofd:FillColor Value="128 0 0"/>
+        <ofd:TextCode DeltaX="3 1.50 1.50" X="0" Y="3">税  额</ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="6.5 57.5 24 5" Font="3" ID="111" Size="3.0">
+        <ofd:TextCode DeltaX="1.5 3.0 3.0 3.0 3.0 1.5 3.0 3.0" X="0" Y="3"><![CDATA[*住宿服务*住宿费]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="146.25 57.5 8.25 5" Font="3" ID="116" Size="3.0">
+        <ofd:TextCode DeltaX="1.35 1.35 1.35 1.5 1.35" X="0" Y="3"><![CDATA[357.55]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="165.83 57.5 2.85 5" Font="3" ID="117" Size="3.0">
+        <ofd:TextCode DeltaX="1.35" X="0" Y="3"><![CDATA[6%]]></ofd:TextCode>
+      </ofd:TextObject>
+      <ofd:TextObject Boundary="198.1 57.5 6.9 5" Font="3" ID="118" Size="3.0">
+        <ofd:TextCode DeltaX="1.35 1.35 1.5 1.35" X="0" Y="3"><![CDATA[21.45]]></ofd:TextCode>
+      </ofd:TextObject>
+    </ofd:Layer>
+  </ofd:Content>
+</ofd:Page>

@@ -121,9 +121,6 @@ class FontTool(object):
                         name = record.toUnicode()
                         if judge_name(name):
                             font_names.add(name)
-
-
-
                 except:
                     continue
         except KeyError:

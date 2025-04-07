@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><ofd:OFD xmlns:ofd="http://www.ofdspec.org/2016" DocType="OFD" Version="1.0">
+  <ofd:DocBody>
+    <ofd:DocInfo>
+      <ofd:DocID>87834e35917b4534af105b58d53463ee</ofd:DocID>
+      <ofd:CreationDate>2025-04-01</ofd:CreationDate>
+      <ofd:Creator>nuonuo</ofd:Creator>
+      <ofd:CreatorVersion>1.0.0</ofd:CreatorVersion>
+      <ofd:ModDate>2025-02-21</ofd:ModDate>
+      <ofd:CustomDatas>
+        <ofd:CustomData Name="native-producer">SuwellFormSDK</ofd:CustomData>
+        <ofd:CustomData Name="producer-version">1.1.22.0112</ofd:CustomData>
+        <ofd:CustomData Name="发票号码">25924000000001260164</ofd:CustomData>
+        <ofd:CustomData Name="合计税额">21.45</ofd:CustomData>
+        <ofd:CustomData Name="合计金额">357.55</ofd:CustomData>
+        <ofd:CustomData Name="开票日期">2025年04月01日</ofd:CustomData>
+        <ofd:CustomData Name="购买方纳税人识别号">913710007062495888</ofd:CustomData>
+        <ofd:CustomData Name="销售方纳税人识别号">91370203MA3N3AR685</ofd:CustomData>
+      </ofd:CustomDatas>
+    </ofd:DocInfo>
+    <ofd:DocRoot>Doc_0/Document.xml</ofd:DocRoot>
+  </ofd:DocBody>
+</ofd:OFD>

@@ -147,7 +147,7 @@ class DrawPDF():
                 c.setFont(font, line_dict["size"] * self.OP)
             except KeyError as key_error:
                 logger.error(f"{key_error}")
-                font = "Times-Roman"
+                font =  self.font_tool.FONTS[0]
                 c.setFont(font, line_dict["size"] * self.OP)
             # 原点在页面的左下角 
             color = line_dict.get("color", [0, 0, 0])
@@ -213,15 +213,16 @@ class DrawPDF():
                     # 按字符写入
                     else:
                         for cahr_id, _cahr_ in enumerate(text):
-                            # print("char wtite")
-                            c.setFont(font, line_dict["size"] * self.OP * resizeX)
-                            _cahr_x = float(x_list[cahr_id]) * self.OP
-                            _cahr_y = (float(page_size[3]) - (float(y_list[cahr_id]))) * self.OP
-                            # print(_cahr_x,  _cahr_y, _cahr_)
-                            c.drawString(_cahr_x, _cahr_y, _cahr_, mode=0)  # mode=3 文字不可见 0可見
-
+                            if len(x_list)>cahr_id:
+                                # print("char wtite")
+                                c.setFont(font, line_dict["size"] * self.OP * resizeX)
+                                _cahr_x = float(x_list[cahr_id]) * self.OP
+                                _cahr_y = (float(page_size[3]) - (float(y_list[cahr_id]))) * self.OP
+                                # print(_cahr_x,  _cahr_y, _cahr_)
+                                c.drawString(_cahr_x, _cahr_y, _cahr_, mode=0)  # mode=3 文字不可见 0可見
+                            else:
+                                logger.debug(f"match {_cahr_} pos error \n{text} \n{x_list}")
                             # text_write.append((_cahr_x,  _cahr_y, _cahr_))
-
                 except Exception as e:
                     logger.error(f"{e}")
                     traceback.print_exc()

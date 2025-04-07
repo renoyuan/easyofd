@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ofd:Page xmlns:ofd="http://www.ofdspec.org/2016">
+    <ofd:Area>
+        <ofd:PhysicalBox>0 0 210 140</ofd:PhysicalBox>
+    </ofd:Area>
+
+    <ofd:Content>
+        <ofd:Layer ID="7">
+            <ofd:PathObject ID="15" Boundary="205.6 29.8 0.54 47" LineWidth="0.54" Join="Bevel">
+                <ofd:StrokeColor Value="246 237 225" ColorSpace="2"/>
+                <ofd:AbbreviatedData>M 0.254 0.254 L 0.254 47</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="15" Boundary="205.6 76.6 0.54 47.4" LineWidth="0.54" Join="Bevel">
+                <ofd:StrokeColor Value="118 89 84" ColorSpace="2"/>
+                <ofd:AbbreviatedData>M 0.254 0.254 L 0.254 47.4</ofd:AbbreviatedData>
+            </ofd:PathObject>
+        </ofd:Layer>
+        <ofd:Layer DrawParam="4" ID="6">
+            <ofd:PathObject ID="7" Boundary="65.5 17.8 73 0.4" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0 0.2 L 73 0.2</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="8" Boundary="65.5 18.8 73 0.4" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0 0.2 L 73 0.2</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="9" Boundary="4.5 29.8 201 0.4" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0 0.2 L 201 0.2</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="10" Boundary="4.5 51.8 201 0.4" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0 0.2 L 201 0.2</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="11" Boundary="4.5 95.8 201 0.4" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0 0.2 L 201 0.2</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="12" Boundary="4.5 103.8 201 0.4" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0 0.2 L 201 0.2</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="13" Boundary="4.5 123.8 201 0.4" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0 0.2 L 201 0.2</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="14" Boundary="4.3 30 0.4 94" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0.2 0 L 0.2 94</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="15" Boundary="205.3 30 0.4 94" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0.2 0 L 0.2 94</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="16" Boundary="10.5 30 0.4 22" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0.2 0 L 0.2 22</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="17" Boundary="105 30 0.4 22" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0.2 0 L 0.2 22</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="18" Boundary="111 30 0.4 22" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0.2 0 L 0.2 22</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="19" Boundary="10.5 104 0.4 20" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0.2 0 L 0.2 20</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:PathObject ID="22" Boundary="56.3 96 0.4 8" LineWidth="0.25">
+                <ofd:AbbreviatedData>M 0.2 0 L 0.2 8</ofd:AbbreviatedData>
+            </ofd:PathObject>
+            <ofd:TextObject ID="3" Boundary="56 8 90 7.0732" Font="6966" Size="7.0732">
+                <ofd:CGTransform CodePosition="0" CodeCount="13" GlyphCount="13">
+                    <ofd:Glyphs>1 2 3 4 5 6 7 8 9 10 3 4 11</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="1.061" Y="6.0854"
+                              DeltaX="7.0696 7.0696 7.0696 7.0696 7.0696 7.0696 7.0696 7.0696 7.0696 7.0696 7.0696 7.0696">
+                    电子发票（增值税专用发票）
+                </ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="7" Boundary="154 11 16.2605 3.175" Font="6966" Size="3.3">
+                <ofd:CGTransform CodePosition="0" CodeCount="5" GlyphCount="5">
+                    <ofd:Glyphs>3 4 12 13 14</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175 3.175 3.175">发票号码：</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="8" Boundary="154 17 16.2605 3.175" Font="6966" Size="3.3">
+                <ofd:CGTransform CodePosition="0" CodeCount="5" GlyphCount="5">
+                    <ofd:Glyphs>15 4 16 17 14</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175 3.175 3.175">开票日期：</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="9" CTM="0.89 0 0 1 0 0" Boundary="5.5 32.5 3.9182 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>18</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">购</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="10" CTM="0.89 0 0 1 0 0" Boundary="5.5 36 3.6889 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>19</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">买</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="11" CTM="0.89 0 0 1 0 0" Boundary="5.5 39.5 3.9711 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>20</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">方</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="12" CTM="0.89 0 0 1 0 0" Boundary="5.5 43 3.8476 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>21</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">信</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="13" CTM="0.89 0 0 1 0 0" Boundary="5.5 46.5 3.83 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>22</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">息</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="15" CTM="0.89 0 0 1 0 0" Boundary="11 44 67.5 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="16" GlyphCount="16">
+                    <ofd:Glyphs>23 24 25 26 21 10 27 13 28 29 8 30 31 32 12 14</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163"
+                              DeltaX="3.175 3.175 3.175 3.175 3.175 3.175 3.175 3.175 1.6 3.175 3.175 3.175 3.175 3.175 3.175">
+                    统一社会信用代码/纳税人识别号：
+                </ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="19" CTM="0.89 0 0 1 0 0" Boundary="106 32.5 3.7771 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>33</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">销</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="20" CTM="0.89 0 0 1 0 0" Boundary="106 36 3.7771 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>34</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">售</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="21" CTM="0.89 0 0 1 0 0" Boundary="106 39.5 3.9711 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>20</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">方</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="22" CTM="0.89 0 0 1 0 0" Boundary="106 43 3.8476 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>21</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">信</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="23" CTM="0.89 0 0 1 0 0" Boundary="106 46.5 3.83 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>22</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">息</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="25" CTM="0.89 0 0 1 0 0" Boundary="111.5 44 67.5 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="16" GlyphCount="16">
+                    <ofd:Glyphs>23 24 25 26 21 10 27 13 28 29 8 30 31 32 12 14</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163"
+                              DeltaX="3.175 3.175 3.175 3.175 3.175 3.175 3.175 3.175 1.6 3.175 3.175 3.175 3.175 3.175 3.175">
+                    统一社会信用代码/纳税人识别号：
+                </ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="29" Boundary="11 33.5 16 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="3" GlyphCount="3">
+                    <ofd:Glyphs>35 36 14</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175">名称：</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="31" Boundary="111.5 33.5 16 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="3" GlyphCount="3">
+                    <ofd:Glyphs>35 36 14</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175">名称：</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="33" Boundary="15.5 53 14.8814 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="4" GlyphCount="4">
+                    <ofd:Glyphs>37 38 35 36</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175 3.175">项目名称</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="33" Boundary="41.6 53 114.8814 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="7" GlyphCount="7">
+                    <ofd:Glyphs>39 40 41 42 3 43 44</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175 3.175 3.175 3.175 3.175 3.175 3.175">
+                    建筑服务发生地
+                </ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="34" Boundary="84.6 53 124.9179 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="6" GlyphCount="6">
+                    <ofd:Glyphs>39 40 37 38 35 36</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175 3.175 3.175 3.175 3.175 3.175 3.175">
+                    建筑项目名称
+                </ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="37" Boundary="142.5 53 10 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="3" GlyphCount="3">
+                    <ofd:Glyphs>45 46 47</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175">金 额</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="38" Boundary="157 53 60 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="6" GlyphCount="6">
+                    <ofd:Glyphs>8 48 28 49 50 48</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175 1.6 3.175 3.175">税率/征收率</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="41" Boundary="194 53 10 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="3" GlyphCount="3">
+                    <ofd:Glyphs>8 46 47</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175">税 额</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="42" Boundary="20 92 4.5808 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>51</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">合</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="43" Boundary="36 92 4.2986 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>52</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">计</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="44" Boundary="16.4068 98.5 27.1255 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="8" GlyphCount="8">
+                    <ofd:Glyphs>53 8 51 52 5 54 55 11</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175 3.175 3.175 3.175 3.175 3.175">价税合计（大写）
+                </ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="47" Boundary="143 98.5 19 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="4" GlyphCount="4">
+                    <ofd:Glyphs>5 56 55 11</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175 3.175">（小写）</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="49" Boundary="5.5 109 4.4926 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>57</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">备</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="50" Boundary="5.5 115 4.2633 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="1" GlyphCount="1">
+                    <ofd:Glyphs>58</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163">注</ofd:TextCode>
+            </ofd:TextObject>
+            <ofd:TextObject ID="67" Boundary="19 129.5 19 3.3" Font="6966" Size="3.175">
+                <ofd:CGTransform CodePosition="0" CodeCount="4" GlyphCount="4">
+                    <ofd:Glyphs>15 4 30 14</ofd:Glyphs>
+                </ofd:CGTransform>
+                <ofd:TextCode X="0.5265" Y="3.0163" DeltaX="3.175 3.175 3.175">开票人：</ofd:TextCode>
+            </ofd:TextObject>
+        </ofd:Layer>
+    </ofd:Content>
+</ofd:Page>

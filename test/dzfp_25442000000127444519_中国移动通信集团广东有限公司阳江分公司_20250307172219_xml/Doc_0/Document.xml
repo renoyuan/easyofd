@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ofd:Document xmlns:ofd="http://www.ofdspec.org/2016">
+    <ofd:CommonData>
+        <ofd:MaxUnitID>6977</ofd:MaxUnitID>
+        <ofd:PublicRes>PublicRes.xml</ofd:PublicRes>
+        <ofd:TemplatePage ID="1" BaseLoc="Tpls/Tpl_0/Content.xml"/>
+        <ofd:DocumentRes>DocumentRes.xml</ofd:DocumentRes>
+    </ofd:CommonData>
+    <ofd:Pages>
+        <ofd:Page ID="61" BaseLoc="Pages/Page_0/Content.xml"/>
+    </ofd:Pages>
+
+    <ofd:CustomTags>Tags/CustomTags.xml</ofd:CustomTags>
+    <ofd:Annotations>Annots/Annotations.xml</ofd:Annotations>
+</ofd:Document>

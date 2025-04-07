@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# PROJECT_NAME: D:\code\easyofd\easyofd\parser
-# CREATE_TIME: 2023-07-27
+# PROJECT_NAME:  file_parser_base.py
+# CREATE_TIME: 2025/3/28 11:43
 # E_MAIL: renoyuan@foxmail.com
 # AUTHOR: reno
-# NOTE: 每种类型的文件定义一个解析器
+# NOTE: base 解析器
 
 import sys
 
@@ -61,15 +61,3 @@ class FileParserBase(object):
 
             print(type(need_ext_obj))
 
-
-
-
-
-
-
-
-
-
-
-if __name__ == "__main__":
-    FileParserBase("")()
