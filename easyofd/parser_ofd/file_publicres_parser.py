@@ -11,7 +11,7 @@ from .file_parser_base import FileParserBase
 class PublicResFileParser(FileParserBase):
     """
     Parser PublicRes 抽取里面 获取公共信息 字体信息
-
+    /xml_dir/Doc_0/PublicRes.xml
     """
 
     def normalize_font_name(self, font_name):

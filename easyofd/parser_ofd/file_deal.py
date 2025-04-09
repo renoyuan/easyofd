@@ -13,8 +13,11 @@ from uuid import uuid1
 
 import xmltodict
 import zipfile
+from loguru import logger
 
-    
+from .path_parser import PathParser
+
+
 class FileRead(object):
     """
     文件读取，清除
@@ -24,6 +27,7 @@ class FileRead(object):
     other_path : b64string
     """
     def __init__(self, ofdb64:str):
+
         self.ofdbyte = base64.b64decode(ofdb64) 
         pid=os.getpid()
         self.name = f"{pid}_{str(uuid1())}.ofd"

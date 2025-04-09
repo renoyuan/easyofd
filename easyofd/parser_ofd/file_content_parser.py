@@ -5,13 +5,14 @@
 # E_MAIL: renoyuan@foxmail.com
 # AUTHOR: reno
 # NOTE: 解析正文
+from loguru import  logger
 from .file_parser_base import FileParserBase
 
 
 class ContentFileParser(FileParserBase):
     """
     Parser Contents&tpls
-
+    /xml_dir/Doc_0/Doc_0/Pages/Page_0/Content.xml
     """
 
     def fetch_cell_info(self, row, TextObject):

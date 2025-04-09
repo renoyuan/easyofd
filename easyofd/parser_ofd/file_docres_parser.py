@@ -13,7 +13,7 @@ from .file_parser_base import FileParserBase
 class DocumentResFileParser(FileParserBase):
     """
     Parser DocumentRes 抽取里面图片信息
-
+    /xml_dir/Doc_0/DocumentRes.xml
     """
 
     def __call__(self):

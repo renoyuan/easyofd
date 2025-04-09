@@ -16,6 +16,8 @@ class DocumentFileParser(FileParserBase):
     """
     Document 为doc内的根节点 包含：
     1 文件的路径 2 doc的size
+
+    /xml_dir/Doc_0/Document.xml
     """
 
     def loc2page_no(self, loc, idx):
@@ -47,11 +49,19 @@ class DocumentFileParser(FileParserBase):
         self.recursion_ext(self.xml_obj, document_res, document_res_key)
         document_info["document_res"] = document_res
 
+        # tpls
+        tpls: list = []
+        template_page_key = "ofd:TemplatePage"
+        self.recursion_ext(self.xml_obj, tpls, template_page_key)
+        if tpls:
+            tpls = [i.get("@BaseLoc") if isinstance(i, dict) else i for i in tpls]
+        document_info["tpls"] = tpls
+
         # ofd:Page 正文
         page: list = []
         page_id_map = {}
-        apage_key = "ofd:Page"
-        self.recursion_ext(self.xml_obj, page, apage_key)
+        page_key = "ofd:Page"
+        self.recursion_ext(self.xml_obj, page, page_key)
         if page:
             page_id_map = {
                 i.get("@ID"): self.loc2page_no(i.get("@BaseLoc"), idx)
@@ -62,12 +72,23 @@ class DocumentFileParser(FileParserBase):
         document_info["page"] = page
         document_info["page_id_map"] = page_id_map
 
-        tpls: list = []
-        template_page_key = "ofd:TemplatePage"
-        self.recursion_ext(self.xml_obj, tpls, template_page_key)
-        if tpls:
-            tpls = [i.get("@BaseLoc") if isinstance(i, dict) else i for i in tpls]
-        document_info["tpls"] = tpls
+        # ofd:Annotations
+        annotations: list = []
+        annotations_key = "ofd:Annotations"
+        self.recursion_ext(self.xml_obj, annotations, annotations_key)
+        document_info["Annotations"] = annotations
+
+        # ofd:Attachments
+        attachments: list = []
+        attachments_key = "ofd:Attachments"
+        self.recursion_ext(self.xml_obj, attachments, attachments_key)
+        document_info["attachments"] = attachments
+
+        # ofd:CustomTags
+        custom_tag: list = []
+        custom_tag_key = "ofd:CustomTags"
+        self.recursion_ext(self.xml_obj, custom_tag, custom_tag_key)
+        document_info["custom_tag"] = custom_tag
 
         return document_info
 

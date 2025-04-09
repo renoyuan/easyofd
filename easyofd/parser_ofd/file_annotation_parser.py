@@ -5,13 +5,43 @@
 # E_MAIL: renoyuan@foxmail.com
 # AUTHOR: reno
 # NOTE: 注释解析
-
+from loguru import logger
 from .file_parser_base import FileParserBase
 
+class AnnotationsParser(FileParserBase):
+    """
+    Parser Annotations
+    注释信息-总
+    /xml_dir/Doc_0/Pages/Page_0/Content.xml
+    """
+
+    def __call__(self):
+        info = {}
+        annotations_res: list = []
+        annotations_res_key = "ofd:Annotations"
+        self.recursion_ext(self.xml_obj, annotations_res, annotations_res_key)
+        logger.debug(f"signature_res is {annotations_res}")
+        if annotations_res:
+            for i in annotations_res:
+                PageID = i.get("@ID") if i.get("@ID") else i.get("@PageID")
+                if not PageID:
+                    logger.debug(f"PageID is null ")
+                    continue
+                BaseLoc = i.get("@BaseLoc") if i.get("@BaseLoc") else i.get("ofd:FileLoc")
+                if not BaseLoc:
+                    logger.debug(f"BaseLoc is null ")
+                    continue
+                info[PageID] = {
+                    "BaseLoc": BaseLoc,
+                    "Type": i.get("@Type"),
+                    "ID": i.get("@ID"),
+
+                }
+        return info
 class AnnotationFileParser(FileParserBase):
     """
     Parser Annotation
-    签名 注释 信息 水印
+    注释类 包含 签名注释 水印注释 信息注释
     """
     AnnoType = {
         "Watermark":{

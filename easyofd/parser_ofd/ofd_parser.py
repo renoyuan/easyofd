@@ -32,7 +32,7 @@ from .file_content_parser import ContentFileParser
 from .file_annotation_parser import AnnotationFileParser
 from .file_publicres_parser import PublicResFileParser
 from .file_signature_parser import SignaturesFileParser,SignatureFileParser
-
+from .path_parser import PathParser
 # todo 解析流程需要大改
 
 
@@ -42,6 +42,8 @@ class OFDParser(object):
     1 解压文件 创建文件映射表 释放文件
     2 解析 xml 逐级去 收集需要信息  结构文本 以及 资源
     2 调用font 注册 字体
+
+    图层顺序 tlp>content>annotation
     """
 
     def __init__(self, ofdb64):
@@ -226,8 +228,10 @@ class OFDParser(object):
     def parser(self, ):
         """
         解析流程
+        doc_0默认只有 一层
+        OFD >  Document.xml > [DocumentRes.xml, PublicRes.xml, Signatures.xml Annotations.xml] > []
         """
-        # 默认只有 doc_0 一层有多层后面改
+
         page_size_details = []
         default_page_size = []
         doc_list = []
@@ -332,6 +336,15 @@ class OFDParser(object):
                             }
                         ]
 
+        # 注释信息
+        annotation_name: list = doc_root_info.get("Annotations")
+        if annotation_name:
+            # todo 注释解析
+            annotation_xml_obj = self.get_xml_obj(annotation_name[0])
+            annotation_info = AnnotationFileParser(annotation_xml_obj)()
+            # print("annotation_info",annotation_info)
+
+
         # 正文信息 会有多页 情况
         page_name: list = doc_root_info.get("page")
 
@@ -407,12 +420,12 @@ class OFDParser(object):
         })
         return doc_list
 
-    def __call__(self, *args: Any, **kwds: Any) -> Any:
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
         """
         输出ofd解析结果
         """
-        save_xml = kwds.get("save_xml", False)
-        xml_name = kwds.get("xml_name")
+        save_xml = kwargs.get("save_xml", False)
+        xml_name = kwargs.get("xml_name")
         self.file_tree = FileRead(self.ofdb64)(save_xml=save_xml, xml_name=xml_name)
         # logger.info(self.file_tree)
         return self.parser()

@@ -12,6 +12,7 @@ class SignaturesFileParser(FileParserBase):
     """
     Parser Signatures
     签章信息-总
+    /xml_dir/Doc_0/PublicRes.xml
     """
 
     def __call__(self):

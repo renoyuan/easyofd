@@ -8,6 +8,10 @@
 from .file_parser_base import FileParserBase
 
 class OFDFileParser(FileParserBase):
+    """
+    Parser OFD 文件
+    /xml_dir/OFD.xml
+    """
     def __call__(self):
         info = {}
         # DocRoot

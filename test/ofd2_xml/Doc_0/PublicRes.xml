@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><ofd:Res xmlns:ofd="http://www.ofdspec.org/2016" BaseLoc="Res">
-  <ofd:Fonts>
-    <ofd:Font FamilyName="宋体" FontName="宋体" ID="3"/>
-    <ofd:Font FamilyName="楷体" FontName="楷体" ID="5"/>
-    <ofd:Font FamilyName="Courier New" FontName="Courier New" ID="7"/>
-  </ofd:Fonts>
-</ofd:Res>

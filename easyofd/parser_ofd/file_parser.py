@@ -35,40 +35,23 @@ class FileParserBase(object):
         ext_list: data container
         key: key
         """
-
         if isinstance(need_ext_obj, dict):
-
             for k, v in need_ext_obj.items():
                 if k == key:
-
                     if isinstance(v, (dict, str)):
                         ext_list.append(v)
                     elif isinstance(v, list):
                         ext_list.extend(v)
-
-
                 else:
-
                     if isinstance(v, dict):
                         self.recursion_ext(v, ext_list, key)
                     elif isinstance(v, list):
                         for cell in v:
                             self.recursion_ext(cell, ext_list, key)
                     else:
-
                         pass
         else:
-
             print(type(need_ext_obj))
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
