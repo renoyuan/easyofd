@@ -18,25 +18,23 @@ class AnnotationsParser(FileParserBase):
     def __call__(self):
         info = {}
         annotations_res: list = []
-        annotations_res_key = "ofd:Annotations"
+        annotations_res_key = "ofd:Page"
         self.recursion_ext(self.xml_obj, annotations_res, annotations_res_key)
-        logger.debug(f"signature_res is {annotations_res}")
+        logger.debug(f"annotations_res is {annotations_res}")
         if annotations_res:
             for i in annotations_res:
-                PageID = i.get("@ID") if i.get("@ID") else i.get("@PageID")
-                if not PageID:
-                    logger.debug(f"PageID is null ")
+                page_id =  i.get("@PageID")
+                if not page_id:
+                    logger.debug(f"page_id is null ")
                     continue
-                BaseLoc = i.get("@BaseLoc") if i.get("@BaseLoc") else i.get("ofd:FileLoc")
-                if not BaseLoc:
-                    logger.debug(f"BaseLoc is null ")
+                file_Loc = i.get("ofd:FileLoc")
+                if not file_Loc:
+                    logger.debug(f"file_Loc is null ")
                     continue
-                info[PageID] = {
-                    "BaseLoc": BaseLoc,
-                    "Type": i.get("@Type"),
-                    "ID": i.get("@ID"),
-
+                info[page_id] = {
+                    "FileLoc": file_Loc,
                 }
+
         return info
 class AnnotationFileParser(FileParserBase):
     """
@@ -70,7 +68,7 @@ class AnnotationFileParser(FileParserBase):
     def __call__(self):
         info = {}
         public_res: list = []
-        public_res_key = "ofd:Font"
+        public_res_key = "ofd:Page"
         self.recursion_ext(self.xml_obj, public_res, public_res_key)
 
         if public_res:

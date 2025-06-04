@@ -1,0 +1,19 @@
+name: Auto-Reply on Issue
+on:
+  issues:
+    types: [opened]  # 当新 Issue 被创建时触发
+
+jobs:
+  respond:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post Welcome Message
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: " 👋 感谢提交 Issue！我已经收到反馈，将尽快处理。为确保沟通效率，请您确保已经完整看过该页的提交须知：https://github.com/renoyuan/easyofd/wiki/%E5%85%B3%E4%BA%8EIsuues%E6%8F%90%E4%BA%A4"
+            })
