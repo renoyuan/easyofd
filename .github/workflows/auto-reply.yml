@@ -2,7 +2,8 @@ name: Auto-Reply on Issue
 on:
   issues:
     types: [opened]  # 当新 Issue 被创建时触发
-
+permissions:
+  issues: write  # 确保有此声明
 jobs:
   respond:
     runs-on: ubuntu-latest
