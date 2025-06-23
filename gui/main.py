@@ -6,9 +6,10 @@
 #AUTHOR: reno 
 #note:  
 
-
-
 import sys,os,base64
+
+lib_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0,lib_path)
 from PIL import Image
 from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QDialog,QMessageBox
 from PyQt6 import QtCore, QtGui, QtWidgets
