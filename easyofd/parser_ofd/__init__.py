@@ -21,8 +21,8 @@ for font,names in font_map.items():
     for name in names:
         try:
             pdfmetrics.registerFont(TTFont(name, font))
-        except:
-            logger.warning(f"FONT  registerFont failed {font}: {name}")
+        except Exception as e:
+            logger.warning(f"FONT  registerFont failed '{font}'({name}): {e}")
 
 from easyofd.parser_ofd.ofd_parser import OFDParser
 __all__=["OFDParser"]

@@ -7,6 +7,7 @@
 # NOTE: 注释解析
 from loguru import logger
 from .file_parser_base import FileParserBase
+from .file_publicres_parser import PublicResFileParser
 
 class AnnotationsParser(FileParserBase):
     """
@@ -36,7 +37,7 @@ class AnnotationsParser(FileParserBase):
                 }
 
         return info
-class AnnotationFileParser(FileParserBase):
+class AnnotationFileParser(PublicResFileParser):
     """
     Parser Annotation
     注释类 包含 签名注释 水印注释 信息注释

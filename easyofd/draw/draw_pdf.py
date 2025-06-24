@@ -146,7 +146,7 @@ class DrawPDF():
             try:
                 c.setFont(font, line_dict["size"] * self.OP)
             except KeyError as key_error:
-                logger.error(f"{key_error}")
+                logger.error(f"font({font}) not found: {key_error}")
                 font =  self.font_tool.FONTS[0]
                 c.setFont(font, line_dict["size"] * self.OP)
             # 原点在页面的左下角 
@@ -654,7 +654,7 @@ class DrawPDF():
                 file_name = font_v.get("FontFile")
                 font_b64 = font_v.get("font_b64")
                 if font_b64:
-                    self.font_tool.register_font(os.path.split(file_name)[1], font_v.get("@FontName"), font_b64)
+                    self.font_tool.register_font(os.path.split(file_name)[1], font_v.get("FontName"), font_b64)
             # text_write = []
             # print("doc.get(page_info)", len(doc.get("page_info")))
             for page_id, page in doc.get("page_info").items():
