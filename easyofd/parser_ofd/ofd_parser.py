@@ -338,11 +338,16 @@ class OFDParser(object):
 
         # 注释信息
         annotation_name: list = doc_root_info.get("Annotations")
-        if annotation_name and (annotation_xml_obj:= self.get_xml_obj(annotation_name[0])):
-            # todo 注释解析
-
-            annotation_info = AnnotationFileParser(annotation_xml_obj)()
-            logger.debug(f"annotation_info is {annotation_info}")
+        if annotation_name and (annotation_xml_obj:= self.get_xml_obj(annotation_name[0])) and False:
+            # TODO 注释解析
+            try:
+                annotation_info = AnnotationFileParser(annotation_xml_obj)()
+                logger.debug(f"annotation_info is {annotation_info}")
+            except Exception as e:
+                logger.error(f"AnnotationFileParser error  {e}")
+                annotation_info = None
+        else:
+            annotation_info = {}
 
 
         # 正文信息 会有多页 情况
