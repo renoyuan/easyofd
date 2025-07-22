@@ -278,10 +278,10 @@ class DrawPDF():
             CTM = img_d.get('CTM')
             # print("CTM", CTM)
 
-            wrap_pos = image.get("wrap_pos")
-            # print("wrap_pos", wrap_pos)
+            wrap_pos = img_d.get("wrap_pos")
+            # wrap_pos = img_d.get("wrap_pos")
             pos = img_d.get('pos')
-            # print("pos", pos)
+            print("pos", pos,"wrap_pos", wrap_pos,"CTM", CTM)
             # CTM =None
             if CTM and not wrap_pos and page_size == pos:
                 x1_new, y1_new, w_new, h_new = self.compute_ctm(CTM, 0, 0, img_width, img_height)
@@ -635,6 +635,27 @@ class DrawPDF():
                     path.close()
             canvas.drawPath(path)
 
+    def draw_annotation(self, canvas, annota_info, images, page_size):
+        """
+        写入注释 暂只看到签章图片 有其他的再加入
+        """
+        img_list = []
+        for key, annotation in annota_info.items():
+            if annotation.get("AnnoType").get("type") == "Stamp":
+                pos = annotation.get("ImgageObject").get("Boundary","").split(" ")
+                pos = [float(i) for i in pos] if pos else []
+                wrap_pos = annotation.get("Appearance").get("Boundary","").split(" ")
+                wrap_pos = [float(i) for i in wrap_pos] if wrap_pos else []
+                CTM = annotation.get("ImgageObject").get("CTM","").split(" ")
+                CTM = [float(i) for i in CTM] if CTM else []
+                img_list.append({
+                    "wrap_pos": wrap_pos,
+                    "pos": pos,
+                    "CTM": CTM,
+                    "ResourceID": annotation.get("ImgageObject").get("ResourceID",""),
+                })
+        self.draw_img( canvas, img_list, images, page_size)
+        
     def draw_pdf(self):
 
         c = canvas.Canvas(self.pdf_io)
@@ -648,6 +669,7 @@ class DrawPDF():
             page_size_details = doc.get("page_size")
             print("page_size_details", page_size_details)
             signatures_page_id = doc.get("signatures_page_id")  # 签证信息
+            annotation_info = doc.get("annotation_info")  # 注释信息
 
             # 注册字体
             for font_id, font_v in fonts.items():
@@ -657,10 +679,10 @@ class DrawPDF():
                     self.font_tool.register_font(os.path.split(file_name)[1], font_v.get("@FontName"), font_b64)
             # text_write = []
             # print("doc.get(page_info)", len(doc.get("page_info")))
-            for page_id, page in doc.get("page_info").items():
-                print(f"page_id: {page_id} page_size_details: {page_size_details}")
-                if len(page_size_details) > page_id and page_size_details[page_id]:
-                    page_size = page_size_details[page_id]
+            for pg_no, page in doc.get("page_info").items():
+                print(f"pg_no: {pg_no} page_size_details: {page_size_details}")
+                if len(page_size_details) > pg_no and page_size_details[pg_no]:
+                    page_size = page_size_details[pg_no]
                 else:
                     page_size = default_page_size
                 # logger.info(f"page_id {page_id} page_size {page_size}")
@@ -686,12 +708,13 @@ class DrawPDF():
 
                 # 绘制签章
                 if signatures_page_id:
-                    self.draw_signature(c, signatures_page_id.get(page_id), page_size)
-
-                # print("去写入")
-                # print(doc_id,len(self.data))
-                # 页码判断逻辑
-                if page_id != len(doc.get("page_info")) - 1 and doc_id != len(self.data):
+                    self.draw_signature(c, signatures_page_id.get(pg_no), page_size)
+                # 绘制注释
+                if annotation_info and pg_no in annotation_info:
+                    self.draw_annotation(c, annotation_info.get(pg_no),images, page_size)
+                
+                # 页码判断逻辑 # print(doc_id,len(self.data))
+                if pg_no != len(doc.get("page_info")) - 1 and doc_id != len(self.data):
                     # print("写入")
                     c.showPage()
                     # json.dump(text_write,open("text_write.json","w",encoding="utf-8"),ensure_ascii=False)

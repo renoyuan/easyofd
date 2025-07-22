@@ -29,7 +29,7 @@ from .file_ofd_parser import OFDFileParser
 from .file_doc_parser import DocumentFileParser
 from .file_docres_parser import DocumentResFileParser
 from .file_content_parser import ContentFileParser
-from .file_annotation_parser import AnnotationFileParser
+from .file_annotation_parser import AnnotationFileParser,AnnotationsParser
 from .file_publicres_parser import PublicResFileParser
 from .file_signature_parser import SignaturesFileParser,SignatureFileParser
 from .path_parser import PathParser
@@ -336,18 +336,32 @@ class OFDParser(object):
                             }
                         ]
 
-        # 注释信息
-        annotation_name: list = doc_root_info.get("Annotations")
-        if annotation_name and (annotation_xml_obj:= self.get_xml_obj(annotation_name[0])) and False:
+        # 注释信息 按照页码信息
+        annotations_name: list = doc_root_info.get("Annotations") #获取到入口文件
+        logger.debug(f"annotations_name is {annotations_name}")
+        if annotations_name and (annotations_xml_obj:= self.get_xml_obj(annotations_name[0])) : # and False
             # TODO 注释解析
+            annotation_info = {}
             try:
-                annotation_info = AnnotationFileParser(annotation_xml_obj)()
+                annotations_info = AnnotationsParser(annotations_xml_obj)()
+                if annotations_info:
+                    logger.debug(f"annotations_info is {annotations_info}")
+                    for page_id, annotations_cell in annotations_info.items():
+                        file_loc = annotations_cell.get("FileLoc")
+                        anno_page_no = annotations_cell.get("pageNo")
+                        if file_loc:
+                            annotation_xml_obj = self.get_xml_obj(file_loc)
+                            if annotation_xml_obj:
+                                # 解析注释文件
+                                logger.debug(f"annotation_xml_obj is {annotation_xml_obj}")
+                                annotation_page_info = AnnotationFileParser(annotation_xml_obj)()
+                                annotation_info[anno_page_no] = annotation_page_info
                 logger.debug(f"annotation_info is {annotation_info}")
             except Exception as e:
                 logger.error(f"AnnotationFileParser error  {e}")
-                annotation_info = None
-        else:
-            annotation_info = {}
+                
+      
+            
 
 
         # 正文信息 会有多页 情况
@@ -405,17 +419,16 @@ class OFDParser(object):
                     page_info_d[tpl_no] = tpl_info
                     page_info_d[tpl_no].sort(
                         key=lambda pos_text: (float(pos_text.get("pos")[1]), float(pos_text.get("pos")[0])))
-
-        # todo 读取注释信息
-        page_ID = 0  # 没遇到过doc多个的情况
+        docNo = 0  # 没遇到过doc多个的情况 出现再看
         # print("page_info",len(page_info))
         doc_list.append({
             "default_page_size": default_page_size,
             "page_size": page_size_details,
             "pdf_name": self.file_tree["pdf_name"],
-            "doc_no": page_ID,
+            "doc_no": docNo,
             "images": img_info,
             "signatures_page_id": signatures_page_id,
+            "annotation_info": annotation_info,
             "page_id_map": page_id_map,
             "fonts": font_info,
             "page_info": page_info_d,
