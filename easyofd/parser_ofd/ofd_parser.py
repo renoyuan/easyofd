@@ -339,9 +339,9 @@ class OFDParser(object):
         # 注释信息 按照页码信息
         annotations_name: list = doc_root_info.get("Annotations") #获取到入口文件
         logger.debug(f"annotations_name is {annotations_name}")
+        # TODO 注释解析
+        annotation_info = {}
         if annotations_name and (annotations_xml_obj:= self.get_xml_obj(annotations_name[0])) : # and False
-            # TODO 注释解析
-            annotation_info = {}
             try:
                 annotations_info = AnnotationsParser(annotations_xml_obj)()
                 if annotations_info:
