@@ -86,7 +86,7 @@ def test_pdf2(file_path):
 
 if __name__ == "__main__":
 
-    file_path = rf"F:\opensource\easyofd\test\data\ofd2.ofd"
+    file_path = rf"F:\opensource\easyofd\test\data\滴滴电子发票C.ofd"
     # file_path = r"data/2.ofd"
     if sys.argv[1] == "ofd2":
         test_ofd2(file_path)
