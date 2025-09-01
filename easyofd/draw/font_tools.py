@@ -198,7 +198,7 @@ class FontTool(object):
             try:
                 with open(file_name, "wb") as f:
                     f.write(base64.b64decode(font_b64))
-                # print("FontName", FontName, "file_name", file_name)
+                print("FontName", FontName, "file_name", file_name)
                 pdfmetrics.registerFont(TTFont(FontName, file_name))
                 self.FONTS.append(FontName)
             except Exception as e:

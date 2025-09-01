@@ -16,6 +16,10 @@ https://github.com/renoyuan/easyofd/wiki/%E5%85%B3%E4%BA%8EIsuues%E6%8F%90%E4%BA
 
 ### 更新
 
+20250901 - v0.5.6
+
+处理annotation_info异常
+
 20250722 - v0.5.5
 
 新增对注释的解析，解决部分文件把签章图片放在注释中无法解析的问题。暂只支持stamp,后续遇到其他类型注释再添加。
