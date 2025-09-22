@@ -201,6 +201,7 @@ class FontTool(object):
                 print("FontName", FontName, "file_name", file_name)
                 pdfmetrics.registerFont(TTFont(FontName, file_name))
                 self.FONTS.append(FontName)
+                logger.debug(f"FontTool.register_font success, name={FontName}, file={file_name}")
             except Exception as e:
                 logger.error(f"register_font_error:\n{e} \n 包含不支持解析字体格式")
             finally:
