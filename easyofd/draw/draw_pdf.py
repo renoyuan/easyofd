@@ -16,7 +16,7 @@ from loguru import logger
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
-
+from reportlab.lib.units import mm
 from easyofd.draw.font_tools import FontTool
 from .find_seal_img import SealExtract
 
@@ -32,8 +32,8 @@ class DrawPDF():
         assert data, "未输入ofd解析结果"
         self.data = data
         self.author = "renoyuan"
-        self.OP = 200 / 25.4
-        # self.OP = 1
+        #self.OP = 200 / 25.4
+        self.OP = 1*mm
         self.pdf_uuid_name = self.data[0]["pdf_name"]
         self.pdf_io = BytesIO()
         self.SupportImgType = ("JPG", "JPEG", "PNG")
@@ -187,16 +187,12 @@ class DrawPDF():
             # print("Y",page_size[3])
             # print("x",page_size[2])
             # if line_dict.get("Glyphs_d") and  FontFilePath.get(line_dict["font"])  and font_f not in FONTS:
-            if False:  # 对于自定义字体 写入字形 drawPath 性能差暂时作废
-                Glyphs = [int(i) for i in line_dict.get("Glyphs_d").get("Glyphs").split(" ")]
-                for idx, Glyph_id in enumerate(Glyphs):
-                    _cahr_x = float(x_list[idx]) * self.OP
-                    _cahr_y = (float(page_size[3]) - (float(y_list[idx]))) * self.OP
-                    imageFile = draw_Glyph(FontFilePath.get(line_dict["font"]), Glyph_id, text[idx])
-
-                    # font_img_info.append((FontFilePath.get(line_dict["font"]), Glyph_id,text[idx],_cahr_x,_cahr_y,-line_dict["size"]*Op*2,line_dict["size"]*Op*2))
-                    c.drawImage(imageFile, _cahr_x, _cahr_y, -line_dict["size"] * self.OP * 2,
-                                line_dict["size"] * self.OP * 2)
+            if CTM: 
+                #print(f"text: {text}, CTM_info:",CTM_info)
+                c.saveState()
+                c.transform(float(CTMS[0]), -1*float(CTMS[1]), -1*float(CTMS[2]), float(CTMS[3]), (pos[0]+float(CTMS[4]))*self.OP, (page_size[3]-pos[1]-float(CTMS[5]))*self.OP)
+                c.drawString(float(X)*self.OP, -float(Y)*self.OP, text)
+                c.restoreState()
             else:
                 if len(text) > len(x_list) or len(text) > len(y_list):
                     text = re.sub("[^\u4e00-\u9fa5]", "", text)
@@ -551,8 +547,8 @@ class DrawPDF():
         for line in line_list:
             path = canvas.beginPath()
             Abbr = line.get("AbbreviatedData").split(" ")  # AbbreviatedData
-            color = line.get("FillColor", [0, 0, 0])
-
+            #color = line.get("FillColor", [0, 0, 0])
+            color = line.get("StrokeColor", "").split(" ") #StrokeColor String
             relu_list = match_mode(Abbr)
             # TODO 组合 relu_list 1 M L 直线 2 M B*n 三次贝塞尔线 3 M Q*n 二次贝塞尔线
 
@@ -641,7 +637,8 @@ class DrawPDF():
         """
         img_list = []
         for key, annotation in annota_info.items():
-            if annotation.get("AnnoType").get("type") == "Stamp":
+            #if annotation.get("AnnoType").get("type") == "Stamp":
+            if annotation.get("ImgageObject").get("ResourceID"):
                 pos = annotation.get("ImgageObject").get("Boundary","").split(" ")
                 pos = [float(i) for i in pos] if pos else []
                 wrap_pos = annotation.get("Appearance").get("Boundary","").split(" ")
@@ -697,14 +694,13 @@ class DrawPDF():
                 if img_list:
                     self.draw_img(c, img_list, images, page_size)
 
-                # 写入文本
-                if text_list:
-
-                    self.draw_chars(c, text_list, fonts, page_size)
-
                 # 绘制线条
                 if line_list:
                     self.draw_line(c, line_list, page_size)
+
+                # 写入文本
+                if text_list:
+                    self.draw_chars(c, text_list, fonts, page_size)
 
                 # 绘制签章
                 if signatures_page_id:

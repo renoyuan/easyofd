@@ -306,6 +306,9 @@ class OFDParser(object):
                     # print(BaseLoc)
                     prefix = BaseLoc.split("/")[0]
                     signatures_info = SignatureFileParser(signature_xml_obj)(prefix=prefix)
+                    if len(signatures_info)==0:
+                        sign_key = list(signature_xml_obj.keys())[0]
+                        signatures_info = SignatureFileParser(signature_xml_obj)(prefix=prefix, StampAnnot_res_key=sign_key)
                     # print(signatures_info)
                     logger.debug(f"signatures_info {signatures_info}")
                     PageRef = signatures_info.get("PageRef")

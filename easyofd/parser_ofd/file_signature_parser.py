@@ -38,10 +38,10 @@ class SignatureFileParser(FileParserBase):
     签章信息
     """
 
-    def __call__(self, prefix=""):
+    def __call__(self, prefix="", StampAnnot_res_key="ofd:StampAnnot"):
         info = {}
         StampAnnot_res: list = []
-        StampAnnot_res_key = "ofd:StampAnnot"
+        #StampAnnot_res_key = "ofd:StampAnnot"
 
         self.recursion_ext(self.xml_obj, StampAnnot_res, StampAnnot_res_key)
 
