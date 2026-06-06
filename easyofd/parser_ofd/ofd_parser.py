@@ -106,7 +106,8 @@ class OFDParser(object):
 
     # 获得xml 对象
     def get_xml_obj(self, label):
-        assert label
+        if not label:
+            return ""
         # print(self.file_tree.keys())
         label =label.lstrip('./')
         for abs_p in self.file_tree:
