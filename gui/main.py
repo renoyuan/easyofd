@@ -1,287 +1,462 @@
 #!/usr/bin/env python
-#-*- coding: utf-8 -*-
-#PROJECT_NAME: F:\code\easyofd\gui
-#CREATE_TIME: 2023-11-18 
-#E_MAIL: renoyuan@foxmail.com
-#AUTHOR: reno 
-#note:  
+# -*- coding: utf-8 -*-
+# E_MAIL: renoyuan@foxmail.com
+# AUTHOR: reno
+# NOTE: EasyOFD GUI - OFD/PDF/图片 格式互转
 
-import sys,os,base64
+import os
+import sys
+import base64
+import traceback
+from pathlib import Path
 
-lib_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-sys.path.insert(0,lib_path)
+lib_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, lib_path)
+
 from PIL import Image
-from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QDialog,QMessageBox
-from PyQt6 import QtCore, QtGui, QtWidgets
+
+from PyQt6.QtWidgets import (
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+    QGridLayout, QLabel, QLineEdit, QPushButton, QRadioButton,
+    QCheckBox, QTextEdit, QStatusBar, QFileDialog, QMessageBox,
+    QFrame, QButtonGroup, QProgressBar,
+)
+from PyQt6.QtCore import QThread, pyqtSignal
+from PyQt6.QtGui import QAction, QIcon, QFont, QTextCursor
+
 from easyofd import OFD
 
-class Ui_MainWindow(object):
+
+# ──────────────────────────────────────────────
+#  常量定义
+# ──────────────────────────────────────────────
+
+APP_NAME = "EasyOFD"
+APP_TITLE = "EasyOFD - OFD文档处理工具"
+ICON_PATH = Path(__file__).parent / "ico" / "reno.ico"
+
+MODE_GROUP = [
+    ("ofd2pdf", "OFD → PDF"),
+    ("ofd2img", "OFD → 图片"),
+    ("pdf2ofd", "PDF → OFD"),
+    ("pdf2img", "PDF → 图片"),
+    ("img2ofd", "图片 → OFD"),
+    ("img2pdf", "图片 → PDF"),
+]
+
+MODE_EXT_MAP = {
+    "ofd2pdf": ".ofd",
+    "ofd2img": ".ofd",
+    "pdf2ofd": ".pdf",
+    "pdf2img": ".pdf",
+    "img2ofd": (".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"),
+    "img2pdf": (".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"),
+}
+
+MODE_FILTER_MAP = {
+    "ofd2pdf": ("选择 OFD 文件", "OFD (*.ofd)"),
+    "ofd2img": ("选择 OFD 文件", "OFD (*.ofd)"),
+    "pdf2ofd": ("选择 PDF 文件", "PDF (*.pdf)"),
+    "pdf2img": ("选择 PDF 文件", "PDF (*.pdf)"),
+    "img2ofd": ("选择图片", "图片 (*.jpg *.jpeg *.png *.bmp *.tif *.tiff)"),
+    "img2pdf": ("选择图片", "图片 (*.jpg *.jpeg *.png *.bmp *.tif *.tiff)"),
+}
+
+STYLE_SHEET = """
+    QMainWindow { background: #F5F5F5; }
+    QPushButton#btn_start {
+        background: #4A90D9; color: white; border: none;
+        border-radius: 4px; padding: 6px 16px;
+        font-size: 13px; font-weight: bold;
+    }
+    QPushButton#btn_start:hover { background: #357ABD; }
+    QPushButton#btn_start:disabled { background: #C0C0C0; color: #808080; }
+"""
+
+ABOUT_TEXT = (
+    "<h3>EasyOFD</h3>"
+    "<p>版本: 20260427</p>"
+    "<p>作者: renoyuan</p>"
+    "<hr><p>OFD/PDF/图片 格式互转</p>"
+    '<p><a href="https://github.com/renoyuan/easyofd">github.com/renoyuan/easyofd</a></p>'
+)
+
+
+# ──────────────────────────────────────────────
+#  工作线程
+# ──────────────────────────────────────────────
+
+class ConvertWorker(QThread):
+    """后台转换工作线程"""
+
+    log_signal = pyqtSignal(str)
+    progress_signal = pyqtSignal(int)
+    finished_signal = pyqtSignal(bool, str)
+    file_signal = pyqtSignal(str, int, int)
+
+    def __init__(self, mode: str, input_path: str, output_path: str, recursive: bool = False):
+        super().__init__()
+        self.mode = mode
+        self.input_path = input_path
+        self.output_path = output_path
+        self.recursive = recursive
+        self._cancelled = False
+
+    def cancel(self):
+        self._cancelled = True
+
+    def run(self):
+        try:
+            ofd = OFD()
+            files = self._collect_files()
+            if not files:
+                self.finished_signal.emit(False, "未找到符合条件的输入文件")
+                return
+
+            total = len(files)
+            self.log_signal.emit(f"找到 {total} 个文件，开始转换...")
+            self.progress_signal.emit(0)
+
+            for idx, fp in enumerate(files):
+                if self._cancelled:
+                    self.finished_signal.emit(False, "用户取消")
+                    return
+                name = os.path.basename(fp)
+                self.file_signal.emit(name, idx + 1, total)
+                self.log_signal.emit(f"[{idx + 1}/{total}] {name}")
+                self._process_one(ofd, fp)
+                self.progress_signal.emit(int((idx + 1) / total * 100))
+
+            ofd.del_data()
+            self.finished_signal.emit(True, f"完成，共 {total} 个文件")
+        except Exception as e:
+            self.log_signal.emit(traceback.format_exc())
+            self.finished_signal.emit(False, str(e))
+
+    def _collect_files(self) -> list[str]:
+        exts = MODE_EXT_MAP.get(self.mode, ".ofd")
+        p = Path(self.input_path)
+        if p.is_file():
+            return [str(p)]
+        walk = p.rglob if self.recursive else p.iterdir
+        if not isinstance(exts, tuple):
+            exts = (exts,)
+        return sorted(
+            str(f) for f in walk()
+            if f.is_file() and f.suffix.lower() in exts
+        )
+
+    @staticmethod
+    def _ensure_bytes(data):
+        return data if isinstance(data, bytes) else data[0]
+
+    def _process_one(self, ofd: OFD, fp: str):
+        base = os.path.splitext(os.path.basename(fp))[0]
+
+        if self.mode in ("ofd2pdf", "ofd2img"):
+            with open(fp, "rb") as f:
+                b64_data = str(base64.b64encode(f.read()), "utf-8")
+            ofd.read(b64_data)
+
+        if self.mode == "ofd2pdf":
+            pdf = ofd.to_pdf()
+            with open(os.path.join(self.output_path, f"{base}.pdf"), "wb") as f:
+                f.write(self._ensure_bytes(pdf))
+
+        elif self.mode == "ofd2img":
+            for i, img in enumerate(ofd.to_jpg()):
+                img.save(os.path.join(self.output_path, f"{base}_{i}.jpg"))
+
+        elif self.mode == "pdf2ofd":
+            with open(fp, "rb") as f:
+                b = ofd.pdf2ofd(f.read())
+            with open(os.path.join(self.output_path, f"{base}.ofd"), "wb") as f:
+                f.write(self._ensure_bytes(b))
+
+        elif self.mode == "pdf2img":
+            with open(fp, "rb") as f:
+                for i, img in enumerate(ofd.pdf2img(f.read())):
+                    img.save(os.path.join(self.output_path, f"{base}_{i}.jpg"))
+
+        elif self.mode == "img2ofd":
+            b = ofd.jpg2ofd([Image.open(fp)])
+            with open(os.path.join(self.output_path, f"{base}.ofd"), "wb") as f:
+                f.write(self._ensure_bytes(b))
+
+        elif self.mode == "img2pdf":
+            ofd.del_data()
+            b = ofd.jpg2pfd([Image.open(fp)])
+            with open(os.path.join(self.output_path, f"{base}.pdf"), "wb") as f:
+                f.write(self._ensure_bytes(b))
+
+        ofd.del_data()
+        self.log_signal.emit(f"  OK {base}")
+
+
+# ──────────────────────────────────────────────
+#  主窗口
+# ──────────────────────────────────────────────
+
+class MainWindow(QMainWindow):
     def __init__(self):
-        self.ofd = OFD()
-        
-    def read_ofd(self,path):
-        with open(path,"rb") as f:
-            ofdb64 = str(base64.b64encode(f.read()),"utf-8")
-        return ofdb64
-    
-    def read_pfd(self,path):
-        pfd_byte =None
-        with open(path,"rb") as f:
-           pfd_byte = f.read()
-        return pfd_byte
-    
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        icon = QtGui.QIcon(r'gui\ico\reno.ico')
-        MainWindow.setWindowIcon(icon)
-        MainWindow.resize(744, 463)
-        self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.gridLayoutWidget = QtWidgets.QWidget(parent=self.centralwidget)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(0, 0, 2, 2))
-        self.gridLayoutWidget.setObjectName("gridLayoutWidget")
-        self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout.setObjectName("gridLayout")
-        self.pushButton = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(20, 320, 161, 41))
-        self.pushButton.setObjectName("pushButton")
-        self.textEdit = QtWidgets.QTextEdit(parent=self.centralwidget)
-        self.textEdit.setGeometry(QtCore.QRect(120, 180, 461, 51))
-        self.textEdit.setObjectName("textEdit")
-        self.textEdit_2 = QtWidgets.QTextEdit(parent=self.centralwidget)
-        self.textEdit_2.setGeometry(QtCore.QRect(120, 250, 461, 51))
-        self.textEdit_2.setObjectName("textEdit_2")
-        # 单选框
-        self.radioButton = QtWidgets.QRadioButton(parent=self.centralwidget)
-        self.radioButton.setGeometry(QtCore.QRect(40, 50, 95, 20))
-        self.radioButton.setObjectName("radioButton")
-        self.radioButton_2 = QtWidgets.QRadioButton(parent=self.centralwidget)
-        self.radioButton_2.setGeometry(QtCore.QRect(170, 50, 95, 20))
-        self.radioButton_2.setObjectName("radioButton_2")
-        self.radioButton_3 = QtWidgets.QRadioButton(parent=self.centralwidget)
-        self.radioButton_3.setGeometry(QtCore.QRect(40, 90, 95, 20))
-        self.radioButton_3.setObjectName("radioButton_3")
-        self.radioButton_4 = QtWidgets.QRadioButton(parent=self.centralwidget)
-        self.radioButton_4.setGeometry(QtCore.QRect(170, 90, 95, 20))
-        self.radioButton_4.setObjectName("radioButton_4")
-        self.radioButton_5 = QtWidgets.QRadioButton(parent=self.centralwidget)
-        self.radioButton_5.setGeometry(QtCore.QRect(300, 50, 95, 20))
-        self.radioButton_5.setObjectName("radioButton_5")
-        self.radioButton_6 = QtWidgets.QRadioButton(parent=self.centralwidget)
-        self.radioButton_6.setGeometry(QtCore.QRect(300, 90, 95, 20))
-        self.radioButton_6.setObjectName("radioButton_6")
-        
-        self.label = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(30, 20, 54, 16))
-        self.label.setObjectName("label")
-        self.label_2 = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(20, 140, 54, 16))
-        self.label_2.setObjectName("label_2")
-        self.label_3 = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label_3.setGeometry(QtCore.QRect(40, 200, 54, 16))
-        self.label_3.setObjectName("label_3")
-        self.label_4 = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(40, 270, 54, 16))
-        self.label_4.setObjectName("label_4")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 744, 22))
-        self.menubar.setObjectName("menubar")
-        self.mebnu_2 = QtWidgets.QMenu(parent=self.menubar)
-        self.mebnu_2.setObjectName("mebnu_2")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-        # 单选框
-        self.actionpdf2ofd = QtGui.QAction(parent=MainWindow)
-        self.actionpdf2ofd.setObjectName("actionpdf2ofd")
-        self.actionpdf2ofd.setCheckable(True)
-        self.actionpdf2ofd.triggered.connect(self.action_triggered)
-        
-        self.actionpfd2img = QtGui.QAction(parent=MainWindow)
-        self.actionpfd2img.setObjectName("actionpfd2img")
-        self.actionpfd2img.setCheckable(True)
-        
-        self.actionofd2pfd = QtGui.QAction(parent=MainWindow)
-        self.actionofd2pfd.setObjectName("actionofd2pfd")
-        self.actionofd2pfd.setCheckable(True)
-        
-        self.actionofd2img = QtGui.QAction(parent=MainWindow)
-        self.actionofd2img.setObjectName("actionofd2img")
-        self.actionofd2img.setCheckable(True)
-        
-        self.menubar.addAction(self.mebnu_2.menuAction())
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-    
-    def action_triggered(self,actionpdf2ofd):
-        if self.actionpdf2ofd.isChecked():
-            print("Action is checked!")
+        super().__init__()
+        self.worker: ConvertWorker | None = None
+        self.rbs: dict[str, QRadioButton] = {}
+        self._init_ui()
+
+    # ---------- UI 构建 ----------
+
+    def _init_ui(self):
+        self._setup_window()
+        cw = QWidget()
+        self.setCentralWidget(cw)
+        layout = QVBoxLayout(cw)
+
+        self._add_mode_section(layout)
+        layout.addWidget(self._make_separator())
+        self._add_path_section(layout)
+        self._add_option_section(layout)
+        self._add_button_section(layout)
+        self._add_progress_bar(layout)
+        self._add_log_area(layout)
+        self._setup_menu()
+        self._setup_statusbar()
+        self._apply_style()
+
+    def _setup_window(self):
+        self.setWindowTitle(APP_TITLE)
+        self.setMinimumSize(640, 480)
+        self.resize(680, 520)
+        if ICON_PATH.exists():
+            self.setWindowIcon(QIcon(str(ICON_PATH)))
+
+    def _add_mode_section(self, parent: QVBoxLayout):
+        parent.addWidget(QLabel("转换模式"))
+        hl = QHBoxLayout()
+        group = QButtonGroup(self)
+        for i, (key, text) in enumerate(MODE_GROUP):
+            rb = QRadioButton(text)
+            self.rbs[key] = rb
+            group.addButton(rb)
+            hl.addWidget(rb)
+            if i == 0:
+                rb.setChecked(True)
+        parent.addLayout(hl)
+
+    @staticmethod
+    def _make_separator() -> QFrame:
+        line = QFrame()
+        line.setFrameShape(QFrame.Shape.HLine)
+        return line
+
+    def _add_path_section(self, parent: QVBoxLayout):
+        grid = QGridLayout()
+
+        grid.addWidget(QLabel("输入路径:"), 0, 0)
+        self.input_path = QLineEdit()
+        self.input_path.setPlaceholderText("选择输入文件或目录...")
+        grid.addWidget(self.input_path, 0, 1)
+        btn_in = QPushButton("浏览...")
+        btn_in.setMaximumWidth(90)
+        btn_in.clicked.connect(self._browse_input)
+        grid.addWidget(btn_in, 0, 2)
+
+        grid.addWidget(QLabel("输出路径:"), 1, 0)
+        self.output_path = QLineEdit()
+        self.output_path.setPlaceholderText("选择输出目录...")
+        grid.addWidget(self.output_path, 1, 1)
+        btn_out = QPushButton("浏览...")
+        btn_out.setMaximumWidth(90)
+        btn_out.clicked.connect(self._browse_output)
+        grid.addWidget(btn_out, 1, 2)
+
+        parent.addLayout(grid)
+
+    def _add_option_section(self, parent: QVBoxLayout):
+        ol = QHBoxLayout()
+        self.check_recursive = QCheckBox("递归子目录")
+        ol.addWidget(self.check_recursive)
+        ol.addStretch()
+        parent.addLayout(ol)
+
+    def _add_button_section(self, parent: QVBoxLayout):
+        bl = QHBoxLayout()
+        self.btn_start = QPushButton("开始转换")
+        self.btn_start.setMinimumSize(120, 36)
+        self.btn_start.clicked.connect(self._start_convert)
+        bl.addWidget(self.btn_start)
+        btn_clear = QPushButton("清空日志")
+        btn_clear.clicked.connect(lambda: self.log_area.clear())
+        bl.addWidget(btn_clear)
+        bl.addStretch()
+        parent.addLayout(bl)
+
+    def _add_progress_bar(self, parent: QVBoxLayout):
+        self.progress = QProgressBar()
+        self.progress.setTextVisible(True)
+        self.progress.setValue(0)
+        parent.addWidget(self.progress)
+
+    def _add_log_area(self, parent: QVBoxLayout):
+        self.log_area = QTextEdit()
+        self.log_area.setReadOnly(True)
+        self.log_area.setPlaceholderText("日志信息将在这里显示...")
+        font = QFont("Consolas", 10)
+        font.setStyleHint(QFont.StyleHint.Monospace)
+        self.log_area.setFont(font)
+        parent.addWidget(self.log_area)
+
+    def _setup_menu(self):
+        mb = self.menuBar()
+
+        file_menu = mb.addMenu("文件")
+        act_input = QAction("打开输入文件/目录...", self)
+        act_input.triggered.connect(self._browse_input)
+        file_menu.addAction(act_input)
+
+        act_output = QAction("打开输出目录...", self)
+        act_output.triggered.connect(self._browse_output)
+        file_menu.addAction(act_output)
+
+        file_menu.addSeparator()
+        act_exit = QAction("退出", self)
+        act_exit.triggered.connect(self.close)
+        file_menu.addAction(act_exit)
+
+        help_menu = mb.addMenu("帮助")
+        act_about = QAction("关于 EasyOFD", self)
+        act_about.triggered.connect(self._show_about)
+        help_menu.addAction(act_about)
+
+    def _setup_statusbar(self):
+        self.status = QStatusBar()
+        self.setStatusBar(self.status)
+        self.status.showMessage("就绪")
+
+    def _apply_style(self):
+        self.setStyleSheet(STYLE_SHEET)
+        self.btn_start.setObjectName("btn_start")
+
+    # ---------- 逻辑 ----------
+
+    def _get_mode(self) -> str:
+        for key, rb in self.rbs.items():
+            if rb.isChecked():
+                return key
+        return "ofd2pdf"
+
+    def _browse_input(self):
+        mode = self._get_mode()
+        info = MODE_FILTER_MAP.get(mode)
+        if info:
+            title, filter_str = info
+            p, _ = QFileDialog.getOpenFileName(self, title, "", filter_str)
         else:
-            print("Action is unchecked!")
-            
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pushButton.setText(_translate("MainWindow", "开始"))
-        
-        self.radioButton.setText(_translate("MainWindow", "ofd2pdf"))
-        self.radioButton_2.setText(_translate("MainWindow", "ofd2img"))
-        self.radioButton_3.setText(_translate("MainWindow", "pdf2ofd"))
-        self.radioButton_4.setText(_translate("MainWindow", "pdf2img"))
-        self.radioButton_5.setText(_translate("MainWindow", "img2ofd"))
-        self.radioButton_6.setText(_translate("MainWindow", "img2pdf"))
-        
-        self.label.setText(_translate("MainWindow", "选择模式"))
-        self.label_2.setText(_translate("MainWindow", "文件路径"))
-        self.label_3.setText(_translate("MainWindow", "输入路径"))
-        self.textEdit.setText(_translate("MainWindow", ""))
-        self.label_4.setText(_translate("MainWindow", "输出路径"))
-        self.textEdit_2.setText(_translate("MainWindow", ""))
-        self.mebnu_2.setTitle(_translate("MainWindow", "说明"))
-        self.actionpdf2ofd.setText(_translate("MainWindow", "pdf2ofd"))
-        self.actionpfd2img.setText(_translate("MainWindow", "pfd2img"))
-        self.actionofd2pfd.setText(_translate("MainWindow", "ofd2pfd"))
-        self.actionofd2img.setText(_translate("MainWindow", "ofd2img"))
+            p = QFileDialog.getExistingDirectory(self, "选择输入目录")
+        if p:
+            self.input_path.setText(p)
 
-        # 点击事件
-        self.pushButton.clicked.connect(self.buttonClicked)
-        text = f"作者:{' '*5}renoyuan\r\n版本:{' '*5}1.0.0\n"
+    def _browse_output(self):
+        p = QFileDialog.getExistingDirectory(self, "选择输出目录")
+        if p:
+            self.output_path.setText(p)
 
-        
-        # self.mebnu_2.triggered.connect(lambda: self.showDialog(text))
-        self.mebnu_2.aboutToShow.connect(lambda:self.showDialog(text))
-        exit_action = QtGui.QAction(self.mebnu_2)
-        exit_action.triggered.connect( self.showDialog)
-        
-    def showDialog(self,msg:str):  
-        # QMessageBox.warning(self, 'Alert', msg, QMessageBox.Ok())  
-        msgBox = QMessageBox()  
-        msgBox.setText(msg)  
-        msgBox.exec()
-    
-    def check_file(self,name,endswith:str):
-        if name.lower().endswith(endswith):
-            return True
-    
-    def save_file(self,name,_bytes):
-        
-        with open(name,"wb") as f:
-            if isinstance(_bytes,list):
-                _bytes = _bytes[0]
-            f.write(_bytes)
-            
-    def save_img(self, name, img_np):
-        for inx,img in enumerate(img_np):
-            # im = Image.fromarray(img)
-            img.save(name.format(inx))
-            
-    def run_convert(self,mode,input,output):
-        inputs= os.listdir(input)
-
-        for file in inputs:
-            if mode == "ofd2pdf":
-                if self.check_file(file,"ofd"):
-                    
-                    ofdb64 = self.read_ofd(os.path.join(input,file))
-                    self.ofd.read(ofdb64)
-                    pdf_bytes = self.ofd.to_pdf()
-                    self.save_file(os.path.join(output,os.path.splitext(file)[0]+".pdf"), pdf_bytes)
-            elif mode == "ofd2img":  
-                if self.check_file(file,"ofd"):
-                    ofdb64 = self.read_ofd(os.path.join(input,file))
-                    self.ofd.read(ofdb64)
-                    img_np = self.ofd.to_jpg()
-                    self.save_img(os.path.join(output,os.path.splitext(file)[0]+"_{}"+".jpg"), img_np)
-            elif mode == "pdf2ofd":
-                if self.check_file(file,"pdf"):
-                    pfdbyte = self.read_pfd(os.path.join(input,file))
-                    ofd_byte = self.ofd.pdf2ofd(pfdbyte)
-                    self.save_file(os.path.join(output,os.path.splitext(file)[0]+".ofd"), ofd_byte)
-            elif mode == "pdf2img":
-                if self.check_file(file, "pdf"):
-                    print(os.path.join(input, file))
-                    pfdbyte = self.read_pfd(os.path.join(input,file))
-                    img_nps = self.ofd.pdf2img(pfdbyte)
-                    print(type(img_nps))
-                    if img_nps:
-                        for idx, img in enumerate(img_nps):
-                            img.save(os.path.join(output, os.path.splitext(file)[0]+f"_{idx}"+".jpg"))
-                           
-            elif mode == "img2ofd":
-               pass
-            elif mode == "img2pdf":
-                pass
-            self.ofd.del_data()
-                
-        self.showDialog("执行完毕")
-            
-                
-        
-                   
-    def buttonClicked(self):
-        """
-        执行事件
-        """
-        # sender = self.sender()
-        input_path = self.textEdit.toPlainText()
-        output_path = self.textEdit_2.toPlainText()
-        self.actionpdf2ofd 
-        print("Input path: " + input_path)
-        print("onput path: " + output_path)
-        
-        if not os.path.exists(input_path) or not os.path.exists(output_path):
-            self.showDialog(f"输入路径{input_path} \n或 输出路径{output_path}\n 不存在，请检查。 ")
+    def _start_convert(self):
+        if self.worker and self.worker.isRunning():
+            QMessageBox.warning(self, "提示", "正在转换中...")
             return
-            
-      
-        # ofd2pdf ofd2img pdf2ofd pdf2img
-        mode = [self.radioButton.isChecked(),self.radioButton_2.isChecked(),self.radioButton_3.isChecked(),self.radioButton_4.isChecked(),self.radioButton_5.isChecked()]
-        print(mode)
-        if mode[0]:
 
-            print("ofd2pdf")
-            self.run_convert("ofd2pdf",input_path,output_path)
-        elif mode[1]:
-            print("ofd2img")
-            self.run_convert("ofd2img",input_path,output_path)
-        elif mode[2]:
-            print("pdf2ofd")
-            self.run_convert("pdf2ofd",input_path,output_path)
-        elif mode[3]:
-            print("pdf2img")
-            self.run_convert("pdf2img",input_path,output_path)
-        elif mode[4]:
-            print("img2ofd")
-            self.run_convert("img2ofd",input_path,output_path)
-        elif mode[5]:
-            print("img2pdf")
-            self.run_convert("img2pdf",input_path,output_path)
-        # msg = f'{sender.text()} was pressed'
-        # self.statusBar().showMessage(msg)
-        
+        inp = self.input_path.text().strip()
+        out = self.output_path.text().strip()
+
+        if not inp or not out:
+            QMessageBox.warning(self, "提示", "请选择输入和输出路径")
+            return
+        if not os.path.exists(inp):
+            QMessageBox.warning(self, "提示", f"输入路径不存在: {inp}")
+            return
+
+        try:
+            if not os.path.exists(out):
+                os.makedirs(out)
+        except Exception as e:
+            QMessageBox.warning(self, "提示", f"无法创建输出目录: {e}")
+            return
+
+        mode = self._get_mode()
+        recursive = self.check_recursive.isChecked()
+
+        self.log_area.clear()
+        self.progress.setValue(0)
+        self.btn_start.setEnabled(False)
+        self.btn_start.setText("转换中...")
+        self.status.showMessage("正在转换...")
+
+        self.log(f"模式: {mode}")
+        self.log(f"输入: {inp}")
+        self.log(f"输出: {out}")
+        self.log(f"递归: {'是' if recursive else '否'}")
+        self.log("-" * 50)
+
+        self.worker = ConvertWorker(mode, inp, out, recursive)
+        self.worker.log_signal.connect(self.log)
+        self.worker.progress_signal.connect(self.progress.setValue)
+        self.worker.file_signal.connect(
+            lambda fn, ci, tt: self.status.showMessage(f"处理 [{ci}/{tt}]: {fn}")
+        )
+        self.worker.finished_signal.connect(self._on_finished)
+        self.worker.start()
+
+    def _on_finished(self, ok: bool, msg: str):
+        self.btn_start.setEnabled(True)
+        self.btn_start.setText("开始转换")
+        self.progress.setValue(100 if ok else 0)
+        self.status.showMessage("就绪" if ok else "失败")
+
+        if ok:
+            self.log("\n" + "=" * 50)
+            self.log(f"OK {msg}")
+            self.log("=" * 50)
+            QMessageBox.information(self, "完成", msg)
+        else:
+            self.log(f"\nFAIL {msg}")
+
+    def log(self, msg: str):
+        self.log_area.append(msg)
+        cursor = self.log_area.textCursor()
+        cursor.movePosition(QTextCursor.MoveOperation.End)
+        self.log_area.setTextCursor(cursor)
+
+    def _show_about(self):
+        QMessageBox.about(self, "关于 EasyOFD", ABOUT_TEXT)
+
+    def closeEvent(self, event):
+        if self.worker and self.worker.isRunning():
+            reply = QMessageBox.question(
+                self, "确认退出", "任务进行中，确定退出？",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            if reply == QMessageBox.StandardButton.Yes:
+                self.worker.cancel()
+                self.worker.wait(3000)
+                event.accept()
+            else:
+                event.ignore()
+        else:
+            event.accept()
+
+
+# ──────────────────────────────────────────────
+#  入口
+# ──────────────────────────────────────────────
+
+def main():
+    app = QApplication(sys.argv)
+    app.setApplicationName(APP_NAME)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
+
 
 if __name__ == "__main__":
-    
-    # 一、应用程序对象，只能有一个
-    # 1、该类管理GUI应用程序控制流和主要设置，专门用于QWidget所需的一些功能
-    # 2、不使用命令行或提示符程序（cmd），则为空列表 []
-    # 3、如果使用命令行或提示符程序(cmd)，则为sys.argv
-
-    app = QApplication(sys.argv)
-    
-    # 二、从窗口类型中可以创建三种窗口对象
-    # 1、QWidget
-    # 2、QMainWindow
-    # 3、QDialog
-    window = QMainWindow()
-    # 三、QWidget显示窗口
-    ui_ =Ui_MainWindow()
-    ui_.setupUi(window)
- 
-    window.show()
-    
-    # 四、执行程序
-    sys.exit(app.exec())
+    main()

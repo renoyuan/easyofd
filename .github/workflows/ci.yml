@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main", "master", "develop" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+
+    - name: Lint with flake8
+      run: |
+        pip install flake8
+        flake8 easyofd --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 easyofd --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+
+    - name: Test with pytest
+      run: |
+        python -m pytest test/ -v --tb=short --ignore=test/test_muty.py --ignore=test/test_otf2ttf.py --ignore=test/test_parse_xml.py --ignore=test/test_pdf.py --ignore=test/gen_code.py --ignore=test/demo.py --junitxml=junit/test-results-${{ matrix.os }}-${{ matrix.python-version }}.xml --cov=easyofd --cov-report=xml --cov-report=html
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-${{ matrix.os }}-${{ matrix.python-version }}
+        path: |
+          junit/
+          htmlcov/
+          coverage.xml
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install mypy types-setuptools
+        pip install -r requirements.txt
+    - name: Type check with mypy
+      run: |
+        mypy easyofd/parser_ofd/ --ignore-missing-imports --warn-unused-configs || true

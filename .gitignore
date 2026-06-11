@@ -39,7 +39,6 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-.vscode/
 htmlcov/
 .tox/
 .nox/
@@ -129,8 +128,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# IDE
 .vscode
 .vscode/*
+
+# Test OFD/PDF files
 test/*.ofd
 test/*.pdf
 test/*.json
@@ -140,6 +143,12 @@ test/test
 *.ofd
 *.pdf
 增值税电子专票5.ofd
-.vscode
-.vscode/*
 test\testxml
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
