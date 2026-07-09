@@ -72,6 +72,27 @@ class OFD(object):
         logger.info(f"to_pdf")
         return DrawPDF(self.data)()
 
+    # 保存为扫描版pdf
+    def to_scanned_pdf(self):
+        """
+        return pdf bytes (Scanned PDF)
+        """
+        assert self.data, f"data is None"
+        image_list = self.to_jpg()
+
+        # 将图片转换为图片版PDF
+        if image_list:
+            # 第一张作为基础，其他作为附加页面
+            first_image = image_list[0]
+            pdf_bytes = BytesIO()
+            if len(image_list) > 1:
+                first_image.save(pdf_bytes, format="PDF", save_all=True, append_images=image_list[1:])
+            else:
+                first_image.save(pdf_bytes, format="PDF")
+            pdf_bytes.seek(0)
+            return pdf_bytes.getvalue()
+        return None
+
     def pdf2img(self, pdfbytes):
 
         image_list = []
