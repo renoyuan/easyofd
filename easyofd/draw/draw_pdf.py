@@ -131,11 +131,15 @@ class DrawPDF():
                     
                 font_info = fonts.get(line_dict.get("font"), {})
                 # 尝试使用系统中可用的中文字体
-                font = "宋体"  # 使用文泉驿微米黑，系统中可用的中文字体
+                # font = "宋体"  # 使用文泉驿微米黑，系统中可用的中文字体
                 # 如果需要，也可以尝试其他中文字体
                 # font = "WenQuanYi Zen Hei"  # 文泉驿正黑
+                # 先尝试使用行信息中设置的字体，如果没有再使用宋体兜底
+                font = line_dict.get("font", "宋体")
                 
                 try:
+                    if not font_info.get("font_b64"):
+                        font = font_info.get("FontName", "宋体")
                     c.setFont(font, line_dict["size"] * self.OP)
                 except Exception as e:
                     import logging
@@ -970,7 +974,9 @@ class DrawPDF():
                 file_name = font_v.get("FontFile")
                 font_b64 = font_v.get("font_b64")
                 if font_b64:
-                    self.font_tool.register_font(os.path.split(file_name)[1], font_v.get("@FontName"), font_b64)
+                    # 兼容字段名为FontName的情况
+                    self.font_tool.register_font(os.path.split(file_name)[1], font_v.get("@FontName") or font_v.get("FontName"), font_b64)
+                    self.font_tool.register_font(os.path.split(file_name)[1], font_id, font_b64)
     
             for pg_no, page in doc.get("page_info").items():
             
