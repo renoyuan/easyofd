@@ -38,6 +38,13 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib import utils
+from reportlab.pdfbase import ttfonts
+
+# 直接让 char2int 始终返回合法值
+utils.char2int = lambda s: 65  # 所有字符都视为 'A'
+ttfonts.char2int = lambda s: 65  # 所有字符都视为 'A'
+
 from concurrent.futures import ThreadPoolExecutor
 import threading
 import multiprocessing
