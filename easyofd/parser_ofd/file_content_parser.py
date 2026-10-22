@@ -32,10 +32,13 @@ class ContentFileParser(FileParserBase):
 
         cell_d["pos"] = [float(pos_i) for pos_i in row['@Boundary'].split(" ")]  # 文本框
         if row.get('ofd:Clips', {}).get('ofd:Clip', {}).get('ofd:Area', {}).get('ofd:Path', {}):
-            cell_d["clips_pos"] = [float(pos_i) for pos_i in
-                                   row.get('ofd:Clips', {}).get('ofd:Clip', {}).get('ofd:Area', {}).get('ofd:Path',
-                                                                                                        {}).get(
-                                       '@Boundary', "").split(" ")]
+            # 裁剪路径的 Boundary 是可选的，缺失或为空时不能让它把整个文档的解析拖垮
+            clips_boundary = row.get('ofd:Clips', {}).get('ofd:Clip', {}).get('ofd:Area', {}).get('ofd:Path', {}).get('@Boundary', "")
+            clips_pos = [float(pos_i) for pos_i in clips_boundary.split() if pos_i]
+            if clips_pos:
+                cell_d["clips_pos"] = clips_pos
+            else:
+                logger.warning(f"clip path without Boundary, ignored  ID={cell_d['ID']}")
         cell_d["text"] = str(TextObject.get('#text'))
         cell_d["font"] = row['@Font']  # 字体
         cell_d["size"] = float(row['@Size'])  # 字号
